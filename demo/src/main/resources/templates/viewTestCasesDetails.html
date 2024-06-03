@@ -5,64 +5,64 @@
     <meta charset="UTF-8" />
     <title>Test Case Details </title>
 
-    <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
-    />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  </head>
+</head>
 
 <body>
     <div th:replace="fragments/navbar :: navbar"></div>
     <br />
     <div class="container">
 
-      
-<div class="container mt-4">
-    <h2>Test Case Details</h2>
-    <a href="/view" class="btn btn-secondary mb-3">Back to List</a>
-    <div class="card">
-        <div class="card-body">
-            <h4 class="card-title">Details</h4>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">ID: <span th:text="${testCase.idtest_cases}"></span></li>
-                <li class="list-group-item">Description: <span th:text="${testCase.test_desc}"></span></li>
-                <li class="list-group-item">Deadline: <span th:text="${testCase.deadline}"></span></li>
-                <li class="list-group-item">Date Updated: <span th:text="${testCase.dateCreated}"></span></li>
-                <li class="list-group-item">Project ID: <span th:text="${testCase.projectId}"></span></li>
-                <li class="list-group-item">Reason: <span th:text="${testCase.reason}"></span></li>
-                <li class="list-group-item">Test Case Name: <span th:text="${testCase.testCaseName}"></span></li>
-            </ul>
-            <div>
-                <h4>User Status:</h4>
-                <ul>
-                    <li th:each="userStatus : ${testCase.userStatuses}">
-                        <span th:text="${userStatus.key}">Username</span>: 
-                        <span th:text="${userStatus.value}">Status</span>
-                    </li>
-                </ul>
-            </div>
-            <!-- Action Buttons for Status Change -->
-            <div class="actions mt-3">
-                <a th:href="@{/testcases/approveStatus/{id}(id=${testCase.idtest_cases})}" class="btn btn-success">Approve Status</a>
-                <a th:href="@{/testcases/rejectStatus/{id}(id=${testCase.idtest_cases})}" class="btn btn-danger">Reject Status</a>
-                <a th:href="@{/testcases/underReviewStatus/{id}(id=${testCase.idtest_cases})}" class="btn btn-info">Under Review</a>
-                <a th:href="@{/testcases/needsRevisionStatus/{id}(id=${testCase.idtest_cases})}" class="btn btn-warning">Needs Revision</a>
+
+        <div class="container mt-4">
+            <h2>Test Case Details</h2>
+            <a href="/view" class="btn btn-secondary mb-3">Back to List</a>
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Details</h4>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">ID: <span th:text="${testCase.idtest_cases}"></span></li>
+                        <li class="list-group-item">Description: <span th:text="${testCase.test_desc}"></span></li>
+                        <li class="list-group-item">Deadline: <span th:text="${testCase.deadline}"></span></li>
+                        <li class="list-group-item">Date Updated: <span th:text="${testCase.dateCreated}"></span></li>
+                        <li class="list-group-item">Project ID: <span th:text="${testCase.projectId}"></span></li>
+                        <li class="list-group-item">Reason: <span th:text="${testCase.reason}"></span></li>
+                        <li class="list-group-item">Test Case Name: <span th:text="${testCase.testCaseName}"></span>
+                        </li>
+                    </ul>
+                    <div>
+                        <h4>User Status:</h4>
+                        <ul>
+                            <li th:each="userStatus : ${testCase.userStatuses}">
+                                <span th:text="${userStatus.key}">Username</span>:
+                                <span th:text="${userStatus.value}">Status</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- Action Buttons for Status Change -->
+                    <div th:unless="${testCase.overallStatus == 'Approved'}" class="actions mt-3">
+                        <a th:href="@{/testcases/approveStatus/{id}(id=${testCase.idtest_cases})}"
+                            class="btn btn-success">Approve Status</a>
+                        <a th:href="@{/testcases/rejectStatus/{id}(id=${testCase.idtest_cases})}"
+                            class="btn btn-danger">Reject Status</a>
+                        <a th:href="@{/testcases/underReviewStatus/{id}(id=${testCase.idtest_cases})}"
+                            class="btn btn-info">Under Review</a>
+                        <a th:href="@{/testcases/needsRevisionStatus/{id}(id=${testCase.idtest_cases})}"
+                            class="btn btn-warning">Needs Revision</a>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
 
 
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
+
 </html>

@@ -52,6 +52,8 @@ public class ViewCaseService {
                     "2023-11-15", Arrays.asList(2001)));
             add(new TestCase("", (long) 10003, "004", "19", "Diagram", "desc56", "2023-12-20",
                     "2024-01-07", Arrays.asList(2002)));
+                    add(new TestCase("", (long) 10004, "005", "34", "Add Role", "Not able to add role", "2023-11-20",
+                    "2024-02-04", Arrays.asList(2002)));
         }
     };
 

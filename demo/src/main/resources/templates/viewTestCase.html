@@ -117,7 +117,7 @@
                                 th:text="${userStatus.value}">Status</span><br />
                         </div>
                     </td>
-                    <td>
+                    <td th:unless="${test.overallStatus == 'Approved'}">
                         <form th:action="@{/setUserStatus}" method="post">
                             <input type="hidden" th:name="testCaseId" th:value="${test.idtest_cases}" />
                             <select name="status">
@@ -131,7 +131,12 @@
                             <button type="submit" class="btn btn-primary">Set Status</button>
                         </form>
                     </td>
-
+                    <td th:if="${test.overallStatus == 'Approved'}">
+                        <button type="button" class="btn btn-secondary disabled" data-toggle="tooltip"
+                            data-placement="top" title="Unable to change test case status after Approved">
+                            <i class="bi bi-info-circle"></i>
+                        </button>
+                    </td>
                     <td>
                         <span th:class="${test.overallStatus == 'Approved' ? 'status-approve' : 
                                           test.overallStatus == 'Rejected' ? 'status-reject' : 
@@ -145,11 +150,12 @@
                         <a class="btn btn-primary" th:href="@{'/testcases/details/'+${test.idtest_cases}}">
                             Details
                         </a>
-                        <a class="btn btn-warning" th:if="${isTester}" th:href="@{'/editCase/' +${test.idtest_cases}}">
+                        <a class="btn btn-warning" th:unless="${test.overallStatus == 'Approved'}" th:if="${isTester}"
+                            th:href="@{'/editCase/' +${test.idtest_cases}}">
                             Edit
                         </a>
-                        <a class="btn btn-danger" th:if="${isTester}" data-toggle="modal"
-                            th:attr=" data-target= '#deleteModal'+ ${test.idtest_cases}">
+                        <a class="btn btn-danger" th:unless="${test.overallStatus == 'Approved'}" th:if="${isTester}"
+                            data-toggle="modal" th:attr=" data-target= '#deleteModal'+ ${test.idtest_cases}">
                             Delete
                         </a>
                     </td>

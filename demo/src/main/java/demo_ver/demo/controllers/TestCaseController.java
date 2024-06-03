@@ -105,7 +105,6 @@ public class TestCaseController {
         Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
         boolean isTester = authorities.stream()
                 .anyMatch(authority -> authority.getAuthority().equals("ROLE_Tester"));
-
         model.addAttribute("isTester", isTester);
         return "viewTestCase";
     }
