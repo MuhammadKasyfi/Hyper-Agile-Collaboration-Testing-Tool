@@ -1,44 +1,32 @@
 package demo_ver.demo.controllers;
 
-import java.util.Date;
+import java.security.Principal; // Import Principal for getting logged-in user's information
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.validation.Valid;
-
-import java.security.Principal; // Import Principal for getting logged-in user's information
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
 // import org.hyperledger.fabric.gateway.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestClientResponseException;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import demo_ver.demo.model.ManageUser;
 import demo_ver.demo.model.TestCase;
-import demo_ver.demo.service.ManageRoleService;
 import demo_ver.demo.service.ManageUserService;
 import demo_ver.demo.service.ViewCaseService;
-
-
-
 
 @Controller
 public class TestCaseController {
@@ -47,74 +35,80 @@ public class TestCaseController {
 
     @Autowired
     private ViewCaseService viewCaseService;
-    
+
     @Autowired
     private RestTemplate restTemplate;
 
     // @RequestMapping("/getData")
     // public String getDataFromApi() {
-    //     String uri = "http://172.20.228.232:3000/getAllTestCases";
+    // String uri = "http://172.20.228.232:3000/getAllTestCases";
 
-    //     try {
-    //         String result = restTemplate.getForObject(uri, String.class);
+    // try {
+    // String result = restTemplate.getForObject(uri, String.class);
 
-    //         // Assuming response is JSON, parse it into a list of TestCase objects
-    //         ObjectMapper objectMapper = new ObjectMapper();
-    //         List<TestCase> testCases = objectMapper.readValue(result, List.class);
+    // // Assuming response is JSON, parse it into a list of TestCase objects
+    // ObjectMapper objectMapper = new ObjectMapper();
+    // List<TestCase> testCases = objectMapper.readValue(result, List.class);
 
-    //         // Build a formatted string to list data
-    //         StringBuilder dataList = new StringBuilder();
-    //         for (TestCase testCase : testCases) {
-    //             dataList.append("ID: ").append(testCase.getIdtest_cases()).append(", ");
-    //             dataList.append("Case Number: ").append(testCase.getProjectId()).append(", ");
-    //             dataList.append("Priority: ").append(testCase.getSmartContractID()).append(",\n");
-    //         }
-
-    //         return dataList.toString(); // Return a string containing the formatted data
-
-    //     } catch (RestClientResponseException e) {
-    //         // Handle specific HTTP error responses
-    //         return "Error: " + e.getMessage();
-    //     } catch (Exception e) {
-    //         // Handle unexpected exceptions
-    //         return "Error: " + e.getMessage();
-    //     }
+    // // Build a formatted string to list data
+    // StringBuilder dataList = new StringBuilder();
+    // for (TestCase testCase : testCases) {
+    // dataList.append("ID: ").append(testCase.getIdtest_cases()).append(", ");
+    // dataList.append("Case Number: ").append(testCase.getProjectId()).append(",
+    // ");
+    // dataList.append("Priority:
+    // ").append(testCase.getSmartContractID()).append(",\n");
     // }
-    
 
-   @GetMapping("/view")
-    public String viewCase(Model model,Principal principal) throws JsonProcessingException{
-    List<TestCase> testCases = ViewCaseService.findAllList();
+    // return dataList.toString(); // Return a string containing the formatted data
 
-    // Assuming ManageUserService.getAllUsers() returns a List<ManageUser>
-    List<ManageUser> allUsers = ManageUserService.getAllUsers();
-    String username = principal.getName();
+    // } catch (RestClientResponseException e) {
+    // // Handle specific HTTP error responses
+    // return "Error: " + e.getMessage();
+    // } catch (Exception e) {
+    // // Handle unexpected exceptions
+    // return "Error: " + e.getMessage();
+    // }
+    // }
 
-    // Set username for each test case
-    for (TestCase testCase : testCases) {
-        List<Integer> userIds = testCase.getUserID();
-        List<String> usernames = userIds.stream()
-                .map(userId -> {
-                    ManageUser user = ManageUserService.getUserById(userId);
-                    return (user != null) ? user.getUsername() : "";
-                })
-                .collect(Collectors.toList());
+    @GetMapping("/view")
+    public String viewCase(Model model, Principal principal, @AuthenticationPrincipal UserDetails userDetails)
+            throws JsonProcessingException {
+        List<TestCase> testCases = ViewCaseService.findAllList();
 
-        // Assuming you want to concatenate usernames into a single string
-        testCase.setUsername(String.join(", ", usernames));
+        // Assuming ManageUserService.getAllUsers() returns a List<ManageUser>
+        List<ManageUser> allUsers = ManageUserService.getAllUsers();
+        String username = principal.getName();
+
+        // Set username for each test case
+        for (TestCase testCase : testCases) {
+            List<Integer> userIds = testCase.getUserID();
+            List<String> usernames = userIds.stream()
+                    .map(userId -> {
+                        ManageUser user = ManageUserService.getUserById(userId);
+                        return (user != null) ? user.getUsername() : "";
+                    })
+                    .collect(Collectors.toList());
+
+            // Assuming you want to concatenate usernames into a single string
+            testCase.setUsername(String.join(", ", usernames));
+        }
+
+        List<TestCase> userTestCases = viewCaseService.findTestCasesByUsername(username);
+
+        model.addAttribute("testCase", userTestCases);
+        model.addAttribute("users1", allUsers);
+        // model.addAttribute("allTestCases", ViewCaseService.findAllList());
+        // model.addAttribute("userTestCases",
+        // viewCaseService.findTestCasesByUsername(username));
+        // remove edit and delete if not tester
+        Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
+        boolean isTester = authorities.stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_Tester"));
+
+        model.addAttribute("isTester", isTester);
+        return "viewTestCase";
     }
-
-    List<TestCase> userTestCases = viewCaseService.findTestCasesByUsername(username);
-
-
-    model.addAttribute("testCase", userTestCases);
-    model.addAttribute("users1", allUsers);
-    // model.addAttribute("allTestCases", ViewCaseService.findAllList());
-    // model.addAttribute("userTestCases", viewCaseService.findTestCasesByUsername(username));
-    return "viewTestCase";
-}
-
-    
 
     @GetMapping("/add")
     public String showAddTestCaseForm(Model model, Authentication authentication,
@@ -127,11 +121,13 @@ public class TestCaseController {
     }
 
     @PostMapping("/save")
-    public String addTestCaseForm(TestCase testCase, @RequestParam("userID") List<Integer> userID, Model model) throws JsonProcessingException{
+    public String addTestCaseForm(TestCase testCase, @RequestParam("userID") List<Integer> userID, Model model)
+            throws JsonProcessingException {
         model.addAttribute("tests", ViewCaseService.findAllList());
-        model.addAttribute("users", ManageUserService.getAllUsers()); // I added this so that user list will always show even if got validation errors
+        model.addAttribute("users", ManageUserService.getAllUsers()); // I added this so that user list will always show
+                                                                      // even if got validation errors
 
-         // Check if the test case name already exists
+        // Check if the test case name already exists
         if (viewCaseService.istestCaseExists(testCase.getTestCaseName())) {
             model.addAttribute("testCaseNameExists", true);
             return "addTestCase";
@@ -169,13 +165,15 @@ public class TestCaseController {
     }
 
     @PostMapping("/update")
-    public String editTestCaseForm(TestCase testCase, @RequestParam("userID") List<Integer> userID, Model model) throws JsonProcessingException{
+    public String editTestCaseForm(TestCase testCase, @RequestParam("userID") List<Integer> userID, Model model)
+            throws JsonProcessingException {
 
         model.addAttribute("tests", ViewCaseService.findAllList());
-        model.addAttribute("users", ManageUserService.getAllUsers()); // I added this so that user list will always show even if got validation errors
+        model.addAttribute("users", ManageUserService.getAllUsers()); // I added this so that user list will always show
+                                                                      // even if got validation errors
         // if (viewCaseService.istestCaseExists(testCase.getTestCaseName())) {
-        //     model.addAttribute("testCaseNameExists", true);
-        //     return "EditTestCase";
+        // model.addAttribute("testCaseNameExists", true);
+        // return "EditTestCase";
         // }
         // Check if the deadline is later than the date created
         if (!isDeadlineLaterThanDateCreated(testCase.getDateCreated(), testCase.getDeadline())) {
