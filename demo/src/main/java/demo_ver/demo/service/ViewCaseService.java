@@ -82,84 +82,84 @@ public class ViewCaseService {
         return testList;
     }
 
-    // Hyperledger parser
-    // private static List<TestCase> parseJsonToTestCaseList(String jsonString) throws JsonProcessingException {
-    //     // Handle potential JSON parsing exceptions
-    //     // List<Map<String, Object>> testCaseMaps;
-    //     // try {
-    //     //     testCaseMaps = objectMapper.readValue(jsonString, List.class);   // Until here is fine, i get the Payload with out error.
-    //     // } catch (JsonProcessingException e) {
-    //     //     throw e; // Re-throw the exception for proper handling
-    //     // }
+    private static List<TestCase> parseJsonToTestCaseList(String jsonString) throws JsonProcessingException {
+        // Handle potential JSON parsing exceptions
+        // List<Map<String, Object>> testCaseMaps;
+        // try {
+        //     testCaseMaps = objectMapper.readValue(jsonString, List.class);   // Until here is fine, i get the Payload with out error.
+        // } catch (JsonProcessingException e) {
+        //     throw e; // Re-throw the exception for proper handling
+        // }
 
-    //     ObjectMapper objectMapper = new ObjectMapper();
-
-    //     // Handle potential JSON parsing exceptions
-    //     Map<String, Object> responseMap;
-    //     try {
-    //       responseMap = objectMapper.readValue(jsonString, Map.class);
-    //     } catch (JsonProcessingException e) {
-    //       throw e; // Re-throw the exception for proper handling
-    //     }
-      
-    //     // Access the nested array (assuming it's called "message")
-    //     List<Map<String, Object>> testCaseMaps = (List<Map<String, Object>>) responseMap.get("message");
         
-    //     // for (Map<String, Object> testCaseMap : testCaseMaps) {
-    //         // String userIDString = (String) testCaseMap.get("userID");
-    //         // if (userIDString.isEmpty()) {
-    //         //   testCaseMap.put("userID", null);
-    //         // }
-    //     //   }
-    
-    //     return testCaseMaps.stream()
-    //         .map(testCaseMap -> {
-    //             TestCase testCase = new TestCase();
-    
-    //             // Set each field of the TestCase object using the map values
-    //             testCase.setStatus((String) testCaseMap.get("status"));
-    //             String idtestCasesString = (String) testCaseMap.get("idtest_cases");
-    //             Long idtestCasesLong = Long.parseLong(idtestCasesString);
-    //             testCase.setIdtest_cases(idtestCasesLong);
-    //             // testCase.setIdtest_cases((Long) testCaseMap.get("idtest_cases")); 
-    //             testCase.setProjectId((String) testCaseMap.get("projectId"));
-    //             testCase.setSmartContractID((String) testCaseMap.get("smartContractID"));
-    //             testCase.setTestCaseName((String) testCaseMap.get("testCaseName"));
-    //             testCase.setTest_desc((String) testCaseMap.get("test_desc"));
-    //             testCase.setDateCreated((String) testCaseMap.get("dateCreated"));
-    //             testCase.setDeadline((String) testCaseMap.get("deadline"));
-    //             testCase.setDateUpdated((String) testCaseMap.get("dateUpdated"));
-    //             testCase.setOverallStatus((String) testCaseMap.get("overallStatus"));
-    //             testCase.setUsername((String) testCaseMap.get("username"));
-    //             testCase.setCreatedBy((String) testCaseMap.get("createdBy"));
-    
-    //             // Handle potential null value for reason
-    //             testCase.setReason((String) testCaseMap.get("reason"));
-                
-    //             // Create a new List to hold the userID (assuming there's only one)
-    //             String userIDString = (String) testCaseMap.get("userID");
-    //             int userIDInteger = Integer.parseInt(userIDString);
-    //             // int userIDInteger = (int) testCaseMap.get("userID");
-    //             List<Integer> userIDList = new ArrayList<>();
-    //             userIDList.add(userIDInteger);
+        
+        // for (Map<String, Object> testCaseMap : testCaseMaps) {
+            // String userIDString = (String) testCaseMap.get("userID");
+            // if (userIDString.isEmpty()) {
+            //   testCaseMap.put("userID", null);
+            // }
+        //   }
+        ObjectMapper objectMapper = new ObjectMapper();
 
-    //             // Set the userID in the TestCase object
-    //             testCase.setUserID(userIDList);
-                
-    //             // Handle potential null value for userID list
-    //             // List<Integer> userID = (List<Integer>) testCaseMap.get("userID");
-    //             // testCase.setUserID(userIDInteger != null ? userIDInteger : Collections.emptyList());
+        // Handle potential JSON parsing exceptions
+        Map<String, Object> responseMap;
+        try {
+          responseMap = objectMapper.readValue(jsonString, Map.class);
+        } catch (JsonProcessingException e) {
+          throw e; // Re-throw the exception for proper handling
+        }
+      
+        // Access the nested array (assuming it's called "message")
+        List<Map<String, Object>> testCaseMaps = (List<Map<String, Object>>) responseMap.get("message");
+        
+        return testCaseMaps.stream()
+            .map(testCaseMap -> {
+                TestCase testCase = new TestCase();
     
-    //             // Handle new field (if applicable)
-    //             // If userStatuses is not relevant, ignore it
-    //             Map<String, String> userStatuses = (Map<String, String>) testCaseMap.get("userStatuses");
-    //             testCase.setUserStatuses(userStatuses != null ? userStatuses : Collections.emptyMap());
+                // Set each field of the TestCase object using the map values
+                testCase.setStatus((String) testCaseMap.get("status"));
+                String idtestCasesString = (String) testCaseMap.get("idtest_cases");
+                Long idtestCasesLong = Long.parseLong(idtestCasesString);
+                testCase.setIdtest_cases(idtestCasesLong);
+                // testCase.setIdtest_cases((Long) testCaseMap.get("idtest_cases")); 
+                testCase.setProjectId((String) testCaseMap.get("projectId"));
+                testCase.setSmartContractID((String) testCaseMap.get("smartContractID"));
+                testCase.setTestCaseName((String) testCaseMap.get("testCaseName"));
+                testCase.setTest_desc((String) testCaseMap.get("test_desc"));
+                testCase.setDateCreated((String) testCaseMap.get("dateCreated"));
+                testCase.setDeadline((String) testCaseMap.get("deadline"));
+                testCase.setDateUpdated((String) testCaseMap.get("dateUpdated"));
+                testCase.setOverallStatus((String) testCaseMap.get("overallStatus"));
+                testCase.setUsername((String) testCaseMap.get("username"));
+                testCase.setCreatedBy((String) testCaseMap.get("createdBy"));
+    
+                // Handle potential null value for reason
+                testCase.setReason((String) testCaseMap.get("reason"));
                 
-    //             System.out.println("Test Case: " + testCase.toString());
-    //             return testCase;
-    //         })
-    //         .collect(Collectors.toList());
-    // }
+                // Create a new List to hold the userID (assuming there's only one)
+                String userIDString = (String) testCaseMap.get("userID");
+                int userIDInteger = Integer.parseInt(userIDString);
+                // int userIDInteger = (int) testCaseMap.get("userID");
+                List<Integer> userIDList = new ArrayList<>();
+                userIDList.add(userIDInteger);
+
+                // Set the userID in the TestCase object
+                testCase.setUserID(userIDList);
+                
+                // Handle potential null value for userID list
+                // List<Integer> userID = (List<Integer>) testCaseMap.get("userID");
+                // testCase.setUserID(userIDInteger != null ? userIDInteger : Collections.emptyList());
+    
+                // Handle new field (if applicable)
+                // If userStatuses is not relevant, ignore it
+                Map<String, String> userStatuses = (Map<String, String>) testCaseMap.get("userStatuses");
+                testCase.setUserStatuses(userStatuses != null ? userStatuses : Collections.emptyMap());
+                
+                System.out.println("Test Case: " + testCase.toString());
+                return testCase;
+            })
+            .collect(Collectors.toList());
+    }
     
 
     
