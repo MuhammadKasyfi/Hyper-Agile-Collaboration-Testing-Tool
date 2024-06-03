@@ -23,7 +23,9 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -39,14 +41,15 @@ import demo_ver.demo.utils.RandomNumber;
 public class ViewCaseService {
     private static final Logger logger = LoggerFactory.getLogger(ViewCaseService.class);
     
+    // use this list to store test cases locally, switch to mysql or any database 
     private static List<TestCase> testList = new ArrayList<TestCase>() {
         {
-            // add(new TestCase("", RandomNumber.getRandom(100, 999), "002", "15", "Package", "desc23", "2023-11-07",
-            //         "2023-11-17", Arrays.asList(2001)));
-            // add(new TestCase("", RandomNumber.getRandom(100, 999), "003", "17", "Behavioral", "desc34", "2023-12-05",
-            //         "2023-11-15", Arrays.asList(2001)));
-            // add(new TestCase("", RandomNumber.getRandom(100, 999), "004", "19", "Diagram", "desc56", "2023-12-20",
-            //         "2024-01-07", Arrays.asList(2002)));
+            add(new TestCase("", RandomNumber.getRandom(100, 999), "002", "15", "Package", "desc23", "2023-11-07",
+                    "2023-11-17", Arrays.asList(2001)));
+            add(new TestCase("", RandomNumber.getRandom(100, 999), "003", "17", "Behavioral", "desc34", "2023-12-05",
+                    "2023-11-15", Arrays.asList(2001)));
+            add(new TestCase("", RandomNumber.getRandom(100, 999), "004", "19", "Diagram", "desc56", "2023-12-20",
+                    "2024-01-07", Arrays.asList(2002)));
         }
     };
 
@@ -67,99 +70,100 @@ public class ViewCaseService {
 
     // Get all test cases from hyperledger API
     public static List<TestCase> findAllList() throws JsonProcessingException {
-        String url = HYPERLEDGER_BASE_URL + "/getAllTestCases";
+        // String url = HYPERLEDGER_BASE_URL + "/getAllTestCases";
         
-        String jsonString = restTemplate.getForObject(url, String.class);
+        // String jsonString = restTemplate.getForObject(url, String.class);
 
         // Parse the JSON data and get the list of TestCase objects
-        List<TestCase> testCaseList = parseJsonToTestCaseList(jsonString);
+        // List<TestCase> testCaseList = parseJsonToTestCaseList(jsonString);
     
-        testList = testCaseList;
+        // testList = testCaseList;
 
-        return testCaseList;
+        return testList;
     }
 
-    private static List<TestCase> parseJsonToTestCaseList(String jsonString) throws JsonProcessingException {
-        // Handle potential JSON parsing exceptions
-        // List<Map<String, Object>> testCaseMaps;
-        // try {
-        //     testCaseMaps = objectMapper.readValue(jsonString, List.class);   // Until here is fine, i get the Payload with out error.
-        // } catch (JsonProcessingException e) {
-        //     throw e; // Re-throw the exception for proper handling
-        // }
+    // Hyperledger parser
+    // private static List<TestCase> parseJsonToTestCaseList(String jsonString) throws JsonProcessingException {
+    //     // Handle potential JSON parsing exceptions
+    //     // List<Map<String, Object>> testCaseMaps;
+    //     // try {
+    //     //     testCaseMaps = objectMapper.readValue(jsonString, List.class);   // Until here is fine, i get the Payload with out error.
+    //     // } catch (JsonProcessingException e) {
+    //     //     throw e; // Re-throw the exception for proper handling
+    //     // }
 
-        ObjectMapper objectMapper = new ObjectMapper();
+    //     ObjectMapper objectMapper = new ObjectMapper();
 
-        // Handle potential JSON parsing exceptions
-        Map<String, Object> responseMap;
-        try {
-          responseMap = objectMapper.readValue(jsonString, Map.class);
-        } catch (JsonProcessingException e) {
-          throw e; // Re-throw the exception for proper handling
-        }
+    //     // Handle potential JSON parsing exceptions
+    //     Map<String, Object> responseMap;
+    //     try {
+    //       responseMap = objectMapper.readValue(jsonString, Map.class);
+    //     } catch (JsonProcessingException e) {
+    //       throw e; // Re-throw the exception for proper handling
+    //     }
       
-        // Access the nested array (assuming it's called "message")
-        List<Map<String, Object>> testCaseMaps = (List<Map<String, Object>>) responseMap.get("message");
+    //     // Access the nested array (assuming it's called "message")
+    //     List<Map<String, Object>> testCaseMaps = (List<Map<String, Object>>) responseMap.get("message");
         
-        // for (Map<String, Object> testCaseMap : testCaseMaps) {
-            // String userIDString = (String) testCaseMap.get("userID");
-            // if (userIDString.isEmpty()) {
-            //   testCaseMap.put("userID", null);
-            // }
-        //   }
+    //     // for (Map<String, Object> testCaseMap : testCaseMaps) {
+    //         // String userIDString = (String) testCaseMap.get("userID");
+    //         // if (userIDString.isEmpty()) {
+    //         //   testCaseMap.put("userID", null);
+    //         // }
+    //     //   }
     
-        return testCaseMaps.stream()
-            .map(testCaseMap -> {
-                TestCase testCase = new TestCase();
+    //     return testCaseMaps.stream()
+    //         .map(testCaseMap -> {
+    //             TestCase testCase = new TestCase();
     
-                // Set each field of the TestCase object using the map values
-                testCase.setStatus((String) testCaseMap.get("status"));
-                String idtestCasesString = (String) testCaseMap.get("idtest_cases");
-                Long idtestCasesLong = Long.parseLong(idtestCasesString);
-                testCase.setIdtest_cases(idtestCasesLong);
-                // testCase.setIdtest_cases((Long) testCaseMap.get("idtest_cases")); 
-                testCase.setProjectId((String) testCaseMap.get("projectId"));
-                testCase.setSmartContractID((String) testCaseMap.get("smartContractID"));
-                testCase.setTestCaseName((String) testCaseMap.get("testCaseName"));
-                testCase.setTest_desc((String) testCaseMap.get("test_desc"));
-                testCase.setDateCreated((String) testCaseMap.get("dateCreated"));
-                testCase.setDeadline((String) testCaseMap.get("deadline"));
-                testCase.setDateUpdated((String) testCaseMap.get("dateUpdated"));
-                testCase.setOverallStatus((String) testCaseMap.get("overallStatus"));
-                testCase.setUsername((String) testCaseMap.get("username"));
-                testCase.setCreatedBy((String) testCaseMap.get("createdBy"));
+    //             // Set each field of the TestCase object using the map values
+    //             testCase.setStatus((String) testCaseMap.get("status"));
+    //             String idtestCasesString = (String) testCaseMap.get("idtest_cases");
+    //             Long idtestCasesLong = Long.parseLong(idtestCasesString);
+    //             testCase.setIdtest_cases(idtestCasesLong);
+    //             // testCase.setIdtest_cases((Long) testCaseMap.get("idtest_cases")); 
+    //             testCase.setProjectId((String) testCaseMap.get("projectId"));
+    //             testCase.setSmartContractID((String) testCaseMap.get("smartContractID"));
+    //             testCase.setTestCaseName((String) testCaseMap.get("testCaseName"));
+    //             testCase.setTest_desc((String) testCaseMap.get("test_desc"));
+    //             testCase.setDateCreated((String) testCaseMap.get("dateCreated"));
+    //             testCase.setDeadline((String) testCaseMap.get("deadline"));
+    //             testCase.setDateUpdated((String) testCaseMap.get("dateUpdated"));
+    //             testCase.setOverallStatus((String) testCaseMap.get("overallStatus"));
+    //             testCase.setUsername((String) testCaseMap.get("username"));
+    //             testCase.setCreatedBy((String) testCaseMap.get("createdBy"));
     
-                // Handle potential null value for reason
-                testCase.setReason((String) testCaseMap.get("reason"));
+    //             // Handle potential null value for reason
+    //             testCase.setReason((String) testCaseMap.get("reason"));
                 
-                // Create a new List to hold the userID (assuming there's only one)
-                String userIDString = (String) testCaseMap.get("userID");
-                int userIDInteger = Integer.parseInt(userIDString);
-                // int userIDInteger = (int) testCaseMap.get("userID");
-                List<Integer> userIDList = new ArrayList<>();
-                userIDList.add(userIDInteger);
+    //             // Create a new List to hold the userID (assuming there's only one)
+    //             String userIDString = (String) testCaseMap.get("userID");
+    //             int userIDInteger = Integer.parseInt(userIDString);
+    //             // int userIDInteger = (int) testCaseMap.get("userID");
+    //             List<Integer> userIDList = new ArrayList<>();
+    //             userIDList.add(userIDInteger);
 
-                // Set the userID in the TestCase object
-                testCase.setUserID(userIDList);
+    //             // Set the userID in the TestCase object
+    //             testCase.setUserID(userIDList);
                 
-                // Handle potential null value for userID list
-                // List<Integer> userID = (List<Integer>) testCaseMap.get("userID");
-                // testCase.setUserID(userIDInteger != null ? userIDInteger : Collections.emptyList());
+    //             // Handle potential null value for userID list
+    //             // List<Integer> userID = (List<Integer>) testCaseMap.get("userID");
+    //             // testCase.setUserID(userIDInteger != null ? userIDInteger : Collections.emptyList());
     
-                // Handle new field (if applicable)
-                // If userStatuses is not relevant, ignore it
-                Map<String, String> userStatuses = (Map<String, String>) testCaseMap.get("userStatuses");
-                testCase.setUserStatuses(userStatuses != null ? userStatuses : Collections.emptyMap());
+    //             // Handle new field (if applicable)
+    //             // If userStatuses is not relevant, ignore it
+    //             Map<String, String> userStatuses = (Map<String, String>) testCaseMap.get("userStatuses");
+    //             testCase.setUserStatuses(userStatuses != null ? userStatuses : Collections.emptyMap());
                 
-                System.out.println("Test Case: " + testCase.toString());
-                return testCase;
-            })
-            .collect(Collectors.toList());
-    }
-    
-
+    //             System.out.println("Test Case: " + testCase.toString());
+    //             return testCase;
+    //         })
+    //         .collect(Collectors.toList());
+    // }
     
 
+    
+    // Do not add to hyperledger yet, unless overall status is approved
     public void addTestCaseForm(TestCase testCase, List<Integer> userID) {
         testCase.setIdtest_cases(RandomNumber.getRandom(0, 20));
         testCase.setUserID(userID);
@@ -169,28 +173,28 @@ public class ViewCaseService {
         // 3. testList.add(testCase)
 
         // Prepare the request body (assuming field names match API)
-        Map<String, Object> requestBody = new HashMap<>();
-        String idtestCasesString = testCase.getIdtest_cases().toString();
-        requestBody.put("id", idtestCasesString);
-        requestBody.put("tcdesc", testCase.getTest_desc());
-        requestBody.put("dl", testCase.getDeadline());
-        requestBody.put("dtup", testCase.getDateUpdated());
-        requestBody.put("pid", testCase.getProjectId());
-        requestBody.put("rs", testCase.getReason());
-        requestBody.put("tcn", testCase.getTestCaseName());
-        requestBody.put("dtc", testCase.getDateCreated());
-        requestBody.put("scid", testCase.getSmartContractID());
-        int firstUserID = userID.stream().findFirst().orElse(0);
-        requestBody.put("uid", Integer.valueOf(firstUserID));
-        // requestBody.put("uid", userID); // Assuming "uid" in API represents user IDs
-        requestBody.put("ostts", testCase.getOverallStatus());
-        requestBody.put("usrn", testCase.getUsername());
-        requestBody.put("crtdby", testCase.getCreatedBy());
-        requestBody.put("stts", testCase.getStatus());
+        // Map<String, Object> requestBody = new HashMap<>();
+        // String idtestCasesString = testCase.getIdtest_cases().toString();
+        // requestBody.put("id", idtestCasesString);
+        // requestBody.put("tcdesc", testCase.getTest_desc());
+        // requestBody.put("dl", testCase.getDeadline());
+        // requestBody.put("dtup", testCase.getDateUpdated());
+        // requestBody.put("pid", testCase.getProjectId());
+        // requestBody.put("rs", testCase.getReason());
+        // requestBody.put("tcn", testCase.getTestCaseName());
+        // requestBody.put("dtc", testCase.getDateCreated());
+        // requestBody.put("scid", testCase.getSmartContractID());
+        // int firstUserID = userID.stream().findFirst().orElse(0);
+        // requestBody.put("uid", Integer.valueOf(firstUserID));
+        // // requestBody.put("uid", userID); // Assuming "uid" in API represents user IDs
+        // requestBody.put("ostts", testCase.getOverallStatus());
+        // requestBody.put("usrn", testCase.getUsername());
+        // requestBody.put("crtdby", testCase.getCreatedBy());
+        // requestBody.put("stts", testCase.getStatus());
 
-        // Send POST request using RestTemplate
-        String url = HYPERLEDGER_BASE_URL + "/createTestCase"; // Replace with your API URL
-        String response = restTemplate.postForObject(url, requestBody, String.class);
+        // // Send POST request using RestTemplate
+        // String url = HYPERLEDGER_BASE_URL + "/createTestCase"; // Replace with your API URL
+        // String response = restTemplate.postForObject(url, requestBody, String.class);
 
         sendAssignmentNotification(testCase);
         scheduleDeadlineNotification(testCase);
@@ -240,7 +244,7 @@ public class ViewCaseService {
         }
     }
 
-    public void setUserStatusForTestCase(Long testCaseId, String username, String status) {
+    public void setUserStatusForTestCase(Long testCaseId, String username, String status){
         Optional<TestCase> testCaseOptional = findById(testCaseId);
         if (testCaseOptional.isPresent()) {
             TestCase testCase = testCaseOptional.get();
@@ -284,12 +288,20 @@ public class ViewCaseService {
         }
     }
 
-    private void updateCase(TestCase testCase) {
+    private void updateCase(TestCase testCase){
         deleteCase(testCase.getIdtest_cases());
         testList.add(testCase);
     }
 
-    public void deleteCase(Long idtest_cases) {
+    public void deleteCase(Long idtest_cases){
+        // String url = HYPERLEDGER_BASE_URL + "/deleteTestCase";
+        // Map<String, Object> requestBody = new HashMap<>();
+        // String idtestCasesString = idtest_cases.toString();
+        // requestBody.put("id", idtestCasesString);
+
+        // String response = restTemplate.postForObject(url, requestBody, String.class);
+        // restTemplate.delete(url, requestBody);
+        // Remove the test case from the local list only if deletion on Hyperledger Fabric was successful (optional)
         testList.removeIf(t -> t.getIdtest_cases() == idtest_cases);
     }
 
