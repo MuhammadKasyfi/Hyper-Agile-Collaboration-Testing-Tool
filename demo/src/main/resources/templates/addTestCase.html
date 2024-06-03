@@ -100,11 +100,13 @@
            <!-- </div> -->
             <div class="form-group">
                 <label for="createdBy">Username:</label>
-                <input type="text" class="form-control" name="username" th:field="*{username}" th:value="${#authentication.principal.username}">
+                <input type="text" class="form-control" id="createdBy" name="createdBy"
+                th:value="${#authentication.principal.username}" disabled>
             </div>
             <div class="form-group">
                 <label for="createdBy">Created By:</label>
-                <input type="text" class="form-control" name="createdBy" th:field="*{createdBy}" th:value="${#authentication.principal.username}">
+                <input type="text" class="form-control" id="createdBy" name="createdBy"
+            th:value="${#authentication.principal.username}" disabled>
             </div>
             <div class="form-group">
                 <label>Assign Users:</label>
