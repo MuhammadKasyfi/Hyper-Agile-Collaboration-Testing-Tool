@@ -133,7 +133,9 @@ public class ViewCaseService {
                 testCase.setReason((String) testCaseMap.get("reason"));
                 
                 // Create a new List to hold the userID (assuming there's only one)
-                int userIDInteger = (int) testCaseMap.get("userID");
+                String userIDString = (String) testCaseMap.get("userID");
+                int userIDInteger = Integer.parseInt(userIDString);
+                // int userIDInteger = (int) testCaseMap.get("userID");
                 List<Integer> userIDList = new ArrayList<>();
                 userIDList.add(userIDInteger);
 
@@ -178,9 +180,9 @@ public class ViewCaseService {
         requestBody.put("tcn", testCase.getTestCaseName());
         requestBody.put("dtc", testCase.getDateCreated());
         requestBody.put("scid", testCase.getSmartContractID());
-        // int firstUserID = userID.stream().findFirst().orElse(0);
-        // requestBody.put("uid", Integer.valueOf(firstUserID));
-        requestBody.put("uid", userID); // Assuming "uid" in API represents user IDs
+        int firstUserID = userID.stream().findFirst().orElse(0);
+        requestBody.put("uid", Integer.valueOf(firstUserID));
+        // requestBody.put("uid", userID); // Assuming "uid" in API represents user IDs
         requestBody.put("ostts", testCase.getOverallStatus());
         requestBody.put("usrn", testCase.getUsername());
         requestBody.put("crtdby", testCase.getCreatedBy());
