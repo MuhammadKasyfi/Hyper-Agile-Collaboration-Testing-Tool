@@ -117,7 +117,8 @@
                                 th:text="${userStatus.value}">Status</span><br />
                         </div>
                     </td>
-                    <td th:unless="${test.overallStatus == 'Approved'} OR ${isTester} OR ${test.overallStatus == 'Rejected'}">
+                    <td
+                        th:unless="${test.overallStatus == 'Approved'} OR ${isTester}">
                         <form th:action="@{/setUserStatus}" method="post">
                             <input type="hidden" th:name="testCaseId" th:value="${test.idtest_cases}" />
                             <select name="status">
@@ -131,7 +132,7 @@
                             <button type="submit" class="btn btn-primary">Set Status</button>
                         </form>
                     </td>
-                    <td th:unless="${isTester}" th:if="${test.overallStatus == 'Approved'} OR ${test.overallStatus == 'Rejected'}">
+                    <td th:unless="${isTester}" th:if="${test.overallStatus == 'Approved'} ">
                         <button type="button" class="btn btn-secondary disabled" data-toggle="tooltip"
                             data-placement="top" title="Unable to change test case status after Approved or Rejected">
                             <i class="bi bi-info-circle"></i>
@@ -154,8 +155,10 @@
                             th:href="@{'/editCase/' +${test.idtest_cases}}">
                             Edit
                         </a>
-                        <a class="btn btn-danger" th:unless="${test.overallStatus == 'Approved'}" th:if="${isTester}"
-                            data-toggle="modal" th:attr=" data-target= '#deleteModal'+ ${test.idtest_cases}">
+                        <a class="btn btn-danger"
+                            th:unless="${test.overallStatus == 'Approved'} OR ${test.overallStatus == 'Rejected'}"
+                            th:if="${isTester}" data-toggle="modal"
+                            th:attr=" data-target= '#deleteModal'+ ${test.idtest_cases}">
                             Delete
                         </a>
                     </td>
