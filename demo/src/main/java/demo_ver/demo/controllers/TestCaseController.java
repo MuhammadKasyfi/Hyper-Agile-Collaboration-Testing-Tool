@@ -120,7 +120,7 @@ public class TestCaseController {
     }
 
     @PostMapping("/save")
-    public String addTestCaseForm(TestCase testCase, @RequestParam("userID") List<Integer> userID, Model model)
+    public String addTestCaseForm(TestCase testCase, @RequestParam("userID") List<Integer> userID,@AuthenticationPrincipal UserDetails userDetails, Model model)
             throws JsonProcessingException {
         model.addAttribute("tests", ViewCaseService.findAllList());
         model.addAttribute("users", ManageUserService.getAllUsers()); // I added this so that user list will always show
@@ -138,7 +138,7 @@ public class TestCaseController {
         }
 
         // Proceed with adding the test case
-        viewCaseService.addTestCaseForm(testCase, userID);
+        viewCaseService.addTestCaseForm(testCase, userID, userDetails.getUsername());
         return "redirect:/view";
     }
 
