@@ -1,12 +1,17 @@
 package demo_ver.demo.controllers;
 
 import java.security.Principal;
+import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+
 import demo_ver.demo.model.TestCase;
 import demo_ver.demo.service.ViewCaseService;
 
@@ -17,9 +22,13 @@ public class TestCaseDetailsController {
     private ViewCaseService viewCaseService;
 
     @GetMapping("/testcases/details/{idtest_cases}")
-    public String viewTestCaseDetails(@PathVariable("idtest_cases") Long idtest_cases, Model model) {
+    public String viewTestCaseDetails(@PathVariable("idtest_cases") Long idtest_cases, Model model, Principal principal, @AuthenticationPrincipal UserDetails userDetails) {
         TestCase testCase = viewCaseService.getTestCaseById(idtest_cases);
         model.addAttribute("testCase", testCase);
+        Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
+        boolean isTester = authorities.stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_Tester"));
+        model.addAttribute("isTester", isTester);
         return "viewTestCasesDetails";
     }
 

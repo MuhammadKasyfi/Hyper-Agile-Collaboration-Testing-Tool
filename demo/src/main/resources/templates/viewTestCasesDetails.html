@@ -21,7 +21,7 @@
         <div class="container mt-4">
             <h2>Test Case Details</h2>
             <a href="/view" class="btn btn-secondary mb-3">Back to List</a>
-            <div class="card">
+            <div class="card mb-4">
                 <div class="card-body">
                     <h4 class="card-title">Details</h4>
                     <ul class="list-group list-group-flush">
@@ -44,15 +44,15 @@
                         </ul>
                     </div>
                     <!-- Action Buttons for Status Change -->
-                    <div th:unless="${testCase.overallStatus == 'Approved'}" class="actions mt-3">
-                        <a th:href="@{/testcases/approveStatus/{id}(id=${testCase.idtest_cases})}"
+                    <div th:unless="${testCase.overallStatus == 'Approved'} OR ${isTester}" class="actions mt-3">
+                        <a  th:href="@{/testcases/approveStatus/{id}(id=${testCase.idtest_cases})}"
                             class="btn btn-success">Approve Status</a>
                         <a th:href="@{/testcases/rejectStatus/{id}(id=${testCase.idtest_cases})}"
                             class="btn btn-danger">Reject Status</a>
-                        <a th:href="@{/testcases/underReviewStatus/{id}(id=${testCase.idtest_cases})}"
+                        <!-- <a th:href="@{/testcases/underReviewStatus/{id}(id=${testCase.idtest_cases})}"
                             class="btn btn-info">Under Review</a>
                         <a th:href="@{/testcases/needsRevisionStatus/{id}(id=${testCase.idtest_cases})}"
-                            class="btn btn-warning">Needs Revision</a>
+                            class="btn btn-warning">Needs Revision</a> -->
                     </div>
                 </div>
             </div>

@@ -117,15 +117,15 @@
                                 th:text="${userStatus.value}">Status</span><br />
                         </div>
                     </td>
-                    <td th:unless="${test.overallStatus == 'Approved'}">
+                    <td th:unless="${test.overallStatus == 'Approved'} OR ${isTester}">
                         <form th:action="@{/setUserStatus}" method="post">
                             <input type="hidden" th:name="testCaseId" th:value="${test.idtest_cases}" />
                             <select name="status">
                                 <option value="Pending">Pending</option>
                                 <option value="Approved">Approved</option>
                                 <option value="Rejected">Rejected</option>
-                                <option value="Under Review">Under Review</option>
-                                <option value="Needs Revision">Needs Revision</option>
+                                <!-- <option value="Under Review">Under Review</option>
+                                <option value="Needs Revision">Needs Revision</option> -->
 
                             </select>
                             <button type="submit" class="btn btn-primary">Set Status</button>
