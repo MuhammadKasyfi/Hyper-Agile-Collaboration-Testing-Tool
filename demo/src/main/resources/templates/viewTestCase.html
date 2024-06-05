@@ -95,7 +95,7 @@
                     <th scope="col" class="deadline-column ">Deadline</th>
                     <th scope="col" class="users1-column">Users</th>
                     <th scope="col" class="userstatus-column">User Statuses</th>
-                    <th scope="col" class="status-column">Status Approval</th>
+                    <th scope="col" th:unless="${isTester}" class="status-column">Status Approval</th>
                     <th scope="col" class="highlight">Overall Status</th>
                     <th scope="col" class="action-column">Actions</th>
                     <!-- Column for notification -->
