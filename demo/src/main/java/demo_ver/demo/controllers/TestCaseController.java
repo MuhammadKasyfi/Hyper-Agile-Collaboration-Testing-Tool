@@ -184,9 +184,9 @@ public class TestCaseController {
     }
 
     @PostMapping("/setUserStatus")
-    public String setUserStatus(@RequestParam Long testCaseId, @RequestParam String status, Principal principal) {
+    public String setUserStatus(@RequestParam Long testCaseId, @RequestParam String status,@RequestParam(required = false) String rejectionReason, Principal principal) {
         String username = principal.getName(); // Get logged-in username
-        viewCaseService.setUserStatusForTestCase(testCaseId, username, status);
+        viewCaseService.setUserStatusForTestCase(testCaseId, username, status, rejectionReason);
         return "redirect:/view";
     }
 }

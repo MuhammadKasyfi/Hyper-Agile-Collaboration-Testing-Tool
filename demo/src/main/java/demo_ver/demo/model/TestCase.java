@@ -17,6 +17,7 @@ public class TestCase {
     private String dateUpdated;
     private String projectId;
     private String reason;
+    private Map<String, String> userReasons = new HashMap<>();
     private String testCaseName;
     private String dateCreated;
     private String smartContractID; // Changed from int to String
@@ -56,6 +57,18 @@ public class TestCase {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Map<String, String> getUserReason() {
+        return userReasons;
+    }
+
+    public void setUserReason(Map<String, String> userReason) {
+        this.userReasons = userReason;
+    }
+
+    public void setUserReason(String username, String reason) {
+        userReasons.put(username, reason);
     }
 
     public Long getIdtest_cases() {

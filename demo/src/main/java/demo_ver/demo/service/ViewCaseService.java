@@ -47,13 +47,13 @@ public class ViewCaseService {
             // "Diagram", "desc56", "2023-12-20",
             // "2024-01-07", Arrays.asList(2002)));
             add(new TestCase("", (long) 10001, "002", "15", "Package", "desc23", "2023-11-07",
-                    "2023-11-17", Arrays.asList(2002,2001)));
+                    "2023-11-17", Arrays.asList(2002, 2001)));
             add(new TestCase("", (long) 10002, "003", "17", "Behavioral", "desc34", "2023-12-05",
-                    "2023-11-15", Arrays.asList(2002,2001)));
+                    "2023-11-15", Arrays.asList(2002, 2001)));
             add(new TestCase("", (long) 10003, "004", "19", "Diagram", "desc56", "2023-12-20",
-                    "2024-01-07", Arrays.asList(2002,2003,2001)));
+                    "2024-01-07", Arrays.asList(2002, 2003, 2001)));
             add(new TestCase("", (long) 10004, "005", "34", "Add Role", "Not able to add role", "2023-11-20",
-                    "2024-02-04", Arrays.asList(2002,2004)));
+                    "2024-02-04", Arrays.asList(2002, 2004)));
         }
     };
 
@@ -171,8 +171,8 @@ public class ViewCaseService {
         testCase.setIdtest_cases(RandomNumber.getRandom(0, 20));
         testCase.setUserID(userID);
         testList.add(testCase);
-        //incorrect method
-        setUserStatusForTestCase(testCase.getIdtest_cases(),testerUsername,"Approved");
+        // incorrect method
+        setUserStatusForTestCase(testCase.getIdtest_cases(), testerUsername, "Approved");
         // 1. hyperledger call to addTestCase (POST method)
         // 2. assign api response to testCase
         // 3. testList.add(testCase)
@@ -259,6 +259,23 @@ public class ViewCaseService {
             String overallStatus = testCase.determineOverallStatus(); // Determine the overall status
             // Assuming you have a method setOverallStatus in your TestCase model
             testCase.setOverallStatus(overallStatus); // Update the overall status
+            updateCase(testCase);
+        } else {
+            throw new NoSuchElementException("Test case not found with ID: " + testCaseId);
+        }
+    }
+
+    public void setUserStatusForTestCase(Long testCaseId, String username, String status, String rejectionReason) {
+        Optional<TestCase> testCaseOptional = findById(testCaseId);
+        if (testCaseOptional.isPresent()) {
+            TestCase testCase = testCaseOptional.get();
+            testCase.setUserStatus(username, status);
+             // Determine the overall status
+            if ("Rejected".equals(status)) {
+                testCase.setUserReason(username, rejectionReason);
+            }
+            String overallStatus = testCase.determineOverallStatus();
+            testCase.setOverallStatus(overallStatus);
             updateCase(testCase);
         } else {
             throw new NoSuchElementException("Test case not found with ID: " + testCaseId);
