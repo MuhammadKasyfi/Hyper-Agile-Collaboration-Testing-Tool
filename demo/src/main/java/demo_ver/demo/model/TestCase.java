@@ -16,7 +16,7 @@ public class TestCase {
     private String deadline;
     private String dateUpdated;
     private String projectId;
-    private String reason;
+    private String reason;// need to remove or change to something else maybe note
     private Map<String, String> userReasons = new HashMap<>();
     private String testCaseName;
     private String dateCreated;

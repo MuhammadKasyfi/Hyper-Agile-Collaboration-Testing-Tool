@@ -43,6 +43,16 @@
                             </li>
                         </ul>
                     </div>
+                    <!-- Display User Rejection Reasons -->
+                    <div th:if="${testCase.userReason}">
+                        <h4>Rejection Reasons:</h4>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item" th:each="reason : ${testCase.userReason.entrySet()}">
+                                <strong th:text="${reason.key}">Username</strong>: <span
+                                    th:text="${reason.value}">Reason</span>
+                            </li>
+                        </ul>
+                    </div>
                     <!-- Action Buttons for Status Change -->
                     <div th:unless="${testCase.overallStatus == 'Approved'} OR ${isTester}" class="actions mt-3">
                         <a th:href="@{/testcases/approveStatus/{id}(id=${testCase.idtest_cases})}"
