@@ -45,14 +45,17 @@ public class ManageUserService implements UserDetailsService {
     private void initializeUserList() {
         userList = new ArrayList<>();
         userList.add(new ManageUser(2000, "teeneshsubramaniam10@gmail.com", "Teenesh", passwordEncoder.encode("123456"),
-                1000)); //admin
-        userList.add(new ManageUser(2001, "user@gmail.com", "John", passwordEncoder.encode("654321"), 1002)); //P Manager
+                1000));
+        userList.add(new ManageUser(2001, "user@gmail.com", "John", passwordEncoder.encode("123456"), 1002));
         userList.add(
                 new ManageUser(2002, "williamlik@graduate.utm.my", "Will", passwordEncoder.encode("123456"), 1001)); //Tester
                 userList.add(
                 new ManageUser(2004, "muhammadkasyfi@graduate.utm.my", "Kasyfi", passwordEncoder.encode("123456"), 1001)); //Tester
         userList.add(
-                new ManageUser(2003, "Mahathir@gmail.com", "Mahathir", passwordEncoder.encode("100000"), 1003)); // Manager
+                new ManageUser(2003, "Mahathir@gmail.com", "Mahathir", passwordEncoder.encode("123456"), 1003));
+        userList.add(
+                new ManageUser(2004, "williamlik@graduate.utm.my", "tester", passwordEncoder.encode("123456"), 1001));
+        userList.add(new ManageUser(2005, "user@gmail.com", "manager", passwordEncoder.encode("123456"), 1002));
     }
 
     // Get all users in the system
@@ -157,7 +160,6 @@ public class ManageUserService implements UserDetailsService {
                 .orElse(null);
     }
 
-   
     // Load user details for authentication
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

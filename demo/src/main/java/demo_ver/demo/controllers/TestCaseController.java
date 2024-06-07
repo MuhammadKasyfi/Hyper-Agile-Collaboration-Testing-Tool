@@ -123,11 +123,9 @@ public class TestCaseController {
     }
 
     @PostMapping("/save")
-    public String addTestCaseForm(TestCase testCase, @RequestParam("userID") List<Integer> userID, Model model)
-            throws SQLException, JsonProcessingException{
-                List<TestCase> testCases = viewCaseService.findAllList(); // Call using injected service
-        model.addAttribute("tests", testCases);
-        // model.addAttribute("tests", ViewCaseService.findAllList());
+    public String addTestCaseForm(TestCase testCase, @RequestParam("userID") List<Integer> userID,@AuthenticationPrincipal UserDetails userDetails, Model model)
+            throws JsonProcessingException {
+        model.addAttribute("tests", ViewCaseService.findAllList());
         model.addAttribute("users", ManageUserService.getAllUsers()); // I added this so that user list will always show
                                                                       // even if got validation errors
 
@@ -143,7 +141,7 @@ public class TestCaseController {
         }
 
         // Proceed with adding the test case
-        viewCaseService.addTestCaseForm(testCase, userID);
+        viewCaseService.addTestCaseForm(testCase, userID, userDetails.getUsername());
         return "redirect:/view";
     }
 
@@ -188,10 +186,10 @@ public class TestCaseController {
     //     return "redirect:/view";
     // }
 
-    // @PostMapping("/setUserStatus")
-    // public String setUserStatus(@RequestParam Long testCaseId, @RequestParam String status, Principal principal) {
-    //     String username = principal.getName(); // Get logged-in username
-    //     viewCaseService.setUserStatusForTestCase(testCaseId, username, status);
-    //     return "redirect:/view";
-    // }
+    @PostMapping("/setUserStatus")
+    public String setUserStatus(@RequestParam Long testCaseId, @RequestParam String status,@RequestParam(required = false) String rejectionReason, Principal principal) {
+        String username = principal.getName(); // Get logged-in username
+        viewCaseService.setUserStatusForTestCase(testCaseId, username, status, rejectionReason);
+        return "redirect:/view";
+    }
 }
