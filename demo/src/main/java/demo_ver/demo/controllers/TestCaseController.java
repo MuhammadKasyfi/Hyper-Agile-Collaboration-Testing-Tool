@@ -1,6 +1,7 @@
 package demo_ver.demo.controllers;
 
 import java.security.Principal; // Import Principal for getting logged-in user's information
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
@@ -73,26 +74,28 @@ public class TestCaseController {
 
     @GetMapping("/view")
     public String viewCase(Model model, Principal principal, @AuthenticationPrincipal UserDetails userDetails)
-            throws JsonProcessingException {
-        List<TestCase> testCases = ViewCaseService.findAllList();
+            throws SQLException {
+                
+        System.out.println("ViewCaseService instance: " + viewCaseService); // Check if null
+        // List<TestCase> testCases = ViewCaseService.findAllList();
 
         // Assuming ManageUserService.getAllUsers() returns a List<ManageUser>
         List<ManageUser> allUsers = ManageUserService.getAllUsers();
         String username = principal.getName();
 
         // Set username for each test case
-        for (TestCase testCase : testCases) {
-            List<Integer> userIds = testCase.getUserID();
-            List<String> usernames = userIds.stream()
-                    .map(userId -> {
-                        ManageUser user = ManageUserService.getUserById(userId);
-                        return (user != null) ? user.getUsername() : "";
-                    })
-                    .collect(Collectors.toList());
+        // for (TestCase testCase : testCases) {
+        //     List<Integer> userIds = testCase.getUserID();
+        //     List<String> usernames = userIds.stream()
+        //             .map(userId -> {
+        //                 ManageUser user = ManageUserService.getUserById(userId);
+        //                 return (user != null) ? user.getUsername() : "";
+        //             })
+        //             .collect(Collectors.toList());
 
-            // Assuming you want to concatenate usernames into a single string
-            testCase.setUsername(String.join(", ", usernames));
-        }
+        //     // Assuming you want to concatenate usernames into a single string
+        //     testCase.setUsername(String.join(", ", usernames));
+        // }
 
         List<TestCase> userTestCases = viewCaseService.findTestCasesByUsername(username);
 
@@ -121,16 +124,18 @@ public class TestCaseController {
 
     @PostMapping("/save")
     public String addTestCaseForm(TestCase testCase, @RequestParam("userID") List<Integer> userID, Model model)
-            throws JsonProcessingException {
-        model.addAttribute("tests", ViewCaseService.findAllList());
+            throws SQLException, JsonProcessingException{
+                List<TestCase> testCases = viewCaseService.findAllList(); // Call using injected service
+        model.addAttribute("tests", testCases);
+        // model.addAttribute("tests", ViewCaseService.findAllList());
         model.addAttribute("users", ManageUserService.getAllUsers()); // I added this so that user list will always show
                                                                       // even if got validation errors
 
         // Check if the test case name already exists
-        if (viewCaseService.istestCaseExists(testCase.getTestCaseName())) {
-            model.addAttribute("testCaseNameExists", true);
-            return "addTestCase";
-        }
+        // if (viewCaseService.istestCaseExists(testCase.getTestCaseName())) {
+        //     model.addAttribute("testCaseNameExists", true);
+        //     return "addTestCase";
+        // }
         // Check if the deadline is later than the date created
         if (!isDeadlineLaterThanDateCreated(testCase.getDateCreated(), testCase.getDeadline())) {
             model.addAttribute("deadlineInvalid", true);
@@ -149,44 +154,44 @@ public class TestCaseController {
         return deadlineDate.isAfter(createdDate);
     }
 
-    @GetMapping("/deleteCase/{idtest_cases}")
-    public String deleteCase(@PathVariable("idtest_cases") Long idtest_cases) {
-        viewCaseService.deleteCase(idtest_cases);
-        return "redirect:/view";
-    }
+    // @GetMapping("/deleteCase/{idtest_cases}")
+    // public String deleteCase(@PathVariable("idtest_cases") Long idtest_cases) {
+    //     viewCaseService.deleteCase(idtest_cases);
+    //     return "redirect:/view";
+    // }
 
-    @GetMapping("/editCase/{idtest_cases}")
-    public String editCase(@PathVariable("idtest_cases") Long idtest_cases, Model model) {
-        TestCase testCaseToEdit = viewCaseService.getTestCaseById(idtest_cases);
-        model.addAttribute("testCase", testCaseToEdit);
-        model.addAttribute("users", ManageUserService.getAllUsers()); // Add users for assigning to the test case
-        return "EditTestCase"; // The name of the edit form template
-    }
+    // @GetMapping("/editCase/{idtest_cases}")
+    // public String editCase(@PathVariable("idtest_cases") Long idtest_cases, Model model) {
+    //     TestCase testCaseToEdit = viewCaseService.getTestCaseById(idtest_cases);
+    //     model.addAttribute("testCase", testCaseToEdit);
+    //     model.addAttribute("users", ManageUserService.getAllUsers()); // Add users for assigning to the test case
+    //     return "EditTestCase"; // The name of the edit form template
+    // }
 
-    @PostMapping("/update")
-    public String editTestCaseForm(TestCase testCase, @RequestParam("userID") List<Integer> userID, Model model)
-            throws JsonProcessingException {
+    // @PostMapping("/update")
+    // public String editTestCaseForm(TestCase testCase, @RequestParam("userID") List<Integer> userID, Model model)
+    //         throws JsonProcessingException {
 
-        model.addAttribute("tests", ViewCaseService.findAllList());
-        model.addAttribute("users", ManageUserService.getAllUsers()); // I added this so that user list will always show
-                                                                      // even if got validation errors
-        // if (viewCaseService.istestCaseExists(testCase.getTestCaseName())) {
-        // model.addAttribute("testCaseNameExists", true);
-        // return "EditTestCase";
-        // }
-        // Check if the deadline is later than the date created
-        if (!isDeadlineLaterThanDateCreated(testCase.getDateCreated(), testCase.getDeadline())) {
-            model.addAttribute("deadlineInvalid", true);
-            return "EditTestCase";
-        }
-        viewCaseService.updateCaseUser(testCase, userID);
-        return "redirect:/view";
-    }
+    //     model.addAttribute("tests", ViewCaseService.findAllList());
+    //     model.addAttribute("users", ManageUserService.getAllUsers()); // I added this so that user list will always show
+    //                                                                   // even if got validation errors
+    //     // if (viewCaseService.istestCaseExists(testCase.getTestCaseName())) {
+    //     // model.addAttribute("testCaseNameExists", true);
+    //     // return "EditTestCase";
+    //     // }
+    //     // Check if the deadline is later than the date created
+    //     if (!isDeadlineLaterThanDateCreated(testCase.getDateCreated(), testCase.getDeadline())) {
+    //         model.addAttribute("deadlineInvalid", true);
+    //         return "EditTestCase";
+    //     }
+    //     viewCaseService.updateCaseUser(testCase, userID);
+    //     return "redirect:/view";
+    // }
 
-    @PostMapping("/setUserStatus")
-    public String setUserStatus(@RequestParam Long testCaseId, @RequestParam String status, Principal principal) {
-        String username = principal.getName(); // Get logged-in username
-        viewCaseService.setUserStatusForTestCase(testCaseId, username, status);
-        return "redirect:/view";
-    }
+    // @PostMapping("/setUserStatus")
+    // public String setUserStatus(@RequestParam Long testCaseId, @RequestParam String status, Principal principal) {
+    //     String username = principal.getName(); // Get logged-in username
+    //     viewCaseService.setUserStatusForTestCase(testCaseId, username, status);
+    //     return "redirect:/view";
+    // }
 }

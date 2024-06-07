@@ -5,13 +5,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 import demo_ver.demo.service.ManageUserService;
 
-@EntityScan
+// @EntityScan
+@Entity
 public class TestCase {
+
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private Long idtest_cases;
+    
     private String test_desc;
     private String deadline;
     private String dateUpdated;

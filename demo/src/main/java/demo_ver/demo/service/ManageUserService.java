@@ -45,12 +45,14 @@ public class ManageUserService implements UserDetailsService {
     private void initializeUserList() {
         userList = new ArrayList<>();
         userList.add(new ManageUser(2000, "teeneshsubramaniam10@gmail.com", "Teenesh", passwordEncoder.encode("123456"),
-                1000));
-        userList.add(new ManageUser(2001, "user@gmail.com", "John", passwordEncoder.encode("654321"), 1002));
+                1000)); //admin
+        userList.add(new ManageUser(2001, "user@gmail.com", "John", passwordEncoder.encode("654321"), 1002)); //P Manager
         userList.add(
-                new ManageUser(2002, "williamlik@graduate.utm.my", "Will", passwordEncoder.encode("123456"), 1001));
+                new ManageUser(2002, "williamlik@graduate.utm.my", "Will", passwordEncoder.encode("123456"), 1001)); //Tester
+                userList.add(
+                new ManageUser(2004, "muhammadkasyfi@graduate.utm.my", "Kasyfi", passwordEncoder.encode("123456"), 1001)); //Tester
         userList.add(
-                new ManageUser(2003, "Mahathir@gmail.com", "Mahathir", passwordEncoder.encode("100000"), 1003));
+                new ManageUser(2003, "Mahathir@gmail.com", "Mahathir", passwordEncoder.encode("100000"), 1003)); // Manager
     }
 
     // Get all users in the system
