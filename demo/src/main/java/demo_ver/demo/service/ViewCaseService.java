@@ -33,23 +33,7 @@ import demo_ver.demo.utils.RandomNumber;
 
 @Service
 public class ViewCaseService {
-    // private static final Logger logger = LoggerFactory.getLogger(ViewCaseService.class);
-
-    private final TestCaseDAO testCaseDAO; // added these lines
-
-    @Autowired
-    public ViewCaseService(TestCaseDAO testCaseDAO) {
-        this.testCaseDAO = testCaseDAO;
-    }
-
-    public List<TestCase> findAllList() throws SQLException {
-        return testCaseDAO.findAllTestCases();
-    }
-
-    public Optional<TestCase> findById(Long idtest_cases) throws SQLException {
-        TestCase testCase = testCaseDAO.findById(idtest_cases);
-        return Optional.ofNullable(testCase);
-    }
+    private static final Logger logger = LoggerFactory.getLogger(ViewCaseService.class);
 
 
     // use this list to store test cases locally, switch to mysql or any database
@@ -80,9 +64,9 @@ public class ViewCaseService {
 
     private static RestTemplate restTemplate = new RestTemplate();
 
-    // public ViewCaseService(RestTemplate restTemplate) {
-    //     this.restTemplate = restTemplate;
-    // }
+    public ViewCaseService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     private static final HttpClient httpClient = HttpClient.newHttpClient();
 
@@ -92,77 +76,77 @@ public class ViewCaseService {
     // "http://localhost:8090/api";
 
     // Get all test cases from hyperledger API
-    // public static List<TestCase> findAllList() throws JsonProcessingException {
-    //     // String url = HYPERLEDGER_BASE_URL + "/getAllTestCases";
+    public static List<TestCase> findAllList() throws JsonProcessingException {
+        // String url = HYPERLEDGER_BASE_URL + "/getAllTestCases";
 
-    //     // String jsonString = restTemplate.getForObject(url, String.class);
+        // String jsonString = restTemplate.getForObject(url, String.class);
 
-    //     // Parse the JSON data and get the list of TestCase objects
-    //     // List<TestCase> testCaseList = parseJsonToTestCaseList(jsonString);
+        // Parse the JSON data and get the list of TestCase objects
+        // List<TestCase> testCaseList = parseJsonToTestCaseList(jsonString);
 
-    //     // testList = testCaseList;
+        // testList = testCaseList;
 
-    //     return testList;
-    // }
+        return testList;
+    }
 
-    // private static List<TestCase> parseJsonToTestCaseList(String jsonString) throws JsonProcessingException {
-    //     ObjectMapper objectMapper = new ObjectMapper();
+    private static List<TestCase> parseJsonToTestCaseList(String jsonString) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
 
-    //     // Handle potential JSON parsing exceptions
-    //     Map<String, Object> responseMap;
-    //     try {
-    //         responseMap = objectMapper.readValue(jsonString, Map.class);
-    //     } catch (JsonProcessingException e) {
-    //         throw e; // Re-throw the exception for proper handling
-    //     }
+        // Handle potential JSON parsing exceptions
+        Map<String, Object> responseMap;
+        try {
+            responseMap = objectMapper.readValue(jsonString, Map.class);
+        } catch (JsonProcessingException e) {
+            throw e; // Re-throw the exception for proper handling
+        }
 
-    //     // Access the nested array (assuming it's called "message")
-    //     List<Map<String, Object>> testCaseMaps = (List<Map<String, Object>>) responseMap.get("message");
+        // Access the nested array (assuming it's called "message")
+        List<Map<String, Object>> testCaseMaps = (List<Map<String, Object>>) responseMap.get("message");
 
-    //     return testCaseMaps.stream()
-    //             .map(testCaseMap -> {
-    //                 TestCase testCase = new TestCase();
+        return testCaseMaps.stream()
+                .map(testCaseMap -> {
+                    TestCase testCase = new TestCase();
 
-    //                 // Set each field of the TestCase object using the map values
-    //                 testCase.setStatus((String) testCaseMap.get("status"));
-    //                 String idtestCasesString = (String) testCaseMap.get("idtest_cases");
-    //                 Long idtestCasesLong = Long.parseLong(idtestCasesString);
-    //                 testCase.setIdtest_cases(idtestCasesLong);
-    //                 // testCase.setIdtest_cases((Long) testCaseMap.get("idtest_cases"));
-    //                 testCase.setProjectId((String) testCaseMap.get("projectId"));
-    //                 testCase.setSmartContractID((String) testCaseMap.get("smartContractID"));
-    //                 testCase.setTestCaseName((String) testCaseMap.get("testCaseName"));
-    //                 testCase.setTest_desc((String) testCaseMap.get("test_desc"));
-    //                 testCase.setDateCreated((String) testCaseMap.get("dateCreated"));
-    //                 testCase.setDeadline((String) testCaseMap.get("deadline"));
-    //                 testCase.setDateUpdated((String) testCaseMap.get("dateUpdated"));
-    //                 testCase.setOverallStatus((String) testCaseMap.get("overallStatus"));
-    //                 testCase.setUsername((String) testCaseMap.get("username"));
-    //                 testCase.setCreatedBy((String) testCaseMap.get("createdBy"));
+                    // Set each field of the TestCase object using the map values
+                    testCase.setStatus((String) testCaseMap.get("status"));
+                    String idtestCasesString = (String) testCaseMap.get("idtest_cases");
+                    Long idtestCasesLong = Long.parseLong(idtestCasesString);
+                    testCase.setIdtest_cases(idtestCasesLong);
+                    // testCase.setIdtest_cases((Long) testCaseMap.get("idtest_cases"));
+                    testCase.setProjectId((String) testCaseMap.get("projectId"));
+                    testCase.setSmartContractID((String) testCaseMap.get("smartContractID"));
+                    testCase.setTestCaseName((String) testCaseMap.get("testCaseName"));
+                    testCase.setTest_desc((String) testCaseMap.get("test_desc"));
+                    testCase.setDateCreated((String) testCaseMap.get("dateCreated"));
+                    testCase.setDeadline((String) testCaseMap.get("deadline"));
+                    testCase.setDateUpdated((String) testCaseMap.get("dateUpdated"));
+                    testCase.setOverallStatus((String) testCaseMap.get("overallStatus"));
+                    testCase.setUsername((String) testCaseMap.get("username"));
+                    testCase.setCreatedBy((String) testCaseMap.get("createdBy"));
 
-    //                 // Handle potential null value for reason
-    //                 testCase.setReason((String) testCaseMap.get("reason"));
+                    // Handle potential null value for reason
+                    testCase.setReason((String) testCaseMap.get("reason"));
 
-    //                 // Create a new List to hold the userID (assuming there's only one)
-    //                 String userIDString = (String) testCaseMap.get("userID");
-    //                 int userIDInteger = Integer.parseInt(userIDString);
-    //                 // int userIDInteger = (int) testCaseMap.get("userID");
-    //                 List<Integer> userIDList = new ArrayList<>();
-    //                 userIDList.add(userIDInteger);
+                    // Create a new List to hold the userID (assuming there's only one)
+                    String userIDString = (String) testCaseMap.get("userID");
+                    int userIDInteger = Integer.parseInt(userIDString);
+                    // int userIDInteger = (int) testCaseMap.get("userID");
+                    List<Integer> userIDList = new ArrayList<>();
+                    userIDList.add(userIDInteger);
 
-    //                 // Set the userID in the TestCase object
-    //                 testCase.setUserID(userIDList);
+                    // Set the userID in the TestCase object
+                    testCase.setUserID(userIDList);
 
-    //                 // Handle new field (if applicable)
-    //                 // If userStatuses is not relevant, ignore it
-    //                 Map<String, String> userStatuses = (Map<String, String>) testCaseMap.get("userStatuses");
-    //                 testCase.setUserStatuses(userStatuses != null ? userStatuses : Collections.emptyMap());
+                    // Handle new field (if applicable)
+                    // If userStatuses is not relevant, ignore it
+                    Map<String, String> userStatuses = (Map<String, String>) testCaseMap.get("userStatuses");
+                    testCase.setUserStatuses(userStatuses != null ? userStatuses : Collections.emptyMap());
 
-    //                 System.out.println("Test Case: " + testCase.toString());
-    //                 return testCase;
-    //             })
-    //             .collect(Collectors.toList());
-    // }
+                    System.out.println("Test Case: " + testCase.toString());
+                    return testCase;
+                })
+                .collect(Collectors.toList());
+    }
 
     // Do not add to hyperledger yet, unless overall status is approved
     public void addTestCaseForm(TestCase testCase, List<Integer> userID, String testerUsername) {
@@ -280,13 +264,13 @@ public class ViewCaseService {
         }
     }
 
-    // private Optional<TestCase> findById(Long idtest_cases) {
-    //     return testList.stream()
-    //             .filter(t -> t.getIdtest_cases() == idtest_cases.longValue())
-    //             .findFirst();
-    // }
+    private Optional<TestCase> findById(Long idtest_cases) {
+        return testList.stream()
+                .filter(t -> t.getIdtest_cases() == idtest_cases.longValue())
+                .findFirst();
+    }
 
-    public void updateCaseUser(TestCase updatedTestCase, List<Integer> userID) throws SQLException{
+    public void updateCaseUser(TestCase updatedTestCase, List<Integer> userID){
         Optional<TestCase> existingTestCaseOpt = findById(updatedTestCase.getIdtest_cases());
         if (existingTestCaseOpt.isPresent()) {
             TestCase existingTestCase = existingTestCaseOpt.get();
@@ -310,55 +294,49 @@ public class ViewCaseService {
         }
     }
 
-    // private void updateCase(TestCase testCase) {
-    //     deleteCase(testCase.getIdtest_cases());
-    //     testList.add(testCase);
-    // }
+    private void updateCase(TestCase testCase) {
+        deleteCase(testCase.getIdtest_cases());
+        testList.add(testCase);
+    }
 
-    // public void deleteCase(Long idtest_cases) {
-    //     // String url = HYPERLEDGER_BASE_URL + "/deleteTestCase";
-    //     // Map<String, Object> requestBody = new HashMap<>();
-    //     // String idtestCasesString = idtest_cases.toString();
-    //     // requestBody.put("id", idtestCasesString);
+    public void deleteCase(Long idtest_cases) {
+        // String url = HYPERLEDGER_BASE_URL + "/deleteTestCase";
+        // Map<String, Object> requestBody = new HashMap<>();
+        // String idtestCasesString = idtest_cases.toString();
+        // requestBody.put("id", idtestCasesString);
 
-    //     // String response = restTemplate.postForObject(url, requestBody, String.class);
-    //     // restTemplate.delete(url, requestBody);
-    //     // Remove the test case from the local list only if deletion on Hyperledger
-    //     // Fabric was successful (optional)
-    //     testList.removeIf(t -> t.getIdtest_cases() == idtest_cases);
-    // }
+        // String response = restTemplate.postForObject(url, requestBody, String.class);
+        // restTemplate.delete(url, requestBody);
+        // Remove the test case from the local list only if deletion on Hyperledger
+        // Fabric was successful (optional)
+        testList.removeIf(t -> t.getIdtest_cases() == idtest_cases);
+    }
 
     // Check if a username exists in the system
-    // public boolean istestCaseExists(String testCaseName) {
-    //     return testList.stream().anyMatch(Test -> Test.getTestCaseName().equalsIgnoreCase(testCaseName));
-    // }
+    public boolean istestCaseExists(String testCaseName) {
+        return testList.stream().anyMatch(Test -> Test.getTestCaseName().equalsIgnoreCase(testCaseName));
+    }
 
     // In ViewCaseService class
 
-    // public TestCase getTestCaseById(Long idtest_cases) {
-    //     return testList.stream()
-    //             .filter(testCase -> testCase.getIdtest_cases().equals(idtest_cases))
-    //             .findFirst()
-    //             .orElseThrow(() -> new NoSuchElementException("Test case not found with ID: " + idtest_cases));
-    // }
+    public TestCase getTestCaseById(Long idtest_cases) {
+        return testList.stream()
+                .filter(testCase -> testCase.getIdtest_cases().equals(idtest_cases))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("Test case not found with ID: " + idtest_cases));
+    }
 
-    // public List<TestCase> findTestCasesByUsername(String username) {
-    //     List<TestCase> userTestCases = new ArrayList<>();
+    public List<TestCase> findTestCasesByUsername(String username) {
+        List<TestCase> userTestCases = new ArrayList<>();
 
-    //     for (TestCase testCase : testList) {
-    //         if (testCase.getUsernames().contains(username)) {
-    //             userTestCases.add(testCase);
-    //         }
-    //     }
+        for (TestCase testCase : testList) {
+            if (testCase.getUsernames().contains(username)) {
+                userTestCases.add(testCase);
+            }
+        }
 
-    //     return userTestCases;
-    // }
-
-    public List<TestCase> findTestCasesByUsername(String username) throws SQLException {
-        // Use TestCaseDAO to retrieve test cases based on username
-        List<TestCase> userTestCases = testCaseDAO.findTestCasesByUsername(username);
         return userTestCases;
-      }
+    }
 
     // ... other existing methods ...
 
