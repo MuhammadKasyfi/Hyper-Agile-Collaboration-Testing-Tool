@@ -215,6 +215,10 @@ public class TestCase {
     // }
     // }
 
+    public void resetUserStatuses() {
+        this.userStatuses.clear();
+    }
+
     public String determineOverallStatus() {
         // If any user has rejected the test case, then the overall status is "Rejected"
         if (userStatuses.containsValue("Rejected")) {

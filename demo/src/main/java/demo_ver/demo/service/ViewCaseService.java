@@ -301,6 +301,7 @@ public class ViewCaseService {
             existingTestCase.setUserID(userID);
             // Here, you might also want to update the user statuses if necessary
             // existingTestCase.setUserStatuses(updatedTestCase.getUserStatuses());
+            existingTestCase.resetUserStatuses();
 
             String overallStatus = existingTestCase.determineOverallStatus(); // Recalculate overall status
             existingTestCase.setOverallStatus(overallStatus);
