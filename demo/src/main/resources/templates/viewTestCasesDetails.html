@@ -54,7 +54,7 @@
                         </ul>
                     </div>
                     <!-- Action Buttons for Status Change -->
-                    <div th:unless="${testCase.overallStatus == 'Approved'} OR ${isTester}" class="actions mt-3">
+                    <div th:unless="${testCase.overallStatus == 'Approved'} OR ${isTester} OR ${testCase.overallStatus == 'Rejected'}" class="actions mt-3">
                         <a th:href="@{/testcases/approveStatus/{id}(id=${testCase.idtest_cases})}"
                             class="btn btn-success">Approve Status</a>
                         <!-- <a th:href="@{/testcases/rejectStatus/{id}(id=${testCase.idtest_cases})}"
