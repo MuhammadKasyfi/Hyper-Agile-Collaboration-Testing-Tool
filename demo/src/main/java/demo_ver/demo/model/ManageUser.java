@@ -13,7 +13,6 @@ import jakarta.persistence.Id;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.web.client.RestTemplate;
 
 import demo_ver.demo.service.ManageRoleService;
 
@@ -31,8 +30,6 @@ public class ManageUser {
     public String password;
     public int roleID;
     private String resetToken;
-
-    private final RestTemplate restTemplate = new RestTemplate();
 
     public ManageUser() {
     }
@@ -86,15 +83,15 @@ public class ManageUser {
     }
 
     @Autowired
-    private ManageRoleService manageRoleService = new ManageRoleService(restTemplate);
+    private ManageRoleService manageRoleService = new ManageRoleService(null);
 
     public String getRoleName() {
-        String roleName = manageRoleService.apiFindByIdString(roleID);
+        String roleName = manageRoleService.getRoleNameByIdString(roleID);
         return (roleName != null) ? roleName : "";
     }
 
     public List<GrantedAuthority> getAuthorities() {
-        return manageRoleService.apiFindByIdList(roleID).getAuthorities();
+        return manageRoleService.apiFindById(roleID).getAuthorities();
     }
 
     public String getResetToken() {

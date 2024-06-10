@@ -32,12 +32,14 @@ public class ManageUserService implements UserDetailsService {
 
     @Autowired
     private final RestTemplate restTemplate;
+    @Autowired
+    private ManageRoleService manageRoleService;
 
     public ManageUserService(PasswordEncoder passwordEncoder, RestTemplate restTemplate) {
         this.passwordEncoder = passwordEncoder;
         this.restTemplate = new RestTemplate();
         initializeUserList();
-        ManageRoleService roleService = new ManageRoleService(restTemplate);
+        ManageRoleService manageRoleService = new ManageRoleService(null);
 
     }
 
@@ -45,17 +47,17 @@ public class ManageUserService implements UserDetailsService {
     private void initializeUserList() {
         userList = new ArrayList<>();
         userList.add(new ManageUser(2000, "teeneshsubramaniam10@gmail.com", "Teenesh", passwordEncoder.encode("123456"), // admin
-                1000));
-        userList.add(new ManageUser(2001, "user@gmail.com", "John", passwordEncoder.encode("123456"), 1002)); // Product Manager
+                1));
+        userList.add(new ManageUser(2001, "user@gmail.com", "John", passwordEncoder.encode("123456"), 3)); // Product Manager
         userList.add(
-                new ManageUser(2002, "williamlik@graduate.utm.my", "Will", passwordEncoder.encode("123456"), 1001)); //Tester
+                new ManageUser(2002, "williamlik@graduate.utm.my", "Will", passwordEncoder.encode("123456"), 2)); //Tester
                 userList.add(
-                new ManageUser(2004, "muhammadkasyfi@graduate.utm.my", "Kasyfi", passwordEncoder.encode("123456"), 1001)); //Tester
+                new ManageUser(2004, "muhammadkasyfi@graduate.utm.my", "Kasyfi", passwordEncoder.encode("123456"), 2)); //Tester
         userList.add(
-                new ManageUser(2003, "Mahathir@gmail.com", "Mahathir", passwordEncoder.encode("123456"), 1003));
+                new ManageUser(2003, "Mahathir@gmail.com", "Mahathir", passwordEncoder.encode("123456"), 4));
         userList.add(
-                new ManageUser(2004, "williamlik@graduate.utm.my", "tester", passwordEncoder.encode("123456"), 1001));
-        userList.add(new ManageUser(2005, "user@gmail.com", "manager", passwordEncoder.encode("123456"), 1002));
+                new ManageUser(2004, "williamlik@graduate.utm.my", "tester", passwordEncoder.encode("123456"), 2));
+        userList.add(new ManageUser(2005, "user@gmail.com", "manager", passwordEncoder.encode("123456"), 3));
     }
 
     // Get all users in the system
@@ -168,9 +170,12 @@ public class ManageUserService implements UserDetailsService {
         if (manageUser == null) {
             throw new UsernameNotFoundException("User not found with username: " + username);
         }
+        String roleName = manageRoleService.getRoleNameByIdString(manageUser.getRoleID());
+        if (roleName == null) {
+            throw new UsernameNotFoundException("Role not found for user with username: " + username);
+        }
 
-        ManageRoleService roleService = new ManageRoleService(restTemplate);
-        List<GrantedAuthority> authorities = getAuthorities(roleService.apiFindByIdString(manageUser.getRoleID()));
+        List<GrantedAuthority> authorities = getAuthorities(roleName);
 
         // Log user details and authorities
         // System.out.println("User Details: ");
