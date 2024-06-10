@@ -3,16 +3,28 @@ package demo_ver.demo.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Table;
+
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-// @EntityScan
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@EntityScan
+@Entity
+@Table(name = "manage_role")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ManageRole {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty("roleID")
     private int roleID;
 
@@ -23,7 +35,6 @@ public class ManageRole {
     private String roleName;
 
     public ManageRole() {
-
     }
 
     public ManageRole(String roleName, String description) {
@@ -60,13 +71,11 @@ public class ManageRole {
     public void setRoleName(String roleName) {
         this.roleName = roleName;
     }
-    
-    // For role based authorization
+
+    // For role-based authorization
     public List<GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(roleName));
-        // Add additional authorities as needed
         return authorities;
     }
-
 }
