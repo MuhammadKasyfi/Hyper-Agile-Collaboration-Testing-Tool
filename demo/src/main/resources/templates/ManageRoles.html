@@ -46,8 +46,9 @@
                     <td th:text="${iStat.count}"></td>
                     <td th:text="${role.roleID}"></td>
                     <td>
-                    <span th:if="${role.roleName.startsWith('ROLE_')}" th:text="${role.roleName.substring(5)}"></span>
-                    <span th:unless="${role.roleName.startsWith('ROLE_')}" th:text="${role.roleName}"></span>
+                        <span th:if="${role.roleName.startsWith('ROLE_')}"
+                            th:text="${role.roleName.substring(5)}"></span>
+                        <span th:unless="${role.roleName.startsWith('ROLE_')}" th:text="${role.roleName}"></span>
                     </td>
                     <td th:text="${role.description}"></td>
                     <td>
@@ -58,6 +59,7 @@
                             <i class="bi bi-trash"></i>
                         </a> -->
                         <a class="btn btn-danger" data-toggle="modal"
+                            th:unless="${role.roleName == 'ROLE_Admin' or role.roleName == 'ROLE_Tester'}"
                             th:attr="data-target='#deleteModal' + ${role.roleID}">
                             <i class="bi bi-trash"></i>
                         </a>
