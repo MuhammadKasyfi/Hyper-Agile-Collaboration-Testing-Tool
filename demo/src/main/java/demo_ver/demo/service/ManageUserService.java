@@ -44,9 +44,9 @@ public class ManageUserService implements UserDetailsService {
     // Initialize the user list with some sample data
     private void initializeUserList() {
         userList = new ArrayList<>();
-        userList.add(new ManageUser(2000, "teeneshsubramaniam10@gmail.com", "Teenesh", passwordEncoder.encode("123456"),
+        userList.add(new ManageUser(2000, "teeneshsubramaniam10@gmail.com", "Teenesh", passwordEncoder.encode("123456"), // admin
                 1000));
-        userList.add(new ManageUser(2001, "user@gmail.com", "John", passwordEncoder.encode("123456"), 1002));
+        userList.add(new ManageUser(2001, "user@gmail.com", "John", passwordEncoder.encode("123456"), 1002)); // Product Manager
         userList.add(
                 new ManageUser(2002, "williamlik@graduate.utm.my", "Will", passwordEncoder.encode("123456"), 1001)); //Tester
                 userList.add(

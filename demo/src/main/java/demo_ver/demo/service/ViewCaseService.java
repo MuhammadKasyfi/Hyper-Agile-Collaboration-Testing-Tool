@@ -62,6 +62,9 @@ public class ViewCaseService {
     @Autowired
     private MailService mailService;
 
+    @Autowired
+    private ManageUserService manageUserService;
+
     private static RestTemplate restTemplate = new RestTemplate();
 
     public ViewCaseService(RestTemplate restTemplate) {
@@ -189,10 +192,27 @@ public class ViewCaseService {
         scheduleDeadlineNotification(testCase);
     }
 
+    // private void sendAssignmentNotification(TestCase testCase) {
+    //     List<Integer> assignedUserIDs = testCase.getUserID();
+    //     for (Integer userID : assignedUserIDs) {
+    //         ManageUser user = ManageUserService.getUserById(userID);
+    //         if (user != null && user.getEmail() != null) {
+    //             String userEmail = user.getEmail();
+    //             String subject = "New Test Case Assignment";
+    //             String message = "Dear user, you have been assigned a new test case. Details:\n" +
+    //                     "Test Case ID: " + testCase.getIdtest_cases() + "\n" +
+    //                     "Test Case Name: " + testCase.getTestCaseName() + "\n" +
+    //                     "Deadline: " + testCase.getDeadline() + "\n" +
+    //                     "Please review and approve the test case before the deadline.";
+    //             mailService.sendAssignedMail(userEmail, subject, message);
+    //         }
+    //     }
+    // }
+
     private void sendAssignmentNotification(TestCase testCase) {
         List<Integer> assignedUserIDs = testCase.getUserID();
         for (Integer userID : assignedUserIDs) {
-            ManageUser user = ManageUserService.getUserById(userID);
+            ManageUser user = retrieveUserById(userID); // pass manageuser object directly
             if (user != null && user.getEmail() != null) {
                 String userEmail = user.getEmail();
                 String subject = "New Test Case Assignment";
@@ -204,6 +224,11 @@ public class ViewCaseService {
                 mailService.sendAssignedMail(userEmail, subject, message);
             }
         }
+    }
+
+    private ManageUser retrieveUserById(Integer userID) {
+        // This method encapsulates the logic for retrieving a user without acting as a middleman
+        return ManageUserService.getUserById(userID);
     }
 
     private void scheduleDeadlineNotification(TestCase testCase) {
@@ -233,36 +258,36 @@ public class ViewCaseService {
         }
     }
 
-    // public void setUserStatusForTestCase(Long testCaseId, String username, String status) {
-    //     Optional<TestCase> testCaseOptional = findById(testCaseId);
-    //     if (testCaseOptional.isPresent()) {
-    //         TestCase testCase = testCaseOptional.get();
-    //         testCase.setUserStatus(username, status);
-    //         String overallStatus = testCase.determineOverallStatus(); // Determine the overall status
-    //         // Assuming you have a method setOverallStatus in your TestCase model
-    //         testCase.setOverallStatus(overallStatus); // Update the overall status
-    //         updateCase(testCase);
-    //     } else {
-    //         throw new NoSuchElementException("Test case not found with ID: " + testCaseId);
-    //     }
-    // }
+    public void setUserStatusForTestCase(Long testCaseId, String username, String status) {
+        Optional<TestCase> testCaseOptional = findById(testCaseId);
+        if (testCaseOptional.isPresent()) {
+            TestCase testCase = testCaseOptional.get();
+            testCase.setUserStatus(username, status);
+            String overallStatus = testCase.determineOverallStatus(); // Determine the overall status
+            // Assuming you have a method setOverallStatus in your TestCase model
+            testCase.setOverallStatus(overallStatus); // Update the overall status
+            updateCase(testCase);
+        } else {
+            throw new NoSuchElementException("Test case not found with ID: " + testCaseId);
+        }
+    }
 
-    // public void setUserStatusForTestCase(Long testCaseId, String username, String status, String rejectionReason) {
-    //     Optional<TestCase> testCaseOptional = findById(testCaseId);
-    //     if (testCaseOptional.isPresent()) {
-    //         TestCase testCase = testCaseOptional.get();
-    //         testCase.setUserStatus(username, status);
-    //          // Determine the overall status
-    //         if ("Rejected".equals(status)) {
-    //             testCase.setUserReason(username, rejectionReason);
-    //         }
-    //         String overallStatus = testCase.determineOverallStatus();
-    //         testCase.setOverallStatus(overallStatus);
-    //         updateCase(testCase);
-    //     } else {
-    //         throw new NoSuchElementException("Test case not found with ID: " + testCaseId);
-    //     }
-    // }
+    public void setUserStatusForTestCase(Long testCaseId, String username, String status, String rejectionReason) {
+        Optional<TestCase> testCaseOptional = findById(testCaseId);
+        if (testCaseOptional.isPresent()) {
+            TestCase testCase = testCaseOptional.get();
+            testCase.setUserStatus(username, status);
+             // Determine the overall status
+            if ("Rejected".equals(status)) {
+                testCase.setUserReason(username, rejectionReason);
+            }
+            String overallStatus = testCase.determineOverallStatus();
+            testCase.setOverallStatus(overallStatus);
+            updateCase(testCase);
+        } else {
+            throw new NoSuchElementException("Test case not found with ID: " + testCaseId);
+        }
+    }
 
     private Optional<TestCase> findById(Long idtest_cases) {
         return testList.stream()
@@ -298,6 +323,8 @@ public class ViewCaseService {
         deleteCase(testCase.getIdtest_cases());
         testList.add(testCase);
     }
+
+   
 
     public void deleteCase(Long idtest_cases) {
         // String url = HYPERLEDGER_BASE_URL + "/deleteTestCase";

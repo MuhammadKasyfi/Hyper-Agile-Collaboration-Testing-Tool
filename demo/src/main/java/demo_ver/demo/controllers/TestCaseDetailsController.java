@@ -35,20 +35,20 @@ public class TestCaseDetailsController {
         return "viewTestCasesDetails";
     }
 
-    // @GetMapping("/testcases/approveStatus/{idtest_cases}")
-    // public String approveTestCase(@PathVariable("idtest_cases") Long idtest_cases, Principal principal) {
-    //     String username = principal.getName();
-    //     viewCaseService.setUserStatusForTestCase(idtest_cases, username, "Approved");
-    //     return "redirect:/view";
-    // }
+    @GetMapping("/testcases/approveStatus/{idtest_cases}")
+    public String approveTestCase(@PathVariable("idtest_cases") Long idtest_cases, Principal principal) {
+        String username = principal.getName();
+        viewCaseService.setUserStatusForTestCase(idtest_cases, username, "Approved");
+        return "redirect:/view";
+    }
 
-    // @PostMapping("/testcases/rejectStatus/{idtest_cases}")
-    // public String rejectTestCase(@PathVariable("idtest_cases") Long idtest_cases,
-    //         @RequestParam String rejectionReason, Principal principal) {
-    //     String username = principal.getName();
-    //     viewCaseService.setUserStatusForTestCase(idtest_cases, username, "Rejected", rejectionReason);
-    //     return "redirect:/view";
-    // }
+    @PostMapping("/testcases/rejectStatus/{idtest_cases}")
+    public String rejectTestCase(@PathVariable("idtest_cases") Long idtest_cases,
+            @RequestParam String rejectionReason, Principal principal) {
+        String username = principal.getName();
+        viewCaseService.setUserStatusForTestCase(idtest_cases, username, "Rejected", rejectionReason);
+        return "redirect:/view";
+    }
 
     // @GetMapping("/testcases/needsRevisionStatus/{idtest_cases}")
     // public String needsRevisionTestCase(@PathVariable("idtest_cases") Long idtest_cases, Principal principal) {
