@@ -28,11 +28,11 @@
                 <label for="projectId">Projects ID:</label>
                 <input type="text" class="form-control" th:field="*{projectId}" placeholder="Code Test Case" required>
             </div>
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <label for="smartContractID">Smart Contract ID:</label>
                 <input type="number" class="form-control" th:field="*{smartContractID}" placeholder="Smart Contract ID"
                     required>
-            </div>
+            </div> -->
             <div class="form-group">
                 <label for="testCaseName">Test Case Name:</label>
                 <input type="text" class="form-control" th:field="*{testCaseName}" placeholder="Test Case Name"
@@ -62,14 +62,14 @@
                     Deadline must be later than the Date Created! Please choose a valid deadline.
                 </div>
             </div>
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <label for="overallStatus">Overall Status:</label>
                 <select class="form-control" th:field="*{overallStatus}">
                   <option value="Pending">Pending</option>
                   <option value="In Progress">In Progress</option>
                   <option value="Completed">Completed</option>
                 </select>
-            </div>
+            </div> -->
             <div class="form-group">
                 <label for="status">Status:</label>
                 <select class="form-control" th:field="*{status}">
@@ -79,10 +79,10 @@
                   <option value="Rejected">Rejected</option>
                 </select>
             </div>
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <label for="reason">Reason (Optional):</label>
                 <textarea class="form-control" name="reason" th:field="*{reason}" rows="3"></textarea>
-            </div>
+            </div> -->
             <!-- <input type="hidden" th:field="*{username}" th:value="${user.username}"> -->
             <!-- <input type="hidden" th:field="*{username}" th:value="${username}"> -->
             <!-- <div class="form-group">

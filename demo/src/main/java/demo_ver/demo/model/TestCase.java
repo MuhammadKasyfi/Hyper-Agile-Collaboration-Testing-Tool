@@ -46,6 +46,18 @@ public class TestCase {
         // Default constructor
     }
 
+    public TestCase(String status, Long idtest_cases, String projectId, String testCaseName,
+            String test_desc, String dateCreated, String deadline, List<Integer> userID) {
+        this.status = status;
+        this.idtest_cases = idtest_cases;
+        this.projectId = projectId;
+        this.testCaseName = testCaseName;
+        this.test_desc = test_desc;
+        this.dateCreated = dateCreated;
+        this.deadline = deadline;
+        this.userID = userID;
+    }
+
     public TestCase(String status, Long idtest_cases, String projectId, String smartContractID, String testCaseName,
             String test_desc, String dateCreated, String deadline, List<Integer> userID) {
         this.status = status;
@@ -214,6 +226,10 @@ public class TestCase {
     // return "Pending"; // Default to Pending if none of the above conditions are met
     // }
     // }
+
+    public void resetUserStatuses() {
+        this.userStatuses.clear();
+    }
 
     public String determineOverallStatus() {
         // If any user has rejected the test case, then the overall status is "Rejected"
