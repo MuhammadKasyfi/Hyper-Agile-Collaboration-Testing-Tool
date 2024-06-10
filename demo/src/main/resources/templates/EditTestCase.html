@@ -28,11 +28,11 @@
                 <label for="projectId">Projects ID:</label>
                 <input type="text" class="form-control" th:field="*{projectId}" placeholder="Code Test Case" required>
             </div>
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <label for="smartContractID">Smart Contract ID:</label>
                 <input type="number" class="form-control" th:field="*{smartContractID}" placeholder="Smart Contract ID"
                     required>
-            </div>
+            </div> -->
             <div class="form-group">
                 <label for="testCaseName">Test Case Name:</label>
                 <input type="text" class="form-control" th:field="*{testCaseName}" placeholder="Test Case Name"
@@ -51,7 +51,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="dateCreated">Date Created:</label>
+                        <label for="dateCreated">Date Created:</label> <!-- Change to updated -->
                         <input type="date" class="form-control" th:field="*{dateCreated}" placeholder="Date Created">
                         <span class="text-danger" th:if="${#fields.hasErrors('dateCreated')}"
                             th:errors="*{dateCreated}"></span>

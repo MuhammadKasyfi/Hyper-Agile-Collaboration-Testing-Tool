@@ -258,36 +258,36 @@ public class ViewCaseService {
         }
     }
 
-    public void setUserStatusForTestCase(Long testCaseId, String username, String status) {
-        Optional<TestCase> testCaseOptional = findById(testCaseId);
-        if (testCaseOptional.isPresent()) {
-            TestCase testCase = testCaseOptional.get();
-            testCase.setUserStatus(username, status);
-            String overallStatus = testCase.determineOverallStatus(); // Determine the overall status
-            // Assuming you have a method setOverallStatus in your TestCase model
-            testCase.setOverallStatus(overallStatus); // Update the overall status
-            updateCase(testCase);
-        } else {
-            throw new NoSuchElementException("Test case not found with ID: " + testCaseId);
-        }
-    }
+    // public void setUserStatusForTestCase(Long testCaseId, String username, String status) {
+    //     Optional<TestCase> testCaseOptional = findById(testCaseId);
+    //     if (testCaseOptional.isPresent()) {
+    //         TestCase testCase = testCaseOptional.get();
+    //         testCase.setUserStatus(username, status);
+    //         String overallStatus = testCase.determineOverallStatus(); // Determine the overall status
+    //         // Assuming you have a method setOverallStatus in your TestCase model
+    //         testCase.setOverallStatus(overallStatus); // Update the overall status
+    //         updateCase(testCase);
+    //     } else {
+    //         throw new NoSuchElementException("Test case not found with ID: " + testCaseId);
+    //     }
+    // }
 
-    public void setUserStatusForTestCase(Long testCaseId, String username, String status, String rejectionReason) {
-        Optional<TestCase> testCaseOptional = findById(testCaseId);
-        if (testCaseOptional.isPresent()) {
-            TestCase testCase = testCaseOptional.get();
-            testCase.setUserStatus(username, status);
-             // Determine the overall status
-            if ("Rejected".equals(status)) {
-                testCase.setUserReason(username, rejectionReason);
-            }
-            String overallStatus = testCase.determineOverallStatus();
-            testCase.setOverallStatus(overallStatus);
-            updateCase(testCase);
-        } else {
-            throw new NoSuchElementException("Test case not found with ID: " + testCaseId);
-        }
-    }
+    // public void setUserStatusForTestCase(Long testCaseId, String username, String status, String rejectionReason) {
+    //     Optional<TestCase> testCaseOptional = findById(testCaseId);
+    //     if (testCaseOptional.isPresent()) {
+    //         TestCase testCase = testCaseOptional.get();
+    //         testCase.setUserStatus(username, status);
+    //          // Determine the overall status
+    //         if ("Rejected".equals(status)) {
+    //             testCase.setUserReason(username, rejectionReason);
+    //         }
+    //         String overallStatus = testCase.determineOverallStatus();
+    //         testCase.setOverallStatus(overallStatus);
+    //         updateCase(testCase);
+    //     } else {
+    //         throw new NoSuchElementException("Test case not found with ID: " + testCaseId);
+    //     }
+    // }
 
     private Optional<TestCase> findById(Long idtest_cases) {
         return testList.stream()
@@ -308,7 +308,7 @@ public class ViewCaseService {
             existingTestCase.setUserID(userID);
             // Here, you might also want to update the user statuses if necessary
             // existingTestCase.setUserStatuses(updatedTestCase.getUserStatuses());
-            existingTestCase.resetUserStatuses();
+            // existingTestCase.resetUserStatuses();
 
             // String overallStatus = existingTestCase.determineOverallStatus(); // Recalculate overall status
             // existingTestCase.setOverallStatus(overallStatus);

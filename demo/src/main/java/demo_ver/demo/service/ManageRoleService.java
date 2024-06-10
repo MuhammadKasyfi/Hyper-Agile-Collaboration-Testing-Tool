@@ -41,7 +41,7 @@ public class ManageRoleService {
             add(new ManageRole(1001, "ROLE_Tester", "unit tester"));
             add(new ManageRole(1002, "ROLE_Product Manager", "manage production"));
             add(new ManageRole(1003, "ROLE_Developer", "Programming"));
-
+            // add stakeholder role, same functions as developer & product manager
         }
     };
 

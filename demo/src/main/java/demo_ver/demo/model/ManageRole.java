@@ -3,16 +3,27 @@ package demo_ver.demo.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Table;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
 // @EntityScan
+// @Entity
+// @Table(name="role")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ManageRole {
 
+    // @Id
+    // @GeneratedValue(strategy=GenerationType.AUTO)
     @JsonProperty("roleID")
     private int roleID;
 

@@ -5,24 +5,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-// import javax.persistence.Table;
+import javax.persistence.Table;
 
-// import jakarta.persistence.Entity;
-// import jakarta.persistence.GeneratedValue;
-// import jakarta.persistence.GenerationType;
-// import jakarta.persistence.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 import demo_ver.demo.service.ManageUserService;
 
-@EntityScan
-// @Entity
-// @Table(name="test_case")
+// @EntityScan
+@Entity
+@Table(name="test_case")
 public class TestCase {
 
-    // @Id
-    // @GeneratedValue(strategy=GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private Long idtest_cases;
     
     private String test_desc;
@@ -30,13 +30,13 @@ public class TestCase {
     private String dateUpdated;
     private String projectId;
     private String reason;// need to remove or change to something else maybe note
-    private Map<String, String> userReasons = new HashMap<>();
+    // private Map<String, String> userReasons = new HashMap<>(); 
     private String testCaseName;
     private String dateCreated;
     private String smartContractID; // Changed from int to String
     private List<Integer> userID;
     // private List<Integer> userID;
-    private Map<String, String> userStatuses = new HashMap<>(); // New field for user-specific statuses
+    // private Map<String, String> userStatuses = new HashMap<>(); // New field for user-specific statuses
     private String overallStatus;
     private String username;
     private String createdBy;
@@ -71,9 +71,9 @@ public class TestCase {
         this.userID = userID;
     }
 
-    public void setUserStatuses(Map<String, String> userStatuses) {
-        this.userStatuses = userStatuses;
-    }
+    // public void setUserStatuses(Map<String, String> userStatuses) {
+    //     this.userStatuses = userStatuses;
+    // }
 
     // Getters and setters for existing fields
     public String getStatus() {
@@ -84,17 +84,17 @@ public class TestCase {
         this.status = status;
     }
 
-    public Map<String, String> getUserReason() {
-        return userReasons;
-    }
+    // public Map<String, String> getUserReason() {
+    //     return userReasons;
+    // }
 
-    public void setUserReason(Map<String, String> userReason) {
-        this.userReasons = userReason;
-    }
+    // public void setUserReason(Map<String, String> userReason) {
+    //     this.userReasons = userReason;
+    // }
 
-    public void setUserReason(String username, String reason) {
-        userReasons.put(username, reason);
-    }
+    // public void setUserReason(String username, String reason) {
+    //     userReasons.put(username, reason);
+    // }
 
     public Long getIdtest_cases() {
         return idtest_cases;
@@ -193,13 +193,13 @@ public class TestCase {
     }
 
     // Methods for user statuses
-    public Map<String, String> getUserStatuses() {
-        return userStatuses;
-    }
+    // public Map<String, String> getUserStatuses() {
+    //     return userStatuses;
+    // }
 
-    public void setUserStatus(String username, String status) {
-        userStatuses.put(username, status);
-    }
+    // public void setUserStatus(String username, String status) {
+    //     userStatuses.put(username, status);
+    // }
 
     // Method to get usernames of assigned users
     public List<String> getUsernames() {
@@ -227,61 +227,61 @@ public class TestCase {
     // }
     // }
 
-    public void resetUserStatuses() {
-        this.userStatuses.clear();
-    }
+    // public void resetUserStatuses() {
+    //     this.userStatuses.clear();
+    // }
 
-    public String determineOverallStatus() {
-        // If any user has rejected the test case, then the overall status is "Rejected"
-        if (userStatuses.containsValue("Rejected")) {
-            return "Rejected";
-        }
+    // public String determineOverallStatus() {
+    //     // If any user has rejected the test case, then the overall status is "Rejected"
+    //     if (userStatuses.containsValue("Rejected")) {
+    //         return "Rejected";
+    //     }
 
-        // Check if all assigned users have set their status
-        // Only change the overall status if all users have set their status
-        if (userStatuses.size() == userID.size()) {// minus the tester/ note tester must tick their own name
-            // If all users have approved, then the overall status is "Approved"
-            boolean allApproved = userStatuses.values().stream().allMatch(status ->
-            status.equals("Approved"));
-            if (allApproved) {
-            return "Approved";
-            }
+    //     // Check if all assigned users have set their status
+    //     // Only change the overall status if all users have set their status
+    //     if (userStatuses.size() == userID.size()) {// minus the tester/ note tester must tick their own name
+    //         // If all users have approved, then the overall status is "Approved"
+    //         boolean allApproved = userStatuses.values().stream().allMatch(status ->
+    //         status.equals("Approved"));
+    //         if (allApproved) {
+    //         return "Approved";
+    //         }
 
-            // incorrect method remove after db connection, tester doesn't need to be
-            // included during creating test case after db connection
-            // long nonApprovedCount = userStatuses.values().stream()
-            //         .filter(status -> !status.equals("Approved"))
-            //         .count();
+    //         // incorrect method remove after db connection, tester doesn't need to be
+    //         // included during creating test case after db connection
+    //         // long nonApprovedCount = userStatuses.values().stream()
+    //         //         .filter(status -> !status.equals("Approved"))
+    //         //         .count();
 
-            // long notSetCount = userStatuses.values().stream()
-            //         .filter(status -> status == null || status.isEmpty())
-            //         .count();
+    //         // long notSetCount = userStatuses.values().stream()
+    //         //         .filter(status -> status == null || status.isEmpty())
+    //         //         .count();
 
-            // if (nonApprovedCount == 0 && notSetCount <= 1) {
-            //     return "Approved";
-            // }
+    //         // if (nonApprovedCount == 0 && notSetCount <= 1) {
+    //         //     return "Approved";
+    //         // }
 
-            // incorrect way end
+    //         // incorrect way end
 
-            // If all users have "Needs Revision", then the overall status is "Needs
-            // Revision"
-            // if (userStatuses.values().stream().allMatch(status -> status.equals("Needs Revision"))) {
-            //     return "Needs Revision";
-            // }
+    //         // If all users have "Needs Revision", then the overall status is "Needs
+    //         // Revision"
+    //         // if (userStatuses.values().stream().allMatch(status -> status.equals("Needs Revision"))) {
+    //         //     return "Needs Revision";
+    //         // }
 
-            // If any user has set "Under Review" or "Needs Revision" without any "Reject",
-            // then it's "Pending"
-            // boolean anyUnderReviewOrNeedsRevision = userStatuses.values().stream()
-            //         .anyMatch(status -> status.equals("Under Review") || status.equals("Needs Revision"));
-            // if (anyUnderReviewOrNeedsRevision) {
-            //     return "Pending";
-            // }
-        }
+    //         // If any user has set "Under Review" or "Needs Revision" without any "Reject",
+    //         // then it's "Pending"
+    //         // boolean anyUnderReviewOrNeedsRevision = userStatuses.values().stream()
+    //         //         .anyMatch(status -> status.equals("Under Review") || status.equals("Needs Revision"));
+    //         // if (anyUnderReviewOrNeedsRevision) {
+    //         //     return "Pending";
+    //         // }
+    //     }
 
-        // Default to "Pending" if not all users have set their status or if none of the
-        // above conditions are met
-        return "Pending";
-    }
+    //     // Default to "Pending" if not all users have set their status or if none of the
+    //     // above conditions are met
+    //     return "Pending";
+    // }
 
     public String getOverallStatus() {
         return overallStatus;

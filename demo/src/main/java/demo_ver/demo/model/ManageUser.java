@@ -2,6 +2,14 @@ package demo_ver.demo.model;
 
 import java.util.List;
 
+// import javax.persistence.Id;
+import javax.persistence.Table;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.security.core.GrantedAuthority;
@@ -9,9 +17,15 @@ import org.springframework.web.client.RestTemplate;
 
 import demo_ver.demo.service.ManageRoleService;
 
-@EntityScan
+// @EntityScan
+// @Entity
+// @Table(name="user")
 public class ManageUser {
+
+    // @Id
+    // @GeneratedValue(strategy=GenerationType.AUTO)
     private int userID;
+
     public String email;
     public String username;
     public String password;
