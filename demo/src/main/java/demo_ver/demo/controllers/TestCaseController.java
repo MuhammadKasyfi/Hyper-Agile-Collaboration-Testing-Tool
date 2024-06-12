@@ -93,7 +93,7 @@ public class TestCaseController {
     public String addTestCaseForm(TestCase testCase, @RequestParam("userID") List<Integer> userID,@AuthenticationPrincipal UserDetails userDetails, Model model)
             throws JsonProcessingException {
         model.addAttribute("tests", viewCaseService.findAllList());
-        model.addAttribute("users", manageUserService.getAllUsers()); // I added this so that user list will always show
+        model.addAttribute("users", manageUserService.getAllUsersWithRoles()); // I added this so that user list will always show
                                                                       // even if got validation errors
 
         // Check if the test case name already exists
@@ -129,7 +129,7 @@ public class TestCaseController {
     public String editCase(@PathVariable("idtest_cases") int idtest_cases, Model model) {
         TestCase testCaseToEdit = viewCaseService.getTestCaseById(idtest_cases);
         model.addAttribute("testCase", testCaseToEdit);
-        model.addAttribute("users", manageUserService.getAllUsers()); // Add users for assigning to the test case
+        model.addAttribute("users", manageUserService.getAllUsersWithRoles()); // Add users for assigning to the test case
         return "EditTestCase"; // The name of the edit form template
     }
 
@@ -138,7 +138,7 @@ public class TestCaseController {
             throws JsonProcessingException {
 
         model.addAttribute("tests", viewCaseService.findAllList());
-        model.addAttribute("users", manageUserService.getAllUsers()); // I added this so that user list will always show
+        model.addAttribute("users", manageUserService.getAllUsersWithRoles()); // I added this so that user list will always show
                                                                       // even if got validation errors
         if (viewCaseService.istestCaseExists(testCase.getTestCaseName())) {
         model.addAttribute("testCaseNameExists", true);

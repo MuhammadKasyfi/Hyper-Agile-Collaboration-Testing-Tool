@@ -50,17 +50,17 @@ public class TestCaseDetailsController {
         return "redirect:/view";
     }
 
-    @GetMapping("/testcases/needsRevisionStatus/{idtest_cases}")
-    public String needsRevisionTestCase(@PathVariable("idtest_cases") int idtest_cases, Principal principal) {
-        String username = principal.getName();
-        viewCaseService.setUserStatusForTestCase(idtest_cases, username, "Needs Revision");
-        return "redirect:/view";
-    }
+    // @GetMapping("/testcases/needsRevisionStatus/{idtest_cases}")
+    // public String needsRevisionTestCase(@PathVariable("idtest_cases") int idtest_cases, Principal principal) {
+    //     String username = principal.getName();
+    //     viewCaseService.setUserStatusForTestCase(idtest_cases, username, "Needs Revision");
+    //     return "redirect:/view";
+    // }
 
-    @GetMapping("/testcases/underReviewStatus/{idtest_cases}")
-    public String underReviewTestCase(@PathVariable("idtest_cases") int idtest_cases, Principal principal) {
-        String username = principal.getName();
-        viewCaseService.setUserStatusForTestCase(idtest_cases, username, "Under Review");
-        return "redirect:/view";
-    }
+    // @GetMapping("/testcases/underReviewStatus/{idtest_cases}")
+    // public String underReviewTestCase(@PathVariable("idtest_cases") int idtest_cases, Principal principal) {
+    //     String username = principal.getName();
+    //     viewCaseService.setUserStatusForTestCase(idtest_cases, username, "Under Review");
+    //     return "redirect:/view";
+    // }
 }
