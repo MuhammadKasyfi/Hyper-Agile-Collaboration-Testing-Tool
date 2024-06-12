@@ -3,7 +3,6 @@ package demo_ver.demo.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,65 +18,56 @@ import org.springframework.web.client.RestTemplate;
 
 import demo_ver.demo.mail.MailService;
 import demo_ver.demo.model.ManageUser;
+import demo_ver.demo.repository.ManageUserRepository;
+import jakarta.transaction.Transactional;
 
 @Service
+@Transactional
 public class ManageUserService implements UserDetailsService {
 
     private final PasswordEncoder passwordEncoder;
 
-    private static List<ManageUser> userList;
+    @Autowired
+    private ManageUserRepository manageUserRepository;
 
     @Autowired
     private MailService mailService;
 
     @Autowired
-    private final RestTemplate restTemplate;
-    @Autowired
     private ManageRoleService manageRoleService;
 
+    private static RestTemplate restTemplate = new RestTemplate();
+    
     public ManageUserService(PasswordEncoder passwordEncoder, RestTemplate restTemplate) {
         this.passwordEncoder = passwordEncoder;
-        this.restTemplate = new RestTemplate();
-        initializeUserList();
+        ManageUserService.restTemplate = new RestTemplate();
+        this.manageUserRepository = null;
         ManageRoleService manageRoleService = new ManageRoleService(null);
-
     }
 
-    // Initialize the user list with some sample data
-    private void initializeUserList() {
-        userList = new ArrayList<>();
-        userList.add(new ManageUser(2000, "teeneshsubramaniam10@gmail.com", "Teenesh", passwordEncoder.encode("123456"), // admin
-                1));
-        userList.add(new ManageUser(2001, "user@gmail.com", "John", passwordEncoder.encode("123456"), 3)); // Product Manager
-        userList.add(
-                new ManageUser(2002, "williamlik@graduate.utm.my", "Will", passwordEncoder.encode("123456"), 2)); //Tester
-                userList.add(
-                new ManageUser(2004, "muhammadkasyfi@graduate.utm.my", "Kasyfi", passwordEncoder.encode("123456"), 2)); //Tester
-        userList.add(
-                new ManageUser(2003, "Mahathir@gmail.com", "Mahathir", passwordEncoder.encode("123456"), 4));
-        userList.add(
-                new ManageUser(2004, "williamlik@graduate.utm.my", "tester", passwordEncoder.encode("123456"), 2));
-        userList.add(new ManageUser(2005, "user@gmail.com", "manager", passwordEncoder.encode("123456"), 3));
+    @Autowired
+    public ManageUserService(PasswordEncoder passwordEncoder, ManageUserRepository manageUserRepository,
+            MailService mailService) {
+        this.passwordEncoder = passwordEncoder;
+        this.manageUserRepository = manageUserRepository;
+        this.mailService = mailService;
     }
 
     // Get all users in the system
-    public static List<ManageUser> getAllUsers() {
-        return userList;
+    public List<ManageUser> getAllUsers() {
+        return (List<ManageUser>) manageUserRepository.findAll();
     }
 
     // Add a new user to the system
     public void addUser(ManageUser newUser, int roleID) {
         if (isUserUnique(newUser)) {
             String plainTextPassword = newUser.getPassword(); // Get the plain text password before encoding
-            newUser.setUserID(generateUserID());
             newUser.setRoleID(roleID);
-            userList.add(newUser);
+            newUser.setPassword(passwordEncoder.encode(plainTextPassword));
+            manageUserRepository.save(newUser);
 
             // send email notification to new user with plain text password
             sendNewUserNotification(newUser, plainTextPassword);
-
-            // Now, encode and set the password
-            newUser.setPassword(passwordEncoder.encode(plainTextPassword));
         } else {
             // Handle duplicate user logic if needed
         }
@@ -98,68 +88,53 @@ public class ManageUserService implements UserDetailsService {
 
     // Check if a user with the same username or email already exists
     private boolean isUserUnique(ManageUser newUser) {
-        return userList.stream().noneMatch(user -> user.getUsername().equalsIgnoreCase(newUser.getUsername()) ||
-                user.getEmail().equalsIgnoreCase(newUser.getEmail()));
+        return !manageUserRepository.existsByUsernameOrEmail(newUser.getUsername(), newUser.getEmail());
+
     }
 
     // Delete a user by userID
     public void deleteUser(int userID) {
-        userList.removeIf(user -> user.getUserID() == userID);
-    }
-
-    // Generate a new unique userID
-    private int generateUserID() {
-        return userList.get(userList.size() - 1).getUserID() + 1;
+        manageUserRepository.deleteById(userID);
     }
 
     // Check if a username exists in the system
     public boolean isUsernameExists(String username) {
-        return userList.stream().anyMatch(user -> user.getUsername().equalsIgnoreCase(username));
+        return manageUserRepository.existsByUsername(username);
     }
 
     // Check if an email exists in the system
     public boolean isEmailExists(String email) {
-        return userList.stream().anyMatch(user -> user.getEmail().equalsIgnoreCase(email));
+        return manageUserRepository.existsByEmail(email);
     }
 
     // Get a user by userID
-    public static ManageUser getUserById(int userID) {
-        return userList.stream()
-                .filter(user -> user.getUserID() == userID)
-                .findFirst()
-                .orElse(null);
+    public ManageUser getUserById(int userID) {
+        return manageUserRepository.findById(userID).orElse(null);
     }
 
     // Check if a username exists in the system excluding the current user
     public boolean isUsernameExistsExcludingCurrentUser(String username, int userID) {
-        return userList.stream()
-                .anyMatch(user -> user.getUserID() != userID && user.getUsername().equalsIgnoreCase(username));
+        return manageUserRepository.existsByUsernameAndUserIDNot(username, userID);
     }
 
     // Check if an email exists in the system excluding the current user
     public boolean isEmailExistsExcludingCurrentUser(String email, int userID) {
-        return userList.stream()
-                .anyMatch(user -> user.getUserID() != userID && user.getEmail().equalsIgnoreCase(email));
+        return manageUserRepository.existsByEmailAndUserIDNot(email, userID);
     }
 
     // Update user details (including role)
     public void updateUser(ManageUser updatedUser, int roleID) {
-        userList.stream()
-                .filter(user -> user.getUserID() == updatedUser.getUserID())
-                .findFirst()
-                .ifPresent(user -> {
-                    user.setEmail(updatedUser.getEmail());
-                    user.setUsername(updatedUser.getUsername());
-                    user.setRoleID(roleID);
-                });
+        manageUserRepository.findById(updatedUser.getUserID()).ifPresent(user -> {
+            user.setEmail(updatedUser.getEmail());
+            user.setUsername(updatedUser.getUsername());
+            user.setRoleID(roleID);
+            manageUserRepository.save(user);
+        });
     }
 
     // Retrieve user details for authentication
     public ManageUser getUserByUsername(String username) {
-        return userList.stream()
-                .filter(user -> user.getUsername().equals(username))
-                .findFirst()
-                .orElse(null);
+        return manageUserRepository.findByUsername(username).orElse(null);
     }
 
     // Load user details for authentication
@@ -202,23 +177,21 @@ public class ManageUserService implements UserDetailsService {
 
     // Update user password
     public void updateUserPassword(ManageUser user) {
-        userList.stream()
-                .filter(existingUser -> existingUser.getUserID() == user.getUserID())
-                .findFirst()
-                .ifPresent(existingUser -> existingUser.setPassword(passwordEncoder.encode(user.getPassword())));
+        manageUserRepository.findById(user.getUserID()).ifPresent(existingUser -> {
+            existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+            manageUserRepository.save(existingUser);
+        });
     }
 
     // Find a user by reset token
     public ManageUser findUserByResetToken(String resetToken) {
-        return userList.stream()
-                .filter(user -> Objects.equals(user.getResetToken(), resetToken))
-                .findFirst()
-                .orElse(null);
+        return manageUserRepository.findByResetToken(resetToken).orElse(null);
     }
 
     // Update reset token for a user
     public void updateResetToken(ManageUser user, String resetToken) {
         user.setResetToken(resetToken);
+        manageUserRepository.save(user);
     }
 
     // Check if a reset token is valid (dummy implementation)
@@ -239,13 +212,11 @@ public class ManageUserService implements UserDetailsService {
     // Update user password with a new password
     public void updateUserPassword(ManageUser user, String newPassword) {
         user.setPassword(passwordEncoder.encode(newPassword));
+        manageUserRepository.save(user);
     }
 
     // Get a user by email
     public ManageUser getUserByEmail(String email) {
-        return userList.stream()
-                .filter(user -> user.getEmail().equalsIgnoreCase(email))
-                .findFirst()
-                .orElse(null);
+        return manageUserRepository.findByEmail(email).orElse(null);
     }
 }

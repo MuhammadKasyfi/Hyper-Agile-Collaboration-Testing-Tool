@@ -1,13 +1,11 @@
 package demo_ver.demo.service;
 
 import java.net.http.HttpClient;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -67,8 +65,9 @@ public class ViewCaseService {
 
     private static RestTemplate restTemplate = new RestTemplate();
 
-    public ViewCaseService(RestTemplate restTemplate) {
+    public ViewCaseService(RestTemplate restTemplate,ManageUserService manageUserService) {
         this.restTemplate = restTemplate;
+        this.manageUserService = manageUserService;
     }
 
     private static final HttpClient httpClient = HttpClient.newHttpClient();
@@ -228,7 +227,7 @@ public class ViewCaseService {
 
     private ManageUser retrieveUserById(Integer userID) {
         // This method encapsulates the logic for retrieving a user without acting as a middleman
-        return ManageUserService.getUserById(userID);
+        return manageUserService.getUserById(userID);
     }
 
     private void scheduleDeadlineNotification(TestCase testCase) {
@@ -244,7 +243,7 @@ public class ViewCaseService {
     private void sendDeadlineNotification(TestCase testCase) {
         List<Integer> assignedUserIDs = testCase.getUserID();
         for (Integer userID : assignedUserIDs) {
-            ManageUser user = ManageUserService.getUserById(userID);
+            ManageUser user = manageUserService.getUserById(userID);
             if (user != null && user.getEmail() != null) {
                 String userEmail = user.getEmail();
                 String subject = "Test Case Deadline Notification";

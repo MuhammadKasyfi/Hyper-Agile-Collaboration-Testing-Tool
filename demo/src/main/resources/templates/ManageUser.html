@@ -48,7 +48,7 @@
             <th scope="col">User ID</th>
             <th scope="col">Email</th>
             <th scope="col">Username</th>
-            <th scope="col">Role</th>
+            <!-- <th scope="col">Role</th> -->
             <th scope="col">Action</th>
           </tr>
         </thead>
@@ -58,7 +58,7 @@
             <td th:text="${user.userID}"></td>
             <td th:text="${user.email}"></td>
             <td th:text="${user.username}"></td>
-            <td th:if="${user.roleName.startsWith('ROLE_')}" th:text="${user.roleName.substring(5)}"></td>
+            <!-- <td th:if="${user.roleName.startsWith('ROLE_')}" th:text="${user.roleName.substring(5)}"></td> -->
             <td>
               <a th:href="@{/edituser/{userID}(userID=${user.userID})}" 
               onclick="return confirmEdit(event)"

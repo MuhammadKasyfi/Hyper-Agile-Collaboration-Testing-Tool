@@ -1,24 +1,19 @@
 package demo_ver.demo.model;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.persistence.Table;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import jakarta.persistence.Entity;
+import demo_ver.demo.service.ManageUserService;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Transient;
 
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-
-import demo_ver.demo.service.ManageUserService;
-
-// @EntityScan
-@Entity
-@Table(name="test_case")
+// // @EntityScan
+// @Entity
+// @Table(name="test_case")
 public class TestCase {
 
     @Id
@@ -202,10 +197,15 @@ public class TestCase {
     // }
 
     // Method to get usernames of assigned users
+
+    @Transient
+    @Autowired
+    private ManageUserService manageUserService = new ManageUserService(null, null);
+
     public List<String> getUsernames() {
         return userID.stream()
                 .map(userId -> {
-                    ManageUser user = ManageUserService.getUserById(userId);
+                    ManageUser user = manageUserService.getUserById(userId);
                     return (user != null) ? user.getUsername() : "";
                 })
                 .collect(Collectors.toList());

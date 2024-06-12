@@ -19,6 +19,9 @@
 </head>
 
 <body>
+
+  <div th:replace="fragments/navbar :: navbar"></div>
+
   <div class="container p-3 mt-3 mb-3 border border-secondary rounded">
     <form th:object="${role}" method="post" th:action="@{/editrole}">
       <input type="hidden" th:field="*{roleID}" />
@@ -28,7 +31,8 @@
       </p>
       <p>
         <label class="col-3" for="editRoleName">Role Name:</label>
-        <input type="text" id="editRoleName" placeholder="" th:field="*{roleName}" th:disabled="${role.roleName == 'Tester' or role.roleName == 'Admin'}" th:if="${role.roleName}" />
+        <!-- <input type="text" id="editRoleName" placeholder="" th:field="*{roleName}" th:disabled="${role.roleName == 'Tester' or role.roleName == 'Admin'}" th:if="${role.roleName}" /> -->
+        <input type="text" id="editRoleName" placeholder="" th:field="*{roleName}" required />
       </p>
       <p>
         <label class="col-3" for="editDescription">Description:</label>
