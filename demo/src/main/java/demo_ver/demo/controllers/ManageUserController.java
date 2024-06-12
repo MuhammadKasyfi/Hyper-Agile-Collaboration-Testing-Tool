@@ -48,7 +48,7 @@ public class ManageUserController {
                 .anyMatch(authority -> authority.getAuthority().equals("ROLE_Admin"));
 
         model.addAttribute("isAdmin", isAdmin);
-        model.addAttribute("users", manageUserService.getAllUsers());
+        model.addAttribute("users", manageUserService.getAllUsersWithRoles());
         return "ManageUser";
     }
 

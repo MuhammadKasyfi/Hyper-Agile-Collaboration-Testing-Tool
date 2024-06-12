@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import demo_ver.demo.dto.UserWithRoleDTO;
 import demo_ver.demo.mail.MailService;
 import demo_ver.demo.model.ManageUser;
 import demo_ver.demo.repository.ManageUserRepository;
@@ -56,6 +58,14 @@ public class ManageUserService implements UserDetailsService {
     // Get all users in the system
     public List<ManageUser> getAllUsers() {
         return (List<ManageUser>) manageUserRepository.findAll();
+    }
+
+    public List<UserWithRoleDTO> getAllUsersWithRoles() {
+        List<ManageUser> users = (List<ManageUser>) manageUserRepository.findAll();
+        return users.stream().map(user -> {
+            String roleName = manageRoleService.getRoleNameByIdString(user.getRoleID());
+            return new UserWithRoleDTO(user.getUserID(), user.getEmail(), user.getUsername(), roleName);
+        }).collect(Collectors.toList());
     }
 
     // Add a new user to the system
