@@ -1,11 +1,11 @@
 package demo_ver.demo.dto;
 
+//Data Transfer Object for user class to get role name
 public class UserWithRoleDTO {
     private int userID;
     private String email;
     private String username;
     private String roleName;
-
 
     public UserWithRoleDTO(int userID, String email, String username, String roleName) {
         this.userID = userID;
