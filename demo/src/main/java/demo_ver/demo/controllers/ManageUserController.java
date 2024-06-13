@@ -27,6 +27,11 @@ public class ManageUserController {
     @Autowired
     private ManageRoleService manageRoleService;
 
+    public ManageUserController(ManageUserService manageUserService, ManageRoleService manageRoleService) {
+        this.manageRoleService = manageRoleService;
+        this.manageUserService = manageUserService;
+    }
+
     // @GetMapping("/manageuser")
     // @ResponseBody
     // public List<ManageUser> getAllUsers(){
@@ -43,7 +48,7 @@ public class ManageUserController {
                 .anyMatch(authority -> authority.getAuthority().equals("ROLE_Admin"));
 
         model.addAttribute("isAdmin", isAdmin);
-        model.addAttribute("users", ManageUserService.getAllUsers());
+        model.addAttribute("users", manageUserService.getAllUsersWithRoles());
         return "ManageUser";
     }
 
@@ -83,7 +88,7 @@ public class ManageUserController {
 
     @GetMapping("/edituser/{userID}")
     public String showEditUserForm(@PathVariable("userID") int userID, Model model) {
-        ManageUser userToEdit = ManageUserService.getUserById(userID);
+        ManageUser userToEdit = manageUserService.getUserById(userID);
         model.addAttribute("manageUser", userToEdit);
         model.addAttribute("roles", manageRoleService.getAllRoles());
         return "ManageUserEdit"; //
