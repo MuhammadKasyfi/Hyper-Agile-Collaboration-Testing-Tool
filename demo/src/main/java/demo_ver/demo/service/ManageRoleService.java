@@ -13,8 +13,10 @@ import org.springframework.web.client.RestClientException;
 
 import demo_ver.demo.model.ManageRole;
 import demo_ver.demo.repository.ManageRoleRepository;
+import jakarta.transaction.Transactional;
 
 @Service
+@Transactional
 public class ManageRoleService {
 
     @Autowired

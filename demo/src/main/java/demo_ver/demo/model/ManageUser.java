@@ -1,28 +1,24 @@
 package demo_ver.demo.model;
 
-import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 
-// import javax.persistence.Id;
-import javax.persistence.Table;
-
+import demo_ver.demo.service.ManageRoleService;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.security.core.GrantedAuthority;
 
-import demo_ver.demo.service.ManageRoleService;
-
-// @EntityScan
-// @Entity
-// @Table(name="user")
+@EntityScan
+@Entity
+@Table(name = "manage_user")
 public class ManageUser {
 
-    // @Id
-    // @GeneratedValue(strategy=GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int userID;
 
     public String email;
@@ -82,17 +78,18 @@ public class ManageUser {
         this.roleID = roleID;
     }
 
+    @Transient
     @Autowired
-    private ManageRoleService manageRoleService = new ManageRoleService(null);
+    private ManageRoleService manageRoleService;
 
     public String getRoleName() {
         String roleName = manageRoleService.getRoleNameByIdString(roleID);
         return (roleName != null) ? roleName : "";
     }
 
-    public List<GrantedAuthority> getAuthorities() {
-        return manageRoleService.apiFindById(roleID).getAuthorities();
-    }
+    // public List<GrantedAuthority> getAuthorities() {
+    //     return manageRoleService.apiFindById(roleID).getAuthorities();
+    // }
 
     public String getResetToken() {
         return resetToken;

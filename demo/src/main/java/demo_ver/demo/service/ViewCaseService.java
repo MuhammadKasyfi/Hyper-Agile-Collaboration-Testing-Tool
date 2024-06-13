@@ -1,13 +1,11 @@
 // package demo_ver.demo.service;
 
 // import java.net.http.HttpClient;
-// import java.sql.SQLException;
 // import java.time.LocalDate;
 // import java.time.LocalDateTime;
 // import java.time.temporal.ChronoUnit;
 // import java.util.ArrayList;
 // import java.util.Arrays;
-// import java.util.Collections;
 // import java.util.List;
 // import java.util.Map;
 // import java.util.NoSuchElementException;
@@ -29,7 +27,6 @@
 // import demo_ver.demo.mail.MailService;
 // import demo_ver.demo.model.ManageUser;
 // import demo_ver.demo.model.TestCase;
-// import demo_ver.demo.utils.RandomNumber;
 
 // @Service
 // public class ViewCaseService {
@@ -48,14 +45,14 @@
 //             // add(new TestCase("", RandomNumber.getRandom(100, 999), "004", "19",
 //             // "Diagram", "desc56", "2023-12-20",
 //             // "2024-01-07", Arrays.asList(2002)));
-//             add(new TestCase("", (long) 10001, "002", "15", "Package", "desc23", "2023-11-07",
-//                     "2023-11-17", Arrays.asList(2002, 2001)));
-//             add(new TestCase("", (long) 10002, "003", "17", "Behavioral", "desc34", "2023-12-05",
-//                     "2023-11-15", Arrays.asList(2002, 2001)));
-//             add(new TestCase("", (long) 10003, "004", "19", "Diagram", "desc56", "2023-12-20",
-//                     "2024-01-07", Arrays.asList(2002, 2003, 2001)));
-//             add(new TestCase("", (long) 10004, "005", "34", "Add Role", "Not able to add role", "2023-11-20",
-//                     "2024-02-04", Arrays.asList(2002, 2004)));
+//             // add(new TestCase("", (long) 10001, "002", "15", "Package", "desc23", "2023-11-07",
+//             //         "2023-11-17", Arrays.asList(2002, 2001)));
+//             // add(new TestCase("", (long) 10002, "003", "17", "Behavioral", "desc34", "2023-12-05",
+//             //         "2023-11-15", Arrays.asList(2002, 2001)));
+//             // add(new TestCase("", (long) 10003, "004", "19", "Diagram", "desc56", "2023-12-20",
+//             //         "2024-01-07", Arrays.asList(2002, 2003, 2001)));
+//             // add(new TestCase("", (long) 10004, "005", "34", "Add Role", "Not able to add role", "2023-11-20",
+//             //         "2024-02-04", Arrays.asList(2002, 2004)));
 //         }
 //     };
 
@@ -67,8 +64,9 @@
 
 //     private static RestTemplate restTemplate = new RestTemplate();
 
-//     public ViewCaseService(RestTemplate restTemplate) {
+//     public ViewCaseService(RestTemplate restTemplate,ManageUserService manageUserService) {
 //         this.restTemplate = restTemplate;
+//         this.manageUserService = manageUserService;
 //     }
 
 //     private static final HttpClient httpClient = HttpClient.newHttpClient();
@@ -113,7 +111,7 @@
 //                     // Set each field of the TestCase object using the map values
 //                     testCase.setStatus((String) testCaseMap.get("status"));
 //                     String idtestCasesString = (String) testCaseMap.get("idtest_cases");
-//                     Long idtestCasesLong = Long.parseLong(idtestCasesString);
+//                     Integer idtestCasesLong = Integer.parseInt(idtestCasesString);
 //                     testCase.setIdtest_cases(idtestCasesLong);
 //                     // testCase.setIdtest_cases((Long) testCaseMap.get("idtest_cases"));
 //                     testCase.setProjectId((String) testCaseMap.get("projectId"));
@@ -128,7 +126,7 @@
 //                     testCase.setCreatedBy((String) testCaseMap.get("createdBy"));
 
 //                     // Handle potential null value for reason
-//                     testCase.setReason((String) testCaseMap.get("reason"));
+//                     // testCase.setReason((String) testCaseMap.get("reason"));
 
 //                     // Create a new List to hold the userID (assuming there's only one)
 //                     String userIDString = (String) testCaseMap.get("userID");
@@ -153,7 +151,7 @@
 
 //     // Do not add to hyperledger yet, unless overall status is approved
 //     public void addTestCaseForm(TestCase testCase, List<Integer> userID, String testerUsername) {
-//         testCase.setIdtest_cases(RandomNumber.getRandom(0, 20));
+//         // testCase.setIdtest_cases(RandomNumber.getRandom(0, 20));
 //         testCase.setUserID(userID);
 //         testList.add(testCase);
 //         // incorrect method
@@ -192,27 +190,10 @@
 //         scheduleDeadlineNotification(testCase);
 //     }
 
-//     private void sendAssignmentNotification(TestCase testCase) {
-//         List<Integer> assignedUserIDs = testCase.getUserID();
-//         for (Integer userID : assignedUserIDs) {
-//             ManageUser user = ManageUserService.getUserById(userID);
-//             if (user != null && user.getEmail() != null) {
-//                 String userEmail = user.getEmail();
-//                 String subject = "New Test Case Assignment";
-//                 String message = "Dear user, you have been assigned a new test case. Details:\n" +
-//                         "Test Case ID: " + testCase.getIdtest_cases() + "\n" +
-//                         "Test Case Name: " + testCase.getTestCaseName() + "\n" +
-//                         "Deadline: " + testCase.getDeadline() + "\n" +
-//                         "Please review and approve the test case before the deadline.";
-//                 mailService.sendAssignedMail(userEmail, subject, message);
-//             }
-//         }
-//     }
-
 //     // private void sendAssignmentNotification(TestCase testCase) {
 //     //     List<Integer> assignedUserIDs = testCase.getUserID();
 //     //     for (Integer userID : assignedUserIDs) {
-//     //         ManageUser user = retrieveUserById(userID); // pass manageuser object directly
+//     //         ManageUser user = ManageUserService.getUserById(userID);
 //     //         if (user != null && user.getEmail() != null) {
 //     //             String userEmail = user.getEmail();
 //     //             String subject = "New Test Case Assignment";
@@ -226,10 +207,27 @@
 //     //     }
 //     // }
 
-//     // private ManageUser retrieveUserById(Integer userID) {
-//     //     // This method encapsulates the logic for retrieving a user without acting as a middleman
-//     //     return ManageUserService.getUserById(userID);
-//     // }
+//     private void sendAssignmentNotification(TestCase testCase) {
+//         List<Integer> assignedUserIDs = testCase.getUserID();
+//         for (Integer userID : assignedUserIDs) {
+//             ManageUser user = retrieveUserById(userID); // pass manageuser object directly
+//             if (user != null && user.getEmail() != null) {
+//                 String userEmail = user.getEmail();
+//                 String subject = "New Test Case Assignment";
+//                 String message = "Dear user, you have been assigned a new test case. Details:\n" +
+//                         "Test Case ID: " + testCase.getIdtest_cases() + "\n" +
+//                         "Test Case Name: " + testCase.getTestCaseName() + "\n" +
+//                         "Deadline: " + testCase.getDeadline() + "\n" +
+//                         "Please review and approve the test case before the deadline.";
+//                 mailService.sendAssignedMail(userEmail, subject, message);
+//             }
+//         }
+//     }
+
+//     private ManageUser retrieveUserById(Integer userID) {
+//         // This method encapsulates the logic for retrieving a user without acting as a middleman
+//         return manageUserService.getUserById(userID);
+//     }
 
 //     private void scheduleDeadlineNotification(TestCase testCase) {
 //         LocalDateTime deadlineDateTime = LocalDate.parse(testCase.getDeadline()).atStartOfDay();
@@ -244,7 +242,7 @@
 //     private void sendDeadlineNotification(TestCase testCase) {
 //         List<Integer> assignedUserIDs = testCase.getUserID();
 //         for (Integer userID : assignedUserIDs) {
-//             ManageUser user = ManageUserService.getUserById(userID);
+//             ManageUser user = manageUserService.getUserById(userID);
 //             if (user != null && user.getEmail() != null) {
 //                 String userEmail = user.getEmail();
 //                 String subject = "Test Case Deadline Notification";
@@ -258,36 +256,36 @@
 //         }
 //     }
 
-//     public void setUserStatusForTestCase(Long testCaseId, String username, String status) {
-//         Optional<TestCase> testCaseOptional = findById(testCaseId);
-//         if (testCaseOptional.isPresent()) {
-//             TestCase testCase = testCaseOptional.get();
-//             testCase.setUserStatus(username, status);
-//             String overallStatus = testCase.determineOverallStatus(); // Determine the overall status
-//             // Assuming you have a method setOverallStatus in your TestCase model
-//             testCase.setOverallStatus(overallStatus); // Update the overall status
-//             updateCase(testCase);
-//         } else {
-//             throw new NoSuchElementException("Test case not found with ID: " + testCaseId);
-//         }
-//     }
+//     // public void setUserStatusForTestCase(Long testCaseId, String username, String status) {
+//     //     Optional<TestCase> testCaseOptional = findById(testCaseId);
+//     //     if (testCaseOptional.isPresent()) {
+//     //         TestCase testCase = testCaseOptional.get();
+//     //         testCase.setUserStatus(username, status);
+//     //         String overallStatus = testCase.determineOverallStatus(); // Determine the overall status
+//     //         // Assuming you have a method setOverallStatus in your TestCase model
+//     //         testCase.setOverallStatus(overallStatus); // Update the overall status
+//     //         updateCase(testCase);
+//     //     } else {
+//     //         throw new NoSuchElementException("Test case not found with ID: " + testCaseId);
+//     //     }
+//     // }
 
-//     public void setUserStatusForTestCase(Long testCaseId, String username, String status, String rejectionReason) {
-//         Optional<TestCase> testCaseOptional = findById(testCaseId);
-//         if (testCaseOptional.isPresent()) {
-//             TestCase testCase = testCaseOptional.get();
-//             testCase.setUserStatus(username, status);
-//              // Determine the overall status
-//             if ("Rejected".equals(status)) {
-//                 testCase.setUserReason(username, rejectionReason);
-//             }
-//             String overallStatus = testCase.determineOverallStatus();
-//             testCase.setOverallStatus(overallStatus);
-//             updateCase(testCase);
-//         } else {
-//             throw new NoSuchElementException("Test case not found with ID: " + testCaseId);
-//         }
-//     }
+//     // public void setUserStatusForTestCase(Long testCaseId, String username, String status, String rejectionReason) {
+//     //     Optional<TestCase> testCaseOptional = findById(testCaseId);
+//     //     if (testCaseOptional.isPresent()) {
+//     //         TestCase testCase = testCaseOptional.get();
+//     //         testCase.setUserStatus(username, status);
+//     //          // Determine the overall status
+//     //         if ("Rejected".equals(status)) {
+//     //             testCase.setUserReason(username, rejectionReason);
+//     //         }
+//     //         String overallStatus = testCase.determineOverallStatus();
+//     //         testCase.setOverallStatus(overallStatus);
+//     //         updateCase(testCase);
+//     //     } else {
+//     //         throw new NoSuchElementException("Test case not found with ID: " + testCaseId);
+//     //     }
+//     // }
 
 //     private Optional<TestCase> findById(Long idtest_cases) {
 //         return testList.stream()
