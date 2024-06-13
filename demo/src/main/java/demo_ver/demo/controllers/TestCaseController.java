@@ -25,6 +25,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import demo_ver.demo.model.ManageUser;
 import demo_ver.demo.model.TestCase;
+import demo_ver.demo.model.TestCaseUserId;
 import demo_ver.demo.service.ManageTestCaseService;
 import demo_ver.demo.service.ManageUserService;
 
@@ -44,18 +45,30 @@ public class TestCaseController {
 
     @GetMapping("/view")
     public String viewCase(Model model, Principal principal, @AuthenticationPrincipal UserDetails userDetails) {
+        // Fetch all test cases
         List<TestCase> testCases = viewCaseService.findAllList();
+
+        // Fetch the current user's username
+        String currentUsername = principal.getName();
 
         // Assuming ManageUserService.getAllUsers() returns a List<ManageUser>
         List<ManageUser> allUsers = manageUserService.getAllUsers();
-        String username = principal.getName();
+
+        // Filter test cases for the current user
+        List<TestCase> userTestCases = testCases.stream()
+                .filter(testCase -> testCase.getUserIDs().stream()
+                        .anyMatch(userId -> {
+                            ManageUser user = manageUserService.getUserById(userId.getUserId());
+                            return user != null && user.getUsername().equals(currentUsername);
+                        }))
+                .collect(Collectors.toList());
 
         // Set username for each test case
         for (TestCase testCase : testCases) {
-            List<Integer> userIds = testCase.getUserID();
+            List<TestCaseUserId> userIds = testCase.getUserIDs();
             List<String> usernames = userIds.stream()
                     .map(userId -> {
-                        ManageUser user = manageUserService.getUserById(userId);
+                        ManageUser user = manageUserService.getUserById(userId.getUserId());
                         return (user != null) ? user.getUsername() : "";
                     })
                     .collect(Collectors.toList());
@@ -64,13 +77,10 @@ public class TestCaseController {
             testCase.setUsername(String.join(", ", usernames));
         }
 
-        List<TestCase> userTestCases = viewCaseService.findTestCasesByUsername(username);
-
         model.addAttribute("testCase", userTestCases);
         model.addAttribute("users1", allUsers);
         model.addAttribute("allTestCases", testCases);
-        model.addAttribute("userTestCases",
-        viewCaseService.findTestCasesByUsername(username));
+        model.addAttribute("userTestCases", userTestCases);
         // remove edit and delete if not tester
         Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
         boolean isTester = authorities.stream()
@@ -90,11 +100,18 @@ public class TestCaseController {
     }
 
     @PostMapping("/save")
-    public String addTestCaseForm(TestCase testCase, @RequestParam("userID") List<Integer> userID,@AuthenticationPrincipal UserDetails userDetails, Model model)
+    // public String addTestCaseForm(TestCase testCase, @RequestParam("userID")
+    // List<Integer> userID,@AuthenticationPrincipal UserDetails userDetails, Model
+    // model)
+    public String addTestCaseForm(TestCase testCase,
+            @RequestParam(name = "userIdList[]", required = false) List<Integer> userIdList,
+            @AuthenticationPrincipal UserDetails userDetails, Model model)
+
             throws JsonProcessingException {
         model.addAttribute("tests", viewCaseService.findAllList());
-        model.addAttribute("users", manageUserService.getAllUsersWithRoles()); // I added this so that user list will always show
-                                                                      // even if got validation errors
+        model.addAttribute("users", manageUserService.getAllUsersWithRoles()); // I added this so that user list will
+                                                                               // always show
+        // even if got validation errors
 
         // Check if the test case name already exists
         if (viewCaseService.istestCaseExists(testCase.getTestCaseName())) {
@@ -108,7 +125,7 @@ public class TestCaseController {
         }
 
         // Proceed with adding the test case
-        viewCaseService.addTestCaseForm(testCase, userID, userDetails.getUsername());
+        viewCaseService.addTestCaseForm(testCase, userIdList, userDetails.getUsername());
         return "redirect:/view";
     }
 
@@ -129,7 +146,8 @@ public class TestCaseController {
     public String editCase(@PathVariable("idtest_cases") int idtest_cases, Model model) {
         TestCase testCaseToEdit = viewCaseService.getTestCaseById(idtest_cases);
         model.addAttribute("testCase", testCaseToEdit);
-        model.addAttribute("users", manageUserService.getAllUsersWithRoles()); // Add users for assigning to the test case
+        model.addAttribute("users", manageUserService.getAllUsersWithRoles()); // Add users for assigning to the test
+                                                                               // case
         return "EditTestCase"; // The name of the edit form template
     }
 
@@ -138,11 +156,12 @@ public class TestCaseController {
             throws JsonProcessingException {
 
         model.addAttribute("tests", viewCaseService.findAllList());
-        model.addAttribute("users", manageUserService.getAllUsersWithRoles()); // I added this so that user list will always show
-                                                                      // even if got validation errors
+        model.addAttribute("users", manageUserService.getAllUsersWithRoles()); // I added this so that user list will
+                                                                               // always show
+        // even if got validation errors
         if (viewCaseService.istestCaseExists(testCase.getTestCaseName())) {
-        model.addAttribute("testCaseNameExists", true);
-        return "EditTestCase";
+            model.addAttribute("testCaseNameExists", true);
+            return "EditTestCase";
         }
         // Check if the deadline is later than the date created
         if (!isDeadlineLaterThanDateCreated(testCase.getDateCreated(), testCase.getDeadline())) {
@@ -154,7 +173,8 @@ public class TestCaseController {
     }
 
     @PostMapping("/setUserStatus")
-    public String setUserStatus(@RequestParam int testCaseId, @RequestParam String status,@RequestParam(required = false) String rejectionReason, Principal principal) {
+    public String setUserStatus(@RequestParam int testCaseId, @RequestParam String status,
+            @RequestParam(required = false) String rejectionReason, Principal principal) {
         String username = principal.getName(); // Get logged-in username
         viewCaseService.setUserStatusForTestCase(testCaseId, username, status, rejectionReason);
         return "redirect:/view";

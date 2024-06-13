@@ -63,23 +63,6 @@
                 </div>
             </div>
             <!-- <div class="form-group">
-                <label for="overallStatus">Overall Status:</label>
-                <select class="form-control" th:field="*{overallStatus}">
-                  <option value="Pending">Pending</option>
-                  <option value="In Progress">In Progress</option>
-                  <option value="Completed">Completed</option>
-                </select>
-            </div> -->
-            <div class="form-group">
-                <label for="status">Status:</label>
-                <select class="form-control" th:field="*{status}">
-                  <option value="Pending">Pending</option>
-                  <option value="Under Review">Under Review</option>
-                  <option value="Approved">Approved</option>
-                  <option value="Rejected">Rejected</option>
-                </select>
-            </div>
-            <!-- <div class="form-group">
                 <label for="reason">Reason (Optional):</label>
                 <textarea class="form-control" name="reason" th:field="*{reason}" rows="3"></textarea>
             </div> -->
@@ -96,32 +79,34 @@
                             th:text="${user.username + ' (' + user.roleName.substring(5) + ')'}"></label>
                     </div>
                 </div> -->
-                <!-- <input type="text" class="form-control" th:field="*{username}" th:value="test"> -->
-           <!-- </div> -->
+            <!-- <input type="text" class="form-control" th:field="*{username}" th:value="test"> -->
+            <!-- </div> -->
             <div class="form-group">
-                <label for="createdBy">Username:</label>
-                <input type="text" class="form-control" id="createdBy" name="createdBy"
-                th:value="${#authentication.principal.username}" disabled>
+                <label for="Username">Username:</label>
+                <input type="text" class="form-control" id="Username" name="Username"
+                    th:value="${#authentication.principal.username}" disabled>
             </div>
             <div class="form-group">
                 <label for="createdBy">Created By:</label>
                 <input type="text" class="form-control" id="createdBy" name="createdBy"
-            th:value="${#authentication.principal.username}" disabled>
+                    th:value="${#authentication.principal.username}" disabled>
             </div>
             <div class="form-group">
                 <label>Assign Users:</label>
                 <div th:each="user : ${users}">
-                    <div  th:unless="${user.userID == 2000}" class="form-check">
+                    <div th:unless="${user.userID == 1}" class="form-check">
+                        <!-- <input type="checkbox" class="form-check-input" th:id="${'userCheckbox' + user.userID}"
+                            th:field="*{userID}" th:value="${user.userID}"> -->
                         <input type="checkbox" class="form-check-input" th:id="${'userCheckbox' + user.userID}"
-                            th:field="*{userID}" th:value="${user.userID}">
+                            th:name="userIdList[]" th:value="${user.userID}">
                         <label class="form-check-label" th:for="${'userCheckbox' + user.userID}"
                             th:if="${user.roleName.startsWith('ROLE_')}"
                             th:text="${user.username + ' (' + user.roleName.substring(5) + ')'}"></label>
                     </div>
                 </div>
             </div>
-            
-            
+
+
             <div class="d-flex justify-content-between">
                 <button type="submit" class="btn btn-success">Create <i class="bi bi-plus"></i></button>
             </div>
