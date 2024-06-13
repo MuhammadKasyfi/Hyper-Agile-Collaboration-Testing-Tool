@@ -1,22 +1,18 @@
 package demo_ver.demo.model;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import demo_ver.demo.service.ManageUserService;
-import jakarta.persistence.CollectionTable;
-import jakarta.persistence.ElementCollection;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.MapKeyColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 
@@ -43,20 +39,14 @@ public class TestCase {
     private String createdBy;
     private String status;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name="test_case_user_reasons", joinColumns=@JoinColumn(name="test_case_id"))
-    @MapKeyColumn(name="username")
-    private Map<String, String> userReasons = new HashMap<>();
+    @OneToMany(mappedBy = "testCase", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<TestCaseUserReason> userReasons;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name="test_case_user_statuses", joinColumns=@JoinColumn(name="test_case_id"))
-    @MapKeyColumn(name="username")
-    private Map<String, String> userStatuses = new HashMap<>();
+    @OneToMany(mappedBy = "testCase", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<TestCaseUserStatus> userStatuses;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name="test_case_user_ids", joinColumns=@JoinColumn(name="test_case_id"))
-    @MapKeyColumn(name="username")
-    private List<Integer> userID;
+    @OneToMany(mappedBy = "testCase", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<TestCaseUserId> userIDs;
 
     @Transient
     @Autowired
@@ -67,7 +57,7 @@ public class TestCase {
     }
 
     public TestCase(String status, int idtest_cases, String projectId, String testCaseName,
-            String test_desc, String dateCreated, String deadline, List<Integer> userID) {
+            String test_desc, String dateCreated, String deadline) {
         this.status = status;
         this.idtest_cases = idtest_cases;
         this.projectId = projectId;
@@ -75,11 +65,10 @@ public class TestCase {
         this.test_desc = test_desc;
         this.dateCreated = dateCreated;
         this.deadline = deadline;
-        this.userID = userID;
     }
 
     public TestCase(String status, int idtest_cases, String projectId, String smartContractID, String testCaseName,
-            String test_desc, String dateCreated, String deadline, List<Integer> userID) {
+            String test_desc, String dateCreated, String deadline) {
         this.status = status;
         this.idtest_cases = idtest_cases;
         this.projectId = projectId;
@@ -88,12 +77,11 @@ public class TestCase {
         this.test_desc = test_desc;
         this.dateCreated = dateCreated;
         this.deadline = deadline;
-        this.userID = userID;
     }
 
-    public void setUserStatuses(Map<String, String> userStatuses) {
-        this.userStatuses = userStatuses;
-    }
+    // public void setUserStatuses(Map<String, String> userStatuses) {
+    //     this.userStatuses = userStatuses;
+    // }
 
     // Getters and setters for existing fields
     public String getStatus() {
@@ -104,16 +92,40 @@ public class TestCase {
         this.status = status;
     }
 
-    public Map<String, String> getUserReason() {
+    // public Map<String, String> getUserReason() {
+    //     return userReasons;
+    // }
+
+    // public void setUserReason(Map<String, String> userReason) {
+    //     this.userReasons = userReason;
+    // }
+
+    // public void setUserReason(String username, String reason) {
+    //     userReasons.put(username, reason);
+    // }
+
+    public List<TestCaseUserReason> getUserReasons() {
         return userReasons;
     }
 
-    public void setUserReason(Map<String, String> userReason) {
-        this.userReasons = userReason;
+    public void setUserReasons(List<TestCaseUserReason> userReasons) {
+        this.userReasons = userReasons;
     }
 
-    public void setUserReason(String username, String reason) {
-        userReasons.put(username, reason);
+    public List<TestCaseUserStatus> getUserStatuses() {
+        return userStatuses;
+    }
+
+    public void setUserStatuses(List<TestCaseUserStatus> userStatuses) {
+        this.userStatuses = userStatuses;
+    }
+
+    public List<TestCaseUserId> getUserIDs() {
+        return userIDs;
+    }
+
+    public void setUserIDs(List<TestCaseUserId> userIDs) {
+        this.userIDs = userIDs;
     }
 
     public int getIdtest_cases() {
@@ -180,13 +192,13 @@ public class TestCase {
         this.smartContractID = smartContractID;
     }
 
-    public List<Integer> getUserID() {
-        return userID;
-    }
+    // public List<Integer> getUserID() {
+    //     return userID;
+    // }
 
-    public void setUserID(List<Integer> userID) {
-        this.userID = userID;
-    }
+    // public void setUserID(List<Integer> userID) {
+    //     this.userID = userID;
+    // }
 
     public String getUsername() {
         return username;
@@ -204,20 +216,11 @@ public class TestCase {
         this.createdBy = createdBy;
     }
 
-    // Methods for user statuses
-    public Map<String, String> getUserStatuses() {
-        return userStatuses;
-    }
-
-    public void setUserStatus(String username, String status) {
-        userStatuses.put(username, status);
-    }
-
     // Method to get usernames of assigned users
     public List<String> getUsernames() {
-        return userID.stream()
+        return userIDs.stream()
                 .map(userId -> {
-                    ManageUser user = manageUserService.getUserById(userId);
+                    ManageUser user = manageUserService.getUserById(userId.getUserId());
                     return (user != null) ? user.getUsername() : "";
                 })
                 .collect(Collectors.toList());
@@ -227,42 +230,26 @@ public class TestCase {
         this.userStatuses.clear();
     }
 
-    public String determineOverallStatus() {
-        // If any user has rejected the test case, then the overall status is "Rejected"
-        if (userStatuses.containsValue("Rejected")) {
-            return "Rejected";
-        }
+   public String determineOverallStatus() {
+        boolean allApproved = true;
+        boolean anyRejected = false;
 
-        // Check if all assigned users have set their status
-        // Only change the overall status if all users have set their status
-        if (userStatuses.size() == userID.size()) {// minus the tester/ note tester must tick their own name
-            // If all users have approved, then the overall status is "Approved"
-            boolean allApproved = userStatuses.values().stream().allMatch(status ->
-            status.equals("Approved"));
-            if (allApproved) {
-            return "Approved";
+        for (TestCaseUserStatus userStatus : userStatuses) {
+            if ("Rejected".equals(userStatus.getStatus())) {
+                anyRejected = true;
+                break;
+            } else if (!"Approved".equals(userStatus.getStatus())) {
+                allApproved = false;
             }
-
-            // incorrect method remove after db connection, tester doesn't need to be
-            // included during creating test case after db connection
-            // long nonApprovedCount = userStatuses.values().stream()
-            //         .filter(status -> !status.equals("Approved"))
-            //         .count();
-
-            // long notSetCount = userStatuses.values().stream()
-            //         .filter(status -> status == null || status.isEmpty())
-            //         .count();
-
-            // if (nonApprovedCount == 0 && notSetCount <= 1) {
-            //     return "Approved";
-            // }
-
-            // incorrect way end
         }
 
-        // Default to "Pending" if not all users have set their status or if none of the
-        // above conditions are met
-        return "Pending";
+        if (anyRejected) {
+            return "Rejected";
+        } else if (allApproved) {
+            return "Approved";
+        } else {
+            return "Pending";
+        }
     }
 
     public String getOverallStatus() {

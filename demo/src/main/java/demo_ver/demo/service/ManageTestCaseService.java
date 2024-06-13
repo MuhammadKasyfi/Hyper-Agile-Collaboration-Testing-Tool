@@ -17,14 +17,29 @@ import org.springframework.web.client.RestTemplate;
 import demo_ver.demo.mail.MailService;
 import demo_ver.demo.model.ManageUser;
 import demo_ver.demo.model.TestCase;
+import demo_ver.demo.model.TestCaseUserId;
+import demo_ver.demo.model.TestCaseUserReason;
+import demo_ver.demo.model.TestCaseUserStatus;
 import demo_ver.demo.repository.ManageTestCaseRepository;
+import demo_ver.demo.repository.TestCaseUserIdRepository;
+import demo_ver.demo.repository.TestCaseUserReasonRepository;
+import demo_ver.demo.repository.TestCaseUserStatusRepository;
 
 @Service
 public class ManageTestCaseService {
 
     @Autowired
-    private ManageTestCaseRepository testCaseRepository;
-    
+    private ManageTestCaseRepository manageTestCaseRepository;
+
+    @Autowired
+    private TestCaseUserReasonRepository testCaseUserReasonRepository;
+
+    @Autowired
+    private TestCaseUserStatusRepository testCaseUserStatusRepository;
+
+    @Autowired
+    private TestCaseUserIdRepository testCaseUserIdRepository;
+
     @Autowired
     private MailService mailService;
 
@@ -39,21 +54,35 @@ public class ManageTestCaseService {
     }
 
     public List<TestCase> findAllList() {
-        return (List<TestCase>) testCaseRepository.findAll();
+        return (List<TestCase>) manageTestCaseRepository.findAll();
+    }
+
+    public List<TestCase> findTestCasesByUsername(String username) {
+        return manageTestCaseRepository.findByUsername(username);
+    }
+
+    public TestCase getTestCaseById(int id) {
+        return manageTestCaseRepository.findById(id).orElse(null);
     }
 
     // Do not add to hyperledger yet, unless overall status is approved
-    public void addTestCaseForm(TestCase testCase, List<Integer> userID, String testerUsername) {
-        testCase.setUserID(userID);
-        testCaseRepository.save(testCase);
-        sendAssignmentNotification(testCase);
-        scheduleDeadlineNotification(testCase);
+    public void addTestCaseForm(TestCase testCase, List<Integer> userIDs, String createdBy) {
+        testCase.setCreatedBy(createdBy);
+        TestCase savedTestCase = manageTestCaseRepository.save(testCase);
+
+        for (Integer userId : userIDs) {
+            TestCaseUserId testCaseUserId = new TestCaseUserId(savedTestCase, userId.intValue());
+            testCaseUserIdRepository.save(testCaseUserId);
+        }
+        
+        // sendAssignmentNotification(testCase);
+        // scheduleDeadlineNotification(testCase);
     }
 
     private void sendAssignmentNotification(TestCase testCase) {
-        List<Integer> assignedUserIDs = testCase.getUserID();
-        for (Integer userID : assignedUserIDs) {
-            ManageUser user = retrieveUserById(userID); // pass manageuser object directly
+        List<TestCaseUserId> assignedUserIDs = testCase.getUserIDs();
+        for (TestCaseUserId userID : assignedUserIDs) {
+            ManageUser user = retrieveUserById(userID.getUserId()); // pass manageuser object directly
             if (user != null && user.getEmail() != null) {
                 String userEmail = user.getEmail();
                 String subject = "New Test Case Assignment";
@@ -84,9 +113,9 @@ public class ManageTestCaseService {
     }
 
     private void sendDeadlineNotification(TestCase testCase) {
-        List<Integer> assignedUserIDs = testCase.getUserID();
-        for (Integer userID : assignedUserIDs) {
-            ManageUser user = manageUserService.getUserById(userID);
+        List<TestCaseUserId> assignedUserIDs = testCase.getUserIDs();
+        for (TestCaseUserId  userID : assignedUserIDs) {
+            ManageUser user = manageUserService.getUserById(userID.getUserId());
             if (user != null && user.getEmail() != null) {
                 String userEmail = user.getEmail();
                 String subject = "Test Case Deadline Notification";
@@ -101,114 +130,64 @@ public class ManageTestCaseService {
     }
 
     public void setUserStatusForTestCase(int testCaseId, String username, String status) {
-        Optional<TestCase> testCaseOptional = testCaseRepository.findById(testCaseId);
-        if (testCaseOptional.isPresent()) {
-            TestCase testCase = testCaseOptional.get();
-            testCase.setUserStatus(username, status);
-            String overallStatus = testCase.determineOverallStatus();
-            testCase.setOverallStatus(overallStatus);
-            testCaseRepository.save(testCase);
+        TestCase testCase = manageTestCaseRepository.findById(testCaseId).orElse(null);
+        if (testCase != null) {
+            TestCaseUserStatus userStatus = new TestCaseUserStatus(testCase, username, status);
+            testCaseUserStatusRepository.save(userStatus);
+            updateTestCaseOverallStatus(testCaseId);
         } else {
             throw new NoSuchElementException("Test case not found with ID: " + testCaseId);
         }
+
     }
 
-    //only if reject
+    // only if reject
     public void setUserStatusForTestCase(int testCaseId, String username, String status, String rejectionReason) {
-        Optional<TestCase> testCaseOptional = testCaseRepository.findById(testCaseId);
-        if (testCaseOptional.isPresent()) {
-            TestCase testCase = testCaseOptional.get();
-            testCase.setUserStatus(username, status);
-            if ("Rejected".equals(status)) {
-                testCase.setUserReason(username, rejectionReason);
+        TestCase testCase = manageTestCaseRepository.findById(testCaseId).orElse(null);
+        if (testCase != null) {
+            TestCaseUserStatus userStatus = new TestCaseUserStatus(testCase, username, status);
+            testCaseUserStatusRepository.save(userStatus);
+
+            if (rejectionReason != null && !rejectionReason.isEmpty()) {
+                TestCaseUserReason userReason = new TestCaseUserReason(testCase, username, rejectionReason);
+                testCaseUserReasonRepository.save(userReason);
             }
-            String overallStatus = testCase.determineOverallStatus();
-            testCase.setOverallStatus(overallStatus);
-            testCaseRepository.save(testCase);
-        } else {
-            throw new NoSuchElementException("Test case not found with ID: " + testCaseId);
+            updateTestCaseOverallStatus(testCaseId);
         }
     }
 
-    public void updateCaseUser(TestCase updatedTestCase, List<Integer> userID) {
-        Optional<TestCase> existingTestCaseOpt = testCaseRepository.findById(updatedTestCase.getIdtest_cases());
-        if (existingTestCaseOpt.isPresent()) {
-            TestCase existingTestCase = existingTestCaseOpt.get();
-            existingTestCase.setProjectId(updatedTestCase.getProjectId());
-            existingTestCase.setSmartContractID(updatedTestCase.getSmartContractID());
-            existingTestCase.setTestCaseName(updatedTestCase.getTestCaseName());
-            existingTestCase.setTest_desc(updatedTestCase.getTest_desc());
-            existingTestCase.setDateCreated(updatedTestCase.getDateCreated());
-            existingTestCase.setDeadline(updatedTestCase.getDeadline());
-            existingTestCase.setUserID(userID);
-            // Here, you might also want to update the user statuses if necessary
-            existingTestCase.setUserStatuses(updatedTestCase.getUserStatuses());
-            existingTestCase.resetUserStatuses();
+    public void updateCaseUser(TestCase testCase, List<Integer> userIDs) {
+        TestCase savedTestCase = manageTestCaseRepository.save(testCase);
 
-            String overallStatus = existingTestCase.determineOverallStatus(); // Recalculate overall status
-            existingTestCase.setOverallStatus(overallStatus);
+        testCaseUserIdRepository.deleteAll(testCaseUserIdRepository.findByTestCase(savedTestCase));
 
-            testCaseRepository.save(existingTestCase);
-        } else {
-            throw new NoSuchElementException("Test case not found with ID: " + updatedTestCase.getIdtest_cases());
+        for (Integer userId : userIDs) {
+            TestCaseUserId testCaseUserId = new TestCaseUserId(savedTestCase, userId);
+            testCaseUserIdRepository.save(testCaseUserId);
         }
     }
 
     public void updateTestCaseOverallStatus(int testCaseId) {
-        Optional<TestCase> testCaseOpt = testCaseRepository.findById(testCaseId);
+        Optional<TestCase> testCaseOpt = manageTestCaseRepository.findById(testCaseId);
         if (testCaseOpt.isPresent()) {
             TestCase testCase = testCaseOpt.get();
             String overallStatus = testCase.determineOverallStatus();
             testCase.setOverallStatus(overallStatus);
-            testCaseRepository.save(testCase);
+            manageTestCaseRepository.save(testCase);
         } else {
             throw new NoSuchElementException("Test case not found with ID: " + testCaseId);
         }
     }
 
-    public void deleteTestCaseById(int testCaseId) {
-        if (testCaseRepository.existsById(testCaseId)) {
-            testCaseRepository.deleteById(testCaseId);
+    public void deleteTestCaseById(int id) {
+        if (manageTestCaseRepository.existsById(id)) {
+            manageTestCaseRepository.deleteById(id);
         } else {
-            throw new NoSuchElementException("Test case not found with ID: " + testCaseId);
+            throw new NoSuchElementException("Test case not found with ID: " + id);
         }
-    }
-
-    public TestCase getTestCaseById(int id) {
-        return testCaseRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Test case not found with ID: " + id));
     }
 
     public boolean istestCaseExists(String testCaseName) {
-        return testCaseRepository.existsByTestCaseName(testCaseName);
+        return manageTestCaseRepository.existsByTestCaseName(testCaseName);
     }
-
-    public List<TestCase> findTestCasesByUsername(String username) {
-        return testCaseRepository.findByUsername(username);
-    }
-
-    // // Check if a username exists in the system
-    // public boolean istestCaseExists(String testCaseName) {
-    //     return testList.stream().anyMatch(Test -> Test.getTestCaseName().equalsIgnoreCase(testCaseName));
-    // }
-
-    // // In ViewCaseService class
-    // public TestCase getTestCaseById(Long idtest_cases) {
-    //     return testList.stream()
-    //             .filter(testCase -> testCase.getIdtest_cases().equals(idtest_cases))
-    //             .findFirst()
-    //             .orElseThrow(() -> new NoSuchElementException("Test case not found with ID: " + idtest_cases));
-    // }
-
-    // public List<TestCase> findTestCasesByUsername(String username) {
-    //     List<TestCase> userTestCases = new ArrayList<>();
-
-    //     for (TestCase testCase : testList) {
-    //         if (testCase.getUsernames().contains(username)) {
-    //             userTestCases.add(testCase);
-    //         }
-    //     }
-
-    //     return userTestCases;
-    // }
 }
