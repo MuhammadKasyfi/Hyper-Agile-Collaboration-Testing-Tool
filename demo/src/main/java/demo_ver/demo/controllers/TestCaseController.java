@@ -147,7 +147,7 @@ public class TestCaseController {
         TestCase testCaseToEdit = viewCaseService.getTestCaseById(idtest_cases);
         model.addAttribute("testCase", testCaseToEdit);
         model.addAttribute("users", manageUserService.getAllUsersWithRoles()); // Add users for assigning to the test
-                                                                               // case
+        model.addAttribute("testCaseUserIds", viewCaseService.getTestCaseUserIds(testCaseToEdit));                                                                       // case
         return "EditTestCase"; // The name of the edit form template
     }
 

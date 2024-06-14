@@ -73,19 +73,21 @@
                     <div class="form-group">
                         <label>Assign Users:</label>
                         <div th:each="user : ${users}">
-                            <div  th:unless="${user.userID == 2000}" class="form-check">
+                            <div th:unless="${user.roleName == 'ROLE_Admin'}" class="form-check">
+                                <!-- <input type="checkbox" class="form-check-input" th:id="${'userCheckbox' + user.userID}"
+                                    th:field="*{userID}" th:value="${user.userID}"> -->
                                 <input type="checkbox" class="form-check-input" th:id="${'userCheckbox' + user.userID}"
-                                    th:field="*{userID}" th:value="${user.userID}">
+                                    th:name="userIdList[]" th:value="${user.userID}"  th:checked="${#lists.contains(testCaseUserIds, user.userID)}">
                                 <label class="form-check-label" th:for="${'userCheckbox' + user.userID}"
                                     th:if="${user.roleName.startsWith('ROLE_')}"
                                     th:text="${user.username + ' (' + user.roleName.substring(5) + ')'}"></label>
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
-            <br/><input type="hidden" th:field="*{idtest_cases}"/>
+            <br /><input type="hidden" th:field="*{idtest_cases}" />
             <div class="d-flex justify-content-between">
                 <button type="submit" class="btn btn-success">Update <i class="bi bi-check"></i></button>
             </div>

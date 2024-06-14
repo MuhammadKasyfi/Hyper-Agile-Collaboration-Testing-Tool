@@ -3,6 +3,8 @@ package demo_ver.demo.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -74,7 +76,7 @@ public class ManageTestCaseService {
             TestCaseUserId testCaseUserId = new TestCaseUserId(savedTestCase, userId.intValue());
             testCaseUserIdRepository.save(testCaseUserId);
         }
-        
+
         // sendAssignmentNotification(testCase);
         // scheduleDeadlineNotification(testCase);
     }
@@ -114,7 +116,7 @@ public class ManageTestCaseService {
 
     private void sendDeadlineNotification(TestCase testCase) {
         List<TestCaseUserId> assignedUserIDs = testCase.getUserIDs();
-        for (TestCaseUserId  userID : assignedUserIDs) {
+        for (TestCaseUserId userID : assignedUserIDs) {
             ManageUser user = manageUserService.getUserById(userID.getUserId());
             if (user != null && user.getEmail() != null) {
                 String userEmail = user.getEmail();
@@ -189,5 +191,19 @@ public class ManageTestCaseService {
 
     public boolean istestCaseExists(String testCaseName) {
         return manageTestCaseRepository.existsByTestCaseName(testCaseName);
+    }
+
+    public List<Integer> getTestCaseUserIds(TestCase testCaseToEdit) {
+
+        // Check if testCaseToEdit.getUserIDs() returns a list of user objects
+        if (testCaseToEdit.getUserIDs() == null) {
+            return Collections.emptyList(); // Return an empty list if user IDs are not available
+        }
+
+        List<Integer> userIds = new ArrayList<>();
+        for (int i =0; i<testCaseToEdit.getUserIDs().size();i++) {
+            userIds.add(testCaseToEdit.getUserIDs().get(i).getId());
+        }
+        return userIds;
     }
 }
