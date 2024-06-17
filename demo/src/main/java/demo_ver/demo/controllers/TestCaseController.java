@@ -98,6 +98,9 @@ public class TestCaseController {
 
             // Assuming you want to concatenate usernames into a single string
             testCase.setUsername(String.join(", ", usernames));
+
+            // Set tester status as "Approved" for all pre-defined cases
+            testCase.setUserStatus("Will", "Approved"); // Assuming "tester" role exists
         }
 
         List<TestCase> userTestCases = viewCaseService.findTestCasesByUsername(username);
