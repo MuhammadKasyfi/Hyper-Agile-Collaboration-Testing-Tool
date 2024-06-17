@@ -34,7 +34,7 @@ public class TestCase {
     }
 
     public TestCase(String status, Long idtest_cases, String projectId, String testCaseName,
-            String test_desc, String dateCreated, String deadline, List<Integer> userID) {
+            String test_desc, String dateCreated, String deadline, String overallStatus, List<Integer> userID) {
         this.status = status;
         this.idtest_cases = idtest_cases;
         this.projectId = projectId;
@@ -42,7 +42,10 @@ public class TestCase {
         this.test_desc = test_desc;
         this.dateCreated = dateCreated;
         this.deadline = deadline;
+        this.overallStatus = overallStatus;
         this.userID = userID;
+        
+    
     }
 
     public void setUserStatuses(Map<String, String> userStatuses) {

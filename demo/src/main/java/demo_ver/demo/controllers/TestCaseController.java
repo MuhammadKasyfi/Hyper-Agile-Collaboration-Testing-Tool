@@ -188,7 +188,8 @@ public class TestCaseController {
             model.addAttribute("deadlineInvalid", true);
             return "EditTestCase";
         }
-        viewCaseService.updateCaseUser(testCase, userID);
+        //pass testcase, userID, and testername
+        viewCaseService.updateCaseUser(testCase, userID, "Will");
         return "redirect:/view";
     }
 
