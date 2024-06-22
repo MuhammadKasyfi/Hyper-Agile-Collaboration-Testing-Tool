@@ -41,12 +41,17 @@ public class ManageUserService implements UserDetailsService {
 
     }
 
+    // 1001 - Tester
+    // 1002 - Project Manager
+    // 1003 - Developer
+    // 1004 - Stakeholder
+
     // Initialize the user list with some sample data
     private void initializeUserList() {
         userList = new ArrayList<>();
         userList.add(new ManageUser(2000, "teeneshsubramaniam10@gmail.com", "Teenesh", passwordEncoder.encode("123456"), // admin
                 1000));
-        userList.add(new ManageUser(2001, "user@gmail.com", "John", passwordEncoder.encode("123456"), 1002)); // Product Manager
+        userList.add(new ManageUser(2001, "user@gmail.com", "John", passwordEncoder.encode("123456"), 1002)); // Project Manager
         userList.add(
                 new ManageUser(2002, "williamlik@graduate.utm.my", "Will", passwordEncoder.encode("123456"), 1001)); //Tester
                 userList.add(
@@ -56,6 +61,33 @@ public class ManageUserService implements UserDetailsService {
         userList.add(
                 new ManageUser(2004, "williamlik@graduate.utm.my", "tester", passwordEncoder.encode("123456"), 1001));
         userList.add(new ManageUser(2005, "user@gmail.com", "manager", passwordEncoder.encode("123456"), 1002));
+
+        // PTX members 2013, 2008, 2007
+        userList.add(new ManageUser(2006, "user@gmail.com", "Fikri_Tester", passwordEncoder.encode("123456"), 1001)); // Tester
+        userList.add(new ManageUser(2007, "user@gmail.com", "Fikri_PM", passwordEncoder.encode("123456"), 1002)); // Project Manager
+        userList.add(new ManageUser(2008, "user@gmail.com", "Iqmal_Dev", passwordEncoder.encode("123456"), 1003)); // Developer
+        userList.add(new ManageUser(2009, "user@gmail.com", "Iqmal_Tester", passwordEncoder.encode("123456"), 1001)); // Tester
+        userList.add(new ManageUser(2010, "user@gmail.com", "Fahmi_Dev", passwordEncoder.encode("123456"), 1003)); // Developer
+        userList.add(new ManageUser(2011, "user@gmail.com", "Fahmi_Tester", passwordEncoder.encode("123456"), 1001)); // Tester
+        userList.add(new ManageUser(2012, "user@gmail.com", "Ryan_Dev", passwordEncoder.encode("123456"), 1003)); // Developer
+        userList.add(new ManageUser(2013, "user@gmail.com", "Ryan_Tester", passwordEncoder.encode("123456"), 1001)); // Tester
+        userList.add(new ManageUser(2014, "user@gmail.com", "Haziq_Tester", passwordEncoder.encode("123456"), 1001)); // Tester
+        userList.add(new ManageUser(2015, "user@gmail.com", "LowLieXin", passwordEncoder.encode("123456"), 1004)); // Stakeholder
+
+        // Plantfeed members 2016, 2017, 2019
+        userList.add(new ManageUser(2016, "user@gmail.com", "Omar_Tester", passwordEncoder.encode("123456"), 1001)); // Tester
+        userList.add(new ManageUser(2017, "user@gmail.com", "Abdullah_Developer", passwordEncoder.encode("123456"), 1003)); // Developer
+        userList.add(new ManageUser(2018, "user@gmail.com", "Abdullah_Tester", passwordEncoder.encode("123456"), 1001)); // Tester
+        userList.add(new ManageUser(2019, "user@gmail.com", "Omar_PM", passwordEncoder.encode("123456"), 1002)); // Project Manager
+        userList.add(new ManageUser(2020, "user@gmail.com", "Wang_Tester", passwordEncoder.encode("123456"), 1001)); // Tester
+        userList.add(new ManageUser(2021, "user@gmail.com", "Ali_Tester", passwordEncoder.encode("123456"), 1001)); // Tester
+        userList.add(new ManageUser(2022, "user@gmail.com", "Ali_PM", passwordEncoder.encode("123456"), 1002)); // Project Manager
+        userList.add(new ManageUser(2023, "user@gmail.com", "Moussa_Tester", passwordEncoder.encode("123456"), 1001)); // Tester
+
+        // APPS members
+        userList.add(new ManageUser(2024, "user@gmail.com", "Fathan_Tester", passwordEncoder.encode("123456"), 1001)); // Tester
+        userList.add(new ManageUser(2025, "user@gmail.com", "Iqbal_Developer", passwordEncoder.encode("123456"), 1003)); // Developer
+        userList.add(new ManageUser(2026, "user@gmail.com", "Altayeb_PM", passwordEncoder.encode("123456"), 1002)); // Project Manager
     }
 
     // Get all users in the system

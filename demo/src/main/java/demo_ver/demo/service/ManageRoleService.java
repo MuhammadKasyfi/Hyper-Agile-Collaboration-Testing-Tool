@@ -39,9 +39,9 @@ public class ManageRoleService {
         {
             add(new ManageRole(1000, "ROLE_Admin", "Administration"));
             add(new ManageRole(1001, "ROLE_Tester", "unit tester"));
-            add(new ManageRole(1002, "ROLE_Product Manager", "manage production"));
+            add(new ManageRole(1002, "ROLE_Project Manager", "manage production"));
             add(new ManageRole(1003, "ROLE_Developer", "Programming"));
-
+            add(new ManageRole(1004, "ROLE_Stakeholder", "Holds Stakes"));
         }
     };
 

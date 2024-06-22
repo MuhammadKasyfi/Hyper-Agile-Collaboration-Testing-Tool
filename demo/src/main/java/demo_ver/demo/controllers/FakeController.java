@@ -29,6 +29,7 @@ public class FakeController {
         fakeRoleList.add(new ManageRole(1001, "ROLE_Tester", "Fake unit tester"));
         fakeRoleList.add(new ManageRole(1002, "ROLE_Product Manager", "Fake manager"));
         fakeRoleList.add(new ManageRole(1003, "ROLE_Developer", "Programming"));
+        fakeRoleList.add(new ManageRole(1004, "ROLE_Stakeholder", "Holds Stakes"));
 
     }
 

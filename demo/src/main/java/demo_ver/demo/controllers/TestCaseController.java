@@ -27,6 +27,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 // import demo_ver.demo.TestCaseRepository;
 import demo_ver.demo.model.ManageUser;
 import demo_ver.demo.model.TestCase;
+import demo_ver.demo.service.ManageRoleService;
 import demo_ver.demo.service.ManageUserService;
 import demo_ver.demo.service.ViewCaseService;
 
@@ -81,26 +82,38 @@ public class TestCaseController {
     public String viewCase(Model model, Principal principal, @AuthenticationPrincipal UserDetails userDetails)
             throws JsonProcessingException {
         List<TestCase> testCases = ViewCaseService.findAllList();
-
+                
         // Assuming ManageUserService.getAllUsers() returns a List<ManageUser>
         List<ManageUser> allUsers = ManageUserService.getAllUsers();
         String username = principal.getName();
+        
 
         // Set username for each test case
         for (TestCase testCase : testCases) {
             List<Integer> userIds = testCase.getUserID();
+
+            
+
             List<String> usernames = userIds.stream()
                     .map(userId -> {
                         ManageUser user = ManageUserService.getUserById(userId);
                         return (user != null) ? user.getUsername() : "";
                     })
                     .collect(Collectors.toList());
-
+                
+            
             // Assuming you want to concatenate usernames into a single string
             testCase.setUsername(String.join(", ", usernames));
 
-            // Set tester status as "Approved" for all pre-defined cases
-            testCase.setUserStatus("Will", "Approved"); // Assuming "tester" role exists
+            // ManageUser manageUser = ManageUserService.getUserByUsername(username);
+            // ManageRoleService roleService = new ManageRoleService(restTemplate);
+            // List<GrantedAuthority> authorities = getAuthorities(roleService.apiFindByIdString(manageUser.getRoleID()));
+            UserDetails userDetails1 = (UserDetails) userDetails;
+            userDetails1.getAuthorities();
+            if (userDetails1.getAuthorities().stream().anyMatch(authority -> authority.getAuthority().equals("ROLE_Tester"))) {
+                testCase.setUserStatus(username, "Approved");
+            }
+            
         }
 
         List<TestCase> userTestCases = viewCaseService.findTestCasesByUsername(username);
@@ -115,6 +128,7 @@ public class TestCaseController {
         boolean isTester = authorities.stream()
                 .anyMatch(authority -> authority.getAuthority().equals("ROLE_Tester"));
         model.addAttribute("isTester", isTester);
+                
         return "viewTestCase";
     }
 
