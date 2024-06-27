@@ -46,38 +46,6 @@ public class TestCaseController {
     @Autowired
     private RestTemplate restTemplate;
 
-    // @RequestMapping("/getData")
-    // public String getDataFromApi() {
-    // String uri = "http://172.20.228.232:3000/getAllTestCases";
-
-    // try {
-    // String result = restTemplate.getForObject(uri, String.class);
-
-    // // Assuming response is JSON, parse it into a list of TestCase objects
-    // ObjectMapper objectMapper = new ObjectMapper();
-    // List<TestCase> testCases = objectMapper.readValue(result, List.class);
-
-    // // Build a formatted string to list data
-    // StringBuilder dataList = new StringBuilder();
-    // for (TestCase testCase : testCases) {
-    // dataList.append("ID: ").append(testCase.getIdtest_cases()).append(", ");
-    // dataList.append("Case Number: ").append(testCase.getProjectId()).append(",
-    // ");
-    // dataList.append("Priority:
-    // ").append(testCase.getSmartContractID()).append(",\n");
-    // }
-
-    // return dataList.toString(); // Return a string containing the formatted data
-
-    // } catch (RestClientResponseException e) {
-    // // Handle specific HTTP error responses
-    // return "Error: " + e.getMessage();
-    // } catch (Exception e) {
-    // // Handle unexpected exceptions
-    // return "Error: " + e.getMessage();
-    // }
-    // }
-
     @GetMapping("/view")
     public String viewCase(Model model, Principal principal, @AuthenticationPrincipal UserDetails userDetails)
             throws JsonProcessingException {
@@ -105,14 +73,11 @@ public class TestCaseController {
             // Assuming you want to concatenate usernames into a single string
             testCase.setUsername(String.join(", ", usernames));
 
-            // ManageUser manageUser = ManageUserService.getUserByUsername(username);
-            // ManageRoleService roleService = new ManageRoleService(restTemplate);
-            // List<GrantedAuthority> authorities = getAuthorities(roleService.apiFindByIdString(manageUser.getRoleID()));
-            UserDetails userDetails1 = (UserDetails) userDetails;
-            userDetails1.getAuthorities();
-            if (userDetails1.getAuthorities().stream().anyMatch(authority -> authority.getAuthority().equals("ROLE_Tester"))) {
-                testCase.setUserStatus(username, "Approved");
-            }
+            // UserDetails userDetails1 = (UserDetails) userDetails;
+            // userDetails1.getAuthorities();
+            // if (userDetails1.getAuthorities().stream().anyMatch(authority -> authority.getAuthority().equals("ROLE_Tester"))) {
+            //     testCase.setUserStatus(username, "Approved");
+            // }
             
         }
 

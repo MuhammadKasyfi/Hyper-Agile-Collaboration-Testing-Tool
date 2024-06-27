@@ -775,8 +775,8 @@ public class ViewCaseService {
 
     private static final HttpClient httpClient = HttpClient.newHttpClient();
 
-    // private static final String HYPERLEDGER_BASE_URL = "http://172.20.228.232:3000"; // Use ngrok link here instead
-    private static final String HYPERLEDGER_BASE_URL = "https://3028-149-88-106-46.ngrok-free.app"; // Use ngrok link here instead
+    private static final String HYPERLEDGER_BASE_URL = "http://172.20.228.232:3000"; // Use ngrok link here instead
+    // private static final String HYPERLEDGER_BASE_URL = "https://3028-149-88-106-46.ngrok-free.app"; // Use ngrok link here instead
 
     // private static final String HYPERLEDGER_BASE_URL =
     // "http://localhost:8090/api";
@@ -894,12 +894,12 @@ public class ViewCaseService {
     // }
 
     public void addTestCaseForm(TestCase testCase, List<Integer> userID, String testerUsername) {
-        testCase.setIdtest_cases(RandomNumber.getRandom(1, 50));
+        testCase.setIdtest_cases(RandomNumber.getRandom(31, 50));
         testCase.setUserID(userID);
         testCase.setOverallStatus("Pending");
         testList.add(testCase);
         // incorrect method
-        setUserStatusForTestCase(testCase.getIdtest_cases(), testerUsername, "Approved");
+        setUserStatusForTestCase(testCase.getIdtest_cases(), testerUsername, "Approved"); // IMPORTANT
 
         // Prepare the request body (assuming field names match API)
         try {
@@ -1028,6 +1028,7 @@ public class ViewCaseService {
             // Here, you might also want to update the user statuses if necessary
             // existingTestCase.setUserStatuses(updatedTestCase.getUserStatuses());
             existingTestCase.resetUserStatuses();
+            existingTestCase.setUserStatus(testerUsername, "Approved"); //set tester as approved
 
             String overallStatus = existingTestCase.determineOverallStatus(); // Recalculate overall status
             existingTestCase.setOverallStatus(overallStatus);
@@ -1053,8 +1054,6 @@ public class ViewCaseService {
                 logger.error("Error updating test case:", e);
                 // You can potentially handle specific error codes or exceptions here
             }
-            // No need to call deleteCase; just update the object directly in the list
-            // updateCase(existingTestCase); // This method might be redundant
         } else {
             throw new NoSuchElementException("Test case not found with ID: " + updatedTestCase.getIdtest_cases());
         }
@@ -1080,7 +1079,30 @@ public class ViewCaseService {
                 requestBody.put("ostts", testCase.getOverallStatus());
     
                 // Send POST request using RestTemplate
-                String url = HYPERLEDGER_BASE_URL + "/createTestCase"; // Replace with your API URL
+                String url = HYPERLEDGER_BASE_URL + "/updateTestCase"; // Replace with your API URL
+                String response = restTemplate.postForObject(url, requestBody, String.class);
+    
+            } catch (RestClientResponseException e) {
+                // Handle potential errors from the API call
+                logger.error("Error updating test case:", e);
+                // You can potentially handle specific error codes or exceptions here
+            }
+        } else if(testCase.getOverallStatus().equals("Rejected")) {
+            try{
+                // Prepare the request body (assuming field names match API)
+                Map<String, Object> requestBody = new HashMap<>();
+                String idtestCasesString = testCase.getIdtest_cases().toString();
+                requestBody.put("id", idtestCasesString);
+                requestBody.put("pid", testCase.getProjectId());
+                requestBody.put("tcn", testCase.getTestCaseName());
+                requestBody.put("tcdesc", testCase.getTest_desc());
+                requestBody.put("dtc", testCase.getDateCreated());
+                requestBody.put("dl", testCase.getDeadline());
+                requestBody.put("usrn", testCase.getUsername());
+                requestBody.put("ostts", testCase.getOverallStatus());
+    
+                // Send POST request using RestTemplate
+                String url = HYPERLEDGER_BASE_URL + "/updateTestCase"; // Replace with your API URL
                 String response = restTemplate.postForObject(url, requestBody, String.class);
     
             } catch (RestClientResponseException e) {
