@@ -152,12 +152,13 @@ public class TestCaseController {
     }
 
     @PostMapping("/update")
-    public String editTestCaseForm(TestCase testCase, @RequestParam("userID") List<Integer> userID, Model model)
+    public String editTestCaseForm(TestCase testCase, @RequestParam("userID") List<Integer> userID, Model model, Principal principal)
             throws JsonProcessingException {
 
         model.addAttribute("tests", ViewCaseService.findAllList());
         model.addAttribute("users", ManageUserService.getAllUsers()); // I added this so that user list will always show
                                                                       // even if got validation errors
+        String username = principal.getName(); // gets name of tester
         // if (viewCaseService.istestCaseExists(testCase.getTestCaseName())) {
         // model.addAttribute("testCaseNameExists", true);
         // return "EditTestCase";
@@ -168,7 +169,7 @@ public class TestCaseController {
             return "EditTestCase";
         }
         //pass testcase, userID, and testername
-        viewCaseService.updateCaseUser(testCase, userID, "Will");
+        viewCaseService.updateCaseUser(testCase, userID, username); // sends name of tester
         return "redirect:/view";
     }
 
