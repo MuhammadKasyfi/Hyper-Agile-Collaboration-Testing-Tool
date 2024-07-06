@@ -5,7 +5,7 @@ metadata: # Metadata of the resource
 spec:
   type: LoadBalancer
   selector:
-    app: demo-0.0.1-SNAPSHOT
+    app: spring-boot-hyperagile-complete
   ports:
     - protocol: TCP
       port: 8084 # The port the service is running on in the clustor
