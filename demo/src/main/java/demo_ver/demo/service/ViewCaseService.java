@@ -42,7 +42,7 @@ public class ViewCaseService {
     // use this list to store test cases locally, switch to mysql or any database
     private static List<TestCase> testList = new ArrayList<TestCase>() {
         {
-        //     //// PTX ///// test for jenkins2
+        //     //// PTX ///// test for jenkins3
         //     add(new TestCase("", (long) 1, "PTX-1", "Successful Register Profile", 
         //         "Summary\n " +
         //         "To validate the successful register profile\n " +
