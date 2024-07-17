@@ -117,7 +117,7 @@
                                 th:text="${userStatus.value}">Status</span><br />
                         </div>  
                     </td>
-                    <td th:unless="${test.overallStatus == 'Approved'} OR ${isTester} OR ${test.overallStatus == 'Rejected'}">
+                    <td th:unless="${test.overallStatus == 'Approved'} OR ${isTester}">
                         <form th:action="@{/setUserStatus}" method="post">
                             <input type="hidden" th:name="testCaseId" th:value="${test.idtest_cases}" />
                             <input type="hidden" id="rejectionReasonInput" name="rejectionReason" />
@@ -132,9 +132,9 @@
                             <button type="submit" class="btn btn-primary mt-1">Set Status</button>
                         </form>
                     </td>
-                    <td th:unless="${isTester}" th:if="${test.overallStatus == 'Approved'} OR ${test.overallStatus == 'Rejected'} ">
+                    <td th:unless="${isTester}" th:if="${test.overallStatus == 'Approved'}">
                         <button type="button" class="btn btn-secondary disabled" data-toggle="tooltip"
-                            data-placement="top" title="Unable to change test case status after Approved or Rejected">
+                            data-placement="top" title="Unable to change test case status after Approved">
                             <i class="bi bi-info-circle"></i>
                         </button>
                     </td>
