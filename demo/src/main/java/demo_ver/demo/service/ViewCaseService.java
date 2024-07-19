@@ -79,7 +79,7 @@ public class ViewCaseService {
     private static final HttpClient httpClient = HttpClient.newHttpClient();
 
     // private static final String HYPERLEDGER_BASE_URL = "http://172.20.228.232:3000"; // Use ngrok link here instead
-    private static final String HYPERLEDGER_BASE_URL = "https://2f6b-175-136-10-210.ngrok-free.app"; // Use ngrok link here instead
+    private static final String HYPERLEDGER_BASE_URL = "https://d0c4-175-136-10-210.ngrok-free.app"; // Use ngrok link here instead
 
     // private static final String HYPERLEDGER_BASE_URL =
     // "http://localhost:8090/api";
