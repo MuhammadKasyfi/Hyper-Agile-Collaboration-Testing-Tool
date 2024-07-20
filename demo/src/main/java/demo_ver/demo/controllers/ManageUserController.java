@@ -18,6 +18,7 @@ import demo_ver.demo.model.ManageUser;
 import demo_ver.demo.service.ManageRoleService;
 import demo_ver.demo.service.ManageUserService;
 
+// Controller for handling user management requests
 @Controller
 public class ManageUserController {
 
@@ -32,7 +33,7 @@ public class ManageUserController {
     // public List<ManageUser> getAllUsers(){
     // return manageUserService.getAllUsers();
     // }
-
+    
     @GetMapping("/manageuser")
     public String manageusers(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         

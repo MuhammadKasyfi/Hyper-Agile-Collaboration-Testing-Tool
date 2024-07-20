@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import demo_ver.demo.model.ManageRole;
 
+// Service class for managing roles
 @Service
 public class ManageRoleService {
 

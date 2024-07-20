@@ -35,6 +35,7 @@ import demo_ver.demo.model.ManageUser;
 import demo_ver.demo.model.TestCase;
 import demo_ver.demo.utils.RandomNumber;
 
+// service class for viewing test cases
 @Service
 public class ViewCaseService {
     private static final Logger logger = LoggerFactory.getLogger(ViewCaseService.class);
@@ -196,6 +197,7 @@ public class ViewCaseService {
     //             .collect(Collectors.toList());
     // }
 
+    // Add a new test case and send a POST request to the Hyperledger Fabric API
     public void addTestCaseForm(TestCase testCase, List<Integer> userID, String testerUsername) {
         testCase.setIdtest_cases(RandomNumber.getRandom(31, 50));
         testCase.setUserID(userID);
@@ -236,6 +238,7 @@ public class ViewCaseService {
         scheduleDeadlineNotification(testCase);
     }
 
+    // send email notification to assigned users
     private void sendAssignmentNotification(TestCase testCase) {
         List<Integer> assignedUserIDs = testCase.getUserID();
         for (Integer userID : assignedUserIDs) {
@@ -280,6 +283,8 @@ public class ViewCaseService {
         }
     }
 
+
+    // Update the status of a test case for a specific user
     public void setUserStatusForTestCase(Long testCaseId, String username, String status) {
         Optional<TestCase> testCaseOptional = findById(testCaseId);
         if (testCaseOptional.isPresent()) {
@@ -294,6 +299,7 @@ public class ViewCaseService {
         }
     }
 
+    // Update the status of a test case for a specific user
     public void setUserStatusForTestCase(Long testCaseId, String username, String status, String rejectionReason) {
         Optional<TestCase> testCaseOptional = findById(testCaseId);
         if (testCaseOptional.isPresent()) {
@@ -317,6 +323,7 @@ public class ViewCaseService {
                 .findFirst();
     }
 
+    // Set the status of a test case to approved for a tester and send a POST request to the Hyperledger Fabric API
     public void updateCaseUser(TestCase updatedTestCase, List<Integer> userID, String testerUsername) {
         Optional<TestCase> existingTestCaseOpt = findById(updatedTestCase.getIdtest_cases());
         if (existingTestCaseOpt.isPresent()) {
@@ -362,6 +369,7 @@ public class ViewCaseService {
         }
     }
 
+    // Update the status of a test case for a specific user and send a POST request to the Hyperledger Fabric API if overall status is Approved or Rejected
     private void updateCase(TestCase testCase) {
         // deleteCase(testCase.getIdtest_cases());
         Long idtest_cases = testCase.getIdtest_cases();
@@ -417,6 +425,8 @@ public class ViewCaseService {
         
     }
 
+    
+    // Delete a test case and send a DELETE request to the Hyperledger Fabric API
     public void deleteCase(Long idtest_cases) {
         String idtestCasesString = idtest_cases.toString();
         String requestBody = "" + idtestCasesString; // Simple string concatenation

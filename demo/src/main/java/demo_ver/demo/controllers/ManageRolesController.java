@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import demo_ver.demo.model.ManageRole;
 import demo_ver.demo.service.ManageRoleService;
 
+// Controller for handling role management requests
 @Controller
 public class ManageRolesController {
     @Autowired

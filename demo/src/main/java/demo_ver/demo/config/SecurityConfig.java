@@ -21,6 +21,7 @@ import demo_ver.demo.service.ManageUserService;
 @Configuration
 @EnableWebSecurity
 
+// Handles the security configuration of the application
 public class SecurityConfig extends WebSecurityConfiguration {
 
         @Bean
@@ -67,8 +68,11 @@ public class SecurityConfig extends WebSecurityConfiguration {
                                                 .permitAll()
                                                 .requestMatchers("/resources/**", "/static/**", "/webjars/**")
                                                 .permitAll()
-                                                .requestMatchers("/manageuser", "/adduser", "/deleteuser/{userID}","/edituser/{userID}", "/updateuser", "/manageroles", "/createrole", "/editrole/{id}", "/editrole", "/deleterole/{id}").hasRole("Admin")
-                                                .requestMatchers("/view", "/add", "/save", "/deleteCase/{idtest_cases}", "/editCase/{idtest_cases}", "/update", "/testcases/details/{idtest_cases}", "/testcases/approveStatus/{idtest_cases}", "/testcases/rejectStatus/{idtest_cases}", "/testcases/setUnderReview/{idtest_cases}", "/testcases/setNeedsRevision/{idtest_cases}").hasAnyRole("Tester", "Product Manager", "Developer", "Stakeholder")
+                                                .requestMatchers("/manageuser", "/adduser", "/deleteuser/{userID}","/edituser/{userID}", "/updateuser", "/manageroles", 
+                                                "/createrole", "/editrole/{id}", "/editrole", "/deleterole/{id}").hasRole("Admin")
+                                                .requestMatchers("/view", "/add", "/save", "/deleteCase/{idtest_cases}", "/editCase/{idtest_cases}", "/update", 
+                                                "/testcases/details/{idtest_cases}", "/testcases/approveStatus/{idtest_cases}", "/testcases/rejectStatus/{idtest_cases}", 
+                                                "/testcases/setUnderReview/{idtest_cases}", "/testcases/setNeedsRevision/{idtest_cases}").hasAnyRole("Tester", "Product Manager", "Developer", "Stakeholder")
                                                 .requestMatchers("/home", "/changepassword").hasAnyRole("Admin", "Tester", "Product Manager", "Developer", "Stakeholder")
                                                 .anyRequest().authenticated())
                                 .csrf(AbstractHttpConfigurer::disable)
