@@ -1,6 +1,13 @@
 # Hyper-Agile-Collaboration-Testing-Management-Tool
 
-Github Link: [https://github.com/Haviineesh/Hyper-Agile-Collaboration-Testing-Tool.git](https://github.com/MuhammadKasyfi/Hyper-Agile-Collaboration-Testing-Tool.git)
+Requirements:
+
+Ubuntu for Windows
+Docker Desktop
+Hyperledger Fabric Solutions v2.4
+
+Hyperledger v2.4 Installation:
+https://hyperledger-fabric.readthedocs.io/en/release-2.4/install.html
 
 
 
