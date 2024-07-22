@@ -1,4 +1,4 @@
-# Hyper-Agile-Collaboration-Testing-Tool
+# Hyper-Agile-Collaboration-Testing-Management-Tool
 Application Development SECJ3104-02
 
 Github Link: https://github.com/Haviineesh/Hyper-Agile-Collaboration-Testing-Tool.git
