@@ -69,19 +69,39 @@ public class ManageUserService implements UserDetailsService {
         userList.add(new ManageUser(2009, "user@gmail.com", "Fahmi_Tester", passwordEncoder.encode("123456"), 1001)); // Tester
         userList.add(new ManageUser(2010, "user@gmail.com", "Ryan_Tester", passwordEncoder.encode("123456"), 1001)); // Tester
         userList.add(new ManageUser(2011, "user@gmail.com", "Haziq_Tester", passwordEncoder.encode("123456"), 1001)); // Tester
-        userList.add(new ManageUser(2012, "user@gmail.com", "LowLieXin", passwordEncoder.encode("123456"), 1004)); // Stakeholder
+        userList.add(new ManageUser(2012, "user@gmail.com", "Kasyfi", passwordEncoder.encode("123456"), 1004)); // Stakeholder
 
-        // Plantfeed members 2016, 2017, 2019
-        userList.add(new ManageUser(2013, "user@gmail.com", "Omar_Tester", passwordEncoder.encode("123456"), 1001)); // Tester
-        userList.add(new ManageUser(2014, "user@gmail.com", "Omar_PM", passwordEncoder.encode("123456"), 1002)); // Project Manager
-        userList.add(new ManageUser(2015, "user@gmail.com", "Wang_Tester", passwordEncoder.encode("123456"), 1001)); // Tester
-        userList.add(new ManageUser(2016, "user@gmail.com", "Ali_Tester", passwordEncoder.encode("123456"), 1001)); // Tester
-        userList.add(new ManageUser(2017, "user@gmail.com", "Adila", passwordEncoder.encode("123456"), 1004)); // Stakeholder
+        // // Plantfeed members 2016, 2017, 2019
+        // userList.add(new ManageUser(2013, "user@gmail.com", "Omar_Tester", passwordEncoder.encode("123456"), 1001)); // Tester
+        // userList.add(new ManageUser(2014, "user@gmail.com", "Omar_PM", passwordEncoder.encode("123456"), 1002)); // Project Manager
+        // userList.add(new ManageUser(2015, "user@gmail.com", "Wang_Tester", passwordEncoder.encode("123456"), 1001)); // Tester
+        // userList.add(new ManageUser(2016, "user@gmail.com", "Ali_Tester", passwordEncoder.encode("123456"), 1001)); // Tester
+        // userList.add(new ManageUser(2017, "user@gmail.com", "Adila", passwordEncoder.encode("123456"), 1004)); // Stakeholder
 
         // APPS members
-        userList.add(new ManageUser(2018, "user@gmail.com", "Fathan_Tester", passwordEncoder.encode("123456"), 1001)); // Tester
-        userList.add(new ManageUser(2019, "user@gmail.com", "Iqbal_Developer", passwordEncoder.encode("123456"), 1003)); // Developer
-        userList.add(new ManageUser(2020, "user@gmail.com", "Altayeb_PM", passwordEncoder.encode("123456"), 1002)); // Project Manager
+        // userList.add(new ManageUser(2018, "user@gmail.com", "Fathan_Tester", passwordEncoder.encode("123456"), 1001)); // Tester
+        // userList.add(new ManageUser(2019, "user@gmail.com", "Iqbal_Developer", passwordEncoder.encode("123456"), 1003)); // Developer
+        // userList.add(new ManageUser(2020, "user@gmail.com", "Altayeb_PM", passwordEncoder.encode("123456"), 1002)); // Project Manager
+
+        // PowerHR
+        userList.add(new ManageUser(2021, "user@gmail.com", "Kagi_Tester", passwordEncoder.encode("123456"), 1001)); // Tester
+        userList.add(new ManageUser(2022, "user@gmail.com", "Ain_Dev", passwordEncoder.encode("123456"), 1003)); // Developer
+        userList.add(new ManageUser(2023, "user@gmail.com", "Naim_PM", passwordEncoder.encode("123456"), 1002)); // Project Manager
+        userList.add(new ManageUser(2024, "user@gmail.com", "Vinodh_Tester", passwordEncoder.encode("123456"), 1001)); // Tester
+        userList.add(new ManageUser(2025, "user@gmail.com", "Fazlin_Dev", passwordEncoder.encode("123456"), 1003)); // Developer
+        userList.add(new ManageUser(2026, "user@gmail.com", "Eikiesha_Tester", passwordEncoder.encode("123456"), 1001)); // Tester
+        userList.add(new ManageUser(2027, "user@gmail.com", "Izzah_Dev", passwordEncoder.encode("123456"), 1003)); // Developer
+        userList.add(new ManageUser(2028, "user@gmail.com", "Nadhirah", passwordEncoder.encode("123456"), 1004)); // Stakeholder
+
+        // SAgile
+        userList.add(new ManageUser(2029, "user@gmail.com", "Amar_Tester", passwordEncoder.encode("123456"), 1001)); // Tester
+        userList.add(new ManageUser(2030, "user@gmail.com", "Roshni_Dev", passwordEncoder.encode("123456"), 1003)); // Developer
+        userList.add(new ManageUser(2031, "user@gmail.com", "Amarul_PM", passwordEncoder.encode("123456"), 1002)); // Project Manager
+        userList.add(new ManageUser(2032, "user@gmail.com", "Taufiq_Tester", passwordEncoder.encode("123456"), 1001)); // Tester
+        userList.add(new ManageUser(2033, "user@gmail.com", "Periyaa_Dev", passwordEncoder.encode("123456"), 1003)); // Developer
+        userList.add(new ManageUser(2034, "user@gmail.com", "Darwish_Tester", passwordEncoder.encode("123456"), 1001)); // Tester
+        userList.add(new ManageUser(2035, "user@gmail.com", "Amar_Dev", passwordEncoder.encode("123456"), 1003)); // Developer
+        userList.add(new ManageUser(2036, "user@gmail.com", "Havi", passwordEncoder.encode("123456"), 1004)); // Stakeholder
     }
 
     // Get all users in the system

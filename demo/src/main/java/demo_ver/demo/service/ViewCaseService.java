@@ -17,6 +17,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,7 +81,7 @@ public class ViewCaseService {
     private static final HttpClient httpClient = HttpClient.newHttpClient();
 
     // private static final String HYPERLEDGER_BASE_URL = "http://172.20.228.232:3000"; // Use ngrok link here instead
-    private static final String HYPERLEDGER_BASE_URL = "https://d0c4-175-136-10-210.ngrok-free.app"; // Use ngrok link here instead
+    private static final String HYPERLEDGER_BASE_URL = "https://e628-175-139-134-58.ngrok-free.app"; // Use ngrok link here instead
 
     // private static final String HYPERLEDGER_BASE_URL =
     // "http://localhost:8090/api";
@@ -199,7 +200,7 @@ public class ViewCaseService {
 
     // Add a new test case and send a POST request to the Hyperledger Fabric API
     public void addTestCaseForm(TestCase testCase, List<Integer> userID, String testerUsername) {
-        testCase.setIdtest_cases(RandomNumber.getRandom(31, 50));
+        testCase.setIdtest_cases(RandomNumber.getRandom(1, 1000)); // TODO - generate a unique ID that wont be repeated
         testCase.setUserID(userID);
         testCase.setOverallStatus("Pending");
         testList.add(testCase);
