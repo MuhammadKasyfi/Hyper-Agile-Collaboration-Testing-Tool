@@ -69,7 +69,7 @@ public class ManageUserService implements UserDetailsService {
         userList.add(new ManageUser(2009, "user@gmail.com", "Fahmi_Tester", passwordEncoder.encode("123456"), 1001)); // Tester
         userList.add(new ManageUser(2010, "user@gmail.com", "Ryan_Tester", passwordEncoder.encode("123456"), 1001)); // Tester
         userList.add(new ManageUser(2011, "user@gmail.com", "Haziq_Tester", passwordEncoder.encode("123456"), 1001)); // Tester
-        userList.add(new ManageUser(2012, "user@gmail.com", "Kasyfi", passwordEncoder.encode("123456"), 1004)); // Stakeholder
+        userList.add(new ManageUser(2012, "user@gmail.com", "Kasyfi_Stake", passwordEncoder.encode("123456"), 1004)); // Stakeholder
 
         // // Plantfeed members 2016, 2017, 2019
         // userList.add(new ManageUser(2013, "user@gmail.com", "Omar_Tester", passwordEncoder.encode("123456"), 1001)); // Tester
@@ -102,6 +102,8 @@ public class ManageUserService implements UserDetailsService {
         userList.add(new ManageUser(2034, "user@gmail.com", "Darwish_Tester", passwordEncoder.encode("123456"), 1001)); // Tester
         userList.add(new ManageUser(2035, "user@gmail.com", "Amar_Dev", passwordEncoder.encode("123456"), 1003)); // Developer
         userList.add(new ManageUser(2036, "user@gmail.com", "Havi", passwordEncoder.encode("123456"), 1004)); // Stakeholder
+
+        
     }
 
     // Get all users in the system
