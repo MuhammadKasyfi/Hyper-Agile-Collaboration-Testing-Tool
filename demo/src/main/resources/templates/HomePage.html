@@ -1,8 +1,5 @@
 <!DOCTYPE html>
-<html
-  xmlns:th="http://www.thymeleaf.org"
-  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
->
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -32,14 +29,13 @@
       }
 
       .welcome-message {
-            font-size: 2em;
-            margin-bottom: 1em;
-        }
+        font-size: 2em;
+        margin-bottom: 1em;
+      }
 
-        .username {
-            font-weight: bold;
-        }
-
+      .username {
+        font-weight: bold;
+      }
     </style>
   </head>
   <body>
@@ -48,8 +44,7 @@
 
     <div class="container">
       <h1 class="welcome-message">Welcome to the Hyper Agile!</h1>
-      <h3 class="username" th:text="${#authentication.principal.username}"><h3/>
-    </div>
+      <h3 class="username" th:text="${#authentication.principal.username}"></h3>
     </div>
   </body>
 </html>

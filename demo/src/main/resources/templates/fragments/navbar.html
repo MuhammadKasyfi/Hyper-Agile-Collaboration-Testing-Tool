@@ -29,13 +29,24 @@
         <li class="nav-item">
           <a class="nav-link" th:href="@{/changepassword}">Change Password</a>
         </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownTestPlan" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Test Plan
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdownTestPlan">
+              <a class="dropdown-item" th:href="@{/createTestPlan}">Create Test Plan</a>
+              <a class="dropdown-item" th:href="@{/viewTestPlans}">Test Plan List</a>
+          </div>
+      </li>
+      
       </ul>
 
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
           <form th:action="@{/logout}" method="post" class="form-inline">
             <button type="submit" class="btn btn-block border">
-              <i class="bi bi-box-arrow-right"> Logout</i>
+              <i class="bi bi-box-arrow-right"></i> Logout
             </button>
           </form>
         </li>
