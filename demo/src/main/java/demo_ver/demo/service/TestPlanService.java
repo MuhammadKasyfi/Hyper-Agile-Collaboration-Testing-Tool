@@ -35,7 +35,7 @@ public class TestPlanService {
             TestPlan testPlan = testPlanOptional.get();
             testPlan.setName(name);
             testPlan.setDescription(description);
-            testPlan.setActive(isActive);
+            testPlan.setIsActive(isActive);
             testPlan.setIsPublic(isPublic); // Properly set the "isPublic" field
             return testPlan;
         } else {

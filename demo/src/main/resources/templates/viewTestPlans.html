@@ -10,13 +10,12 @@
 </head>
 
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="/viewTestPlans">Test Plans</a>
-    </nav>
+    <!-- Include the Navbar fragment -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
 
     <div class="container mt-4">
-        <h1>Test Plans List</h1>
+        <h1 class="mb-4">Test Plans List</h1>
 
         <!-- Display Success or Error Message -->
         <div th:if="${success != null}" class="alert alert-success">
@@ -43,20 +42,19 @@
                     <td>
                         <p th:utext="${testPlan.description}"></p>
                     </td>
-                    <td th:text="${testPlan.isActive}"></td>
-                    <td th:text="${testPlan.isPublic}"></td>
+                    <td th:text="${testPlan.isActive ? 'Yes' : 'No'}"></td>
+                    <td th:text="${testPlan.isPublic ? 'Yes' : 'No'}"></td>
                     <td>
-                        <!-- Edit Button as a link styled as a button -->
                         <a th:href="@{/editTestPlan(id=${testPlan.id})}" class="btn btn-warning">Edit</a>
 
-                        <!-- Delete Button -->
-                        <!-- Button to trigger modal -->
-                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">
-                            Delete
-                        </button>
+
+                        <form th:action="@{/deleteTestPlan(id=${testPlan.id})}" method="post">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+
 
                         <!-- Modal Structure -->
-                        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog"
+                        <div class="modal fade" th:id="'deleteModal' + ${testPlan.id}" tabindex="-1" role="dialog"
                             aria-labelledby="deleteModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
@@ -72,7 +70,6 @@
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary"
                                             data-dismiss="modal">Cancel</button>
-                                        <!-- Form to submit the delete request -->
                                         <form th:action="@{/deleteTestPlan(id=${testPlan.id})}" method="post"
                                             style="display: inline;">
                                             <button type="submit" class="btn btn-danger">Confirm Delete</button>
@@ -81,8 +78,6 @@
                                 </div>
                             </div>
                         </div>
-
-
                     </td>
                 </tr>
             </tbody>
@@ -91,10 +86,7 @@
         <a href="/createTestPlan" class="btn btn-primary">Create New Test Plan</a>
     </div>
 
-    <!-- Optional: Include Bootstrap JS (for things like modals, dropdowns, etc.) -->
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- jQuery and Bootstrap JS (required for modal) -->
+    <!-- Bootstrap JS (for modals) -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

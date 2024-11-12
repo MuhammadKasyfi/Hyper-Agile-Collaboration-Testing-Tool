@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;  // For flash messages
+import org.springframework.web.servlet.mvc.support.RedirectAttributes; // For flash messages
 
 import demo_ver.demo.model.TestPlan;
 import demo_ver.demo.service.TestPlanService;
@@ -32,15 +32,15 @@ public class TestPlanController {
 
     // Create a test plan
     @PostMapping("/createTestPlan")
-    public String createTestPlan(@RequestParam String name, 
-                                 @RequestParam String description, 
-                                 @RequestParam(required = false) Boolean isActive, 
-                                 @RequestParam(required = false) Boolean isPublic, 
-                                 RedirectAttributes redirectAttributes) {  // Add RedirectAttributes for flash messages
+    public String createTestPlan(@RequestParam String name,
+            @RequestParam String description,
+            @RequestParam(required = false) Boolean isActive,
+            @RequestParam(required = false) Boolean isPublic,
+            RedirectAttributes redirectAttributes) { // Add RedirectAttributes for flash messages
         // Default to false if null
-        testPlanService.createTestPlan(name, description, 
-                                       isActive != null ? isActive : false, 
-                                       isPublic != null ? isPublic : false);
+        testPlanService.createTestPlan(name, description,
+                isActive != null ? isActive : false,
+                isPublic != null ? isPublic : false);
         redirectAttributes.addFlashAttribute("success", "Test plan created successfully");
         return "redirect:/viewTestPlans"; // Redirect to the viewTestPlans page after creation
     }
@@ -61,21 +61,18 @@ public class TestPlanController {
         return "editTestPlan"; // Return the name of the view (editTestPlan.html)
     }
 
-    // Update a test plan
     @PostMapping("/editTestPlan")
-    public String updateTestPlan(@RequestParam Long id, 
-                                 @RequestParam String name, 
-                                 @RequestParam String description, 
-                                 @RequestParam(required = false) Boolean isActive,  // Optional
-                                 @RequestParam(required = false) Boolean isPublic,  // Optional
-                                 RedirectAttributes redirectAttributes) {  // Use RedirectAttributes for flash messages
-        // Default to false if null for both fields
-        testPlanService.updateTestPlan(id, name, description, 
-                                       isActive != null ? isActive : false, 
-                                       isPublic != null ? isPublic : false);
-
+    public String updateTestPlan(@RequestParam Long id,
+            @RequestParam String name,
+            @RequestParam String description,
+            @RequestParam(required = false) Boolean isActive,
+            @RequestParam(required = false) Boolean isPublic,
+            RedirectAttributes redirectAttributes) {
+        testPlanService.updateTestPlan(id, name, description,
+                isActive != null ? isActive : false,
+                isPublic != null ? isPublic : false);
         redirectAttributes.addFlashAttribute("success", "Test plan updated successfully");
-        return "redirect:/viewTestPlans"; // Redirect to the viewTestPlans page after update
+        return "redirect:/viewTestPlans";
     }
 
     // Delete a test plan
@@ -93,5 +90,5 @@ public class TestPlanController {
         }
         return "redirect:/viewTestPlans"; // Redirect back to the test plans list
     }
-    
+
 }

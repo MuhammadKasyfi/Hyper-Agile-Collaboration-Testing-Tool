@@ -4,18 +4,19 @@ public class TestPlan {
     private Long id;
     private String name;
     private String description;
-    private Boolean isActive;  // Can be used for "active" checkbox
-    private Boolean isPublic;  // New field for "public" checkbox
+    private Boolean isActive;  
+    private Boolean isPublic;  
 
-    // Constructor, getters, setters, etc.
+    // Constructor
     public TestPlan(Long id, String name, String description, Boolean isActive, Boolean isPublic) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.isActive = isActive;
-        this.isPublic = isPublic;  // Initialize the "public" field
+        this.isPublic = isPublic;
     }
 
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -54,10 +55,5 @@ public class TestPlan {
 
     public void setIsPublic(Boolean isPublic) {
         this.isPublic = isPublic;
-    }
-
-    public void setActive(boolean isActive2) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setActive'");
     }
 }
