@@ -13,7 +13,6 @@
     <!-- Include the Navbar fragment -->
     <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-
     <div class="container mt-4">
         <h1 class="mb-4">Test Plans List</h1>
 
@@ -38,52 +37,62 @@
             </thead>
             <tbody>
                 <tr th:each="testPlan : ${testPlans}">
-                    <td th:text="${testPlan.name}"></td>
-                    <td>
+                    <td class="align-middle" th:text="${testPlan.name}"></td>
+                    <td class="align-middle">
+                        <!-- Display description -->
                         <p th:utext="${testPlan.description}"></p>
                     </td>
-                    <td th:text="${testPlan.isActive ? 'Yes' : 'No'}"></td>
-                    <td th:text="${testPlan.isPublic ? 'Yes' : 'No'}"></td>
-                    <td>
-                        <a th:href="@{/editTestPlan(id=${testPlan.id})}" class="btn btn-warning">Edit</a>
+                    <td class="align-middle" th:text="${testPlan.isActive ? 'Yes' : 'No'}"></td>
+                    <td class="align-middle" th:text="${testPlan.isPublic ? 'Yes' : 'No'}"></td>
+                    <td class="align-middle">
+                        <!-- View button (always visible) -->
+                        <a th:href="@{/viewTestPlanDetails/{id}(id=${testPlan.id})}" class="btn btn-info">View</a>
 
+                        <!-- Only show Edit and Delete options if the user is not a Stakeholder -->
+                        <span th:if="${!isStakeholder}">
+                            <a th:href="@{/editTestPlan(id=${testPlan.id})}" class="btn btn-warning">Edit</a>
 
-                        <form th:action="@{/deleteTestPlan(id=${testPlan.id})}" method="post">
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                        </form>
+                            <!-- Trigger the delete confirmation modal -->
+                            <button type="button" class="btn btn-danger" data-toggle="modal"
+                                th:data-target="'#deleteModal' + ${testPlan.id}">
+                                Delete
+                            </button>
 
-
-                        <!-- Modal Structure -->
-                        <div class="modal fade" th:id="'deleteModal' + ${testPlan.id}" tabindex="-1" role="dialog"
-                            aria-labelledby="deleteModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        Are you sure you want to delete this test plan?
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
-                                            data-dismiss="modal">Cancel</button>
-                                        <form th:action="@{/deleteTestPlan(id=${testPlan.id})}" method="post"
-                                            style="display: inline;">
-                                            <button type="submit" class="btn btn-danger">Confirm Delete</button>
-                                        </form>
+                            <!-- Modal Structure for Delete Confirmation -->
+                            <div class="modal fade" th:id="'deleteModal' + ${testPlan.id}" tabindex="-1" role="dialog"
+                                aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Are you sure you want to delete this test plan?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-dismiss="modal">Cancel</button>
+                                            <form th:action="@{/deleteTestPlan(id=${testPlan.id})}" method="post"
+                                                style="display: inline;">
+                                                <button type="submit" class="btn btn-danger">Confirm Delete</button>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </span>
                     </td>
                 </tr>
             </tbody>
         </table>
 
-        <a href="/createTestPlan" class="btn btn-primary">Create New Test Plan</a>
+        <!-- Create New Test Plan Button - Visible only if user is not a Stakeholder -->
+        <div th:if="${!isStakeholder}">
+            <a href="/createTestPlan" class="btn btn-primary">Create New Test Plan</a>
+        </div>
     </div>
 
     <!-- Bootstrap JS (for modals) -->

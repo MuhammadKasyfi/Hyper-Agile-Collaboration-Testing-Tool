@@ -40,7 +40,11 @@ public class ManageRolesController {
         boolean isAdmin = authorities.stream()
                 .anyMatch(authority -> authority.getAuthority().equals("ROLE_Admin"));
 
+        boolean isProjectManager = authorities.stream()
+            .anyMatch(authority -> authority.getAuthority().equals("ROLE_Project_Manager"));
+
         model.addAttribute("isAdmin", isAdmin);
+        model.addAttribute("isProjectManager", isProjectManager);
         model.addAttribute("roles", manageRoleService.apiGetAllRoles());
         return "ManageRoles";
     }

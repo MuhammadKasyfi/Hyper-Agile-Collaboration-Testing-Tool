@@ -33,15 +33,20 @@ public class ManageUserController {
     // public List<ManageUser> getAllUsers(){
     // return manageUserService.getAllUsers();
     // }
-    
+
     @GetMapping("/manageuser")
     public String manageusers(Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        
+
         Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
 
         // Check if the user has the Admin role
         boolean isAdmin = authorities.stream()
                 .anyMatch(authority -> authority.getAuthority().equals("ROLE_Admin"));
+
+        boolean isProjectManager = authorities.stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_Project_Manager"));
+
+        model.addAttribute("isProjectManager", isProjectManager);
 
         model.addAttribute("isAdmin", isAdmin);
         model.addAttribute("users", ManageUserService.getAllUsers());
