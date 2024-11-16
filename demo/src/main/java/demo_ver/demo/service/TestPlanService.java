@@ -13,8 +13,12 @@ public class TestPlanService {
     private List<TestPlan> testPlans = new ArrayList<>();
 
     // Create a test plan
-    public TestPlan createTestPlan(String name, String description, boolean isActive, boolean isPublic) {
+    public TestPlan createTestPlan(String name, String description, String activeStatus, String publicStatus) {
         Long id = (long) (testPlans.size() + 1); // Simple ID generation, consider alternatives for production
+        // Default to "false" if null or empty
+        String isActive = (activeStatus != null && !activeStatus.isEmpty()) ? activeStatus : "false";
+        String isPublic = (publicStatus != null && !publicStatus.isEmpty()) ? publicStatus : "false";
+
         TestPlan testPlan = new TestPlan(id, name, description, isActive, isPublic);
         testPlans.add(testPlan);
         return testPlan;
@@ -26,7 +30,7 @@ public class TestPlanService {
     }
 
     // Update a test plan by ID
-    public TestPlan updateTestPlan(Long id, String name, String description, boolean isActive, boolean isPublic) {
+    public TestPlan updateTestPlan(Long id, String name, String description, String activeStatus, String publicStatus) {
         Optional<TestPlan> testPlanOptional = testPlans.stream()
                 .filter(plan -> plan.getId().equals(id))
                 .findFirst();
@@ -35,8 +39,14 @@ public class TestPlanService {
             TestPlan testPlan = testPlanOptional.get();
             testPlan.setName(name);
             testPlan.setDescription(description);
+
+            // Update active and public status, default to "false" if null or empty
+            String isActive = (activeStatus != null && !activeStatus.isEmpty()) ? activeStatus : "false";
+            String isPublic = (publicStatus != null && !publicStatus.isEmpty()) ? publicStatus : "false";
+            
             testPlan.setIsActive(isActive);
-            testPlan.setIsPublic(isPublic); // Properly set the "isPublic" field
+            testPlan.setIsPublic(isPublic);
+            
             return testPlan;
         } else {
             throw new NoSuchElementException("Test plan not found with ID: " + id);

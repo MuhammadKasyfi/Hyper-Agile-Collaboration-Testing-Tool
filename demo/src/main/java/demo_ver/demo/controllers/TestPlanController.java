@@ -21,13 +21,17 @@ public class TestPlanController {
     @Autowired
     private TestPlanService testPlanService; // Injecting the service
 
+    // Utility method to check if a user has a specific role
+    private boolean hasRole(Authentication authentication, String role) {
+        return authentication.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equalsIgnoreCase("ROLE_" + role));
+    }
+
     // View the list of test plans
     @GetMapping("/viewTestPlans")
     public String viewTestPlans(Model model, Authentication authentication) {
         // Check if the current user has the 'STAKEHOLDER' role
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        boolean isStakeholder = authorities.stream()
-                .anyMatch(authority -> authority.getAuthority().equalsIgnoreCase("ROLE_STAKEHOLDER"));
+        boolean isStakeholder = hasRole(authentication, "STAKEHOLDER");
 
         // Add the role flag and test plans to the model
         model.addAttribute("testPlans", testPlanService.viewTestPlans());
@@ -45,14 +49,15 @@ public class TestPlanController {
     // Create a test plan
     @PostMapping("/createTestPlan")
     public String createTestPlan(@RequestParam String name,
-            @RequestParam String description,
-            @RequestParam(required = false) Boolean isActive,
-            @RequestParam(required = false) Boolean isPublic,
-            RedirectAttributes redirectAttributes) {
-        // Default to false if null
-        testPlanService.createTestPlan(name, description,
-                isActive != null ? isActive : false,
-                isPublic != null ? isPublic : false);
+                                 @RequestParam String description,
+                                 @RequestParam(required = false) String isActive,
+                                 @RequestParam(required = false) String isPublic,
+                                 RedirectAttributes redirectAttributes) {
+        // Default to "false" if null or empty
+        String activeStatus = (isActive != null && !isActive.isEmpty()) ? isActive : "false";
+        String publicStatus = (isPublic != null && !isPublic.isEmpty()) ? isPublic : "false";
+
+        testPlanService.createTestPlan(name, description, activeStatus, publicStatus);
         redirectAttributes.addFlashAttribute("success", "Test plan created successfully");
         return "redirect:/viewTestPlans";
     }
@@ -73,14 +78,16 @@ public class TestPlanController {
 
     @PostMapping("/editTestPlan")
     public String updateTestPlan(@RequestParam Long id,
-            @RequestParam String name,
-            @RequestParam String description,
-            @RequestParam(required = false) Boolean isActive,
-            @RequestParam(required = false) Boolean isPublic,
-            RedirectAttributes redirectAttributes) {
-        testPlanService.updateTestPlan(id, name, description,
-                isActive != null ? isActive : false,
-                isPublic != null ? isPublic : false);
+                                 @RequestParam String name,
+                                 @RequestParam String description,
+                                 @RequestParam(required = false) String isActive,
+                                 @RequestParam(required = false) String isPublic,
+                                 RedirectAttributes redirectAttributes) {
+        // Default to "false" if null or empty
+        String activeStatus = (isActive != null && !isActive.isEmpty()) ? isActive : "false";
+        String publicStatus = (isPublic != null && !isPublic.isEmpty()) ? isPublic : "false";
+
+        testPlanService.updateTestPlan(id, name, description, activeStatus, publicStatus);
         redirectAttributes.addFlashAttribute("success", "Test plan updated successfully");
         return "redirect:/viewTestPlans";
     }
@@ -110,17 +117,9 @@ public class TestPlanController {
 
             // Fetch the current user's role
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String currentUserRole = authentication.getAuthorities().toString();
-
-            // Check if the user is a Stakeholder
-            boolean isStakeholder = currentUserRole.contains("STAKEHOLDER");
-
-            // Optional: You can also check for other roles if needed
-            boolean isAdmin = currentUserRole.contains("ADMIN");
-            boolean isProjectManager = currentUserRole.contains("PROJECT_MANAGER");
+            boolean isStakeholder = hasRole(authentication, "STAKEHOLDER");
 
             // Role-based restrictions or additional checks (if needed)
-            // Example: if stakeholders should have limited access, you can add checks here
             if (isStakeholder) {
                 // Add a message or restrict access if the user is a Stakeholder
                 redirectAttributes.addFlashAttribute("error",

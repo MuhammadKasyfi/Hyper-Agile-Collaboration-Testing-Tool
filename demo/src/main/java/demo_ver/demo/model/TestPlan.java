@@ -4,11 +4,11 @@ public class TestPlan {
     private Long id;
     private String name;
     private String description;
-    private Boolean isActive;  
-    private Boolean isPublic;  
+    private String isActive;  // Changed from Boolean to String
+    private String isPublic;  // Changed from Boolean to String
 
     // Constructor
-    public TestPlan(Long id, String name, String description, Boolean isActive, Boolean isPublic) {
+    public TestPlan(Long id, String name, String description, String isActive, String isPublic) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -41,19 +41,19 @@ public class TestPlan {
         this.description = description;
     }
 
-    public Boolean getIsActive() {
+    public String getIsActive() {  // Changed return type to String
         return isActive;
     }
 
-    public void setIsActive(Boolean isActive) {
+    public void setIsActive(String isActive) {  // Changed parameter type to String
         this.isActive = isActive;
     }
 
-    public Boolean getIsPublic() {
+    public String getIsPublic() {  // Changed return type to String
         return isPublic;
     }
 
-    public void setIsPublic(Boolean isPublic) {
+    public void setIsPublic(String isPublic) {  // Changed parameter type to String
         this.isPublic = isPublic;
     }
 }
