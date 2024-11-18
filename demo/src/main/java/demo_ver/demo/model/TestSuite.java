@@ -190,10 +190,21 @@
 
 package demo_ver.demo.model;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class TestSuite {
     private Long id;
     private String name;
     private String description;
+    //private List<TestCase> testCases = new ArrayList<>(); // List of test cases in the suite
+    private String overallStatus; // Overall status of the suite based on test cases
+    private List<Integer> userID = new ArrayList<>(); // List of assigned user IDs
+    private Map<Integer, String> userStatuses = new HashMap<>(); // Map of user IDs to their statuses
+    private List<Integer> assignedUserIds; // Holds the IDs of assigned users
+
     // Constructor, getters, and setters
     public TestSuite(Long id, String name, String description) {
         this.id = id;
@@ -223,6 +234,51 @@ public class TestSuite {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    // Assign a user to the test suite
+    public void assignUser(Integer userId) {
+        if (!userID.contains(userId)) {
+            userID.add(userId);
+            userStatuses.put(userId, "Pending");
+        }
+    }
+
+    // Unassign a user from the test suite
+    public void unassignUser(Integer userId) {
+        userID.remove(userId);
+        userStatuses.remove(userId);
+    }
+
+    // Update the status for a specific user
+    public void updateUserStatus(Integer userId, String status) {
+        if (userStatuses.containsKey(userId)) {
+            userStatuses.put(userId, status);
+        }
+    }
+
+    public List<Integer> getUserID() {
+        return userID;
+    }
+
+    public void setUserID(List<Integer> userID) {
+        this.userID = userID;
+    }
+
+    public Map<Integer, String> getUserStatuses() {
+        return userStatuses;
+    }
+
+    public void setUserStatuses(Map<Integer, String> userStatuses) {
+        this.userStatuses = userStatuses;
+    }
+
+    public List<Integer> getAssignedUserIds() {
+        return assignedUserIds;
+    }
+
+    public void setAssignedUserIds(List<Integer> assignedUserIds) {
+        this.assignedUserIds = assignedUserIds;
     }
 
     

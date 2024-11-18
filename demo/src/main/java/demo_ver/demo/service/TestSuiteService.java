@@ -224,4 +224,18 @@ public class TestSuiteService {
             throw new NoSuchElementException("Test suite not found with ID: " + id);
         }
     }
+
+    // Assign users to a test suite
+    public void assignUsersToTestSuite(Long testSuiteId, List<Integer> userIds) {
+        Optional<TestSuite> testSuiteOptional = testSuites.stream()
+                .filter(suite -> suite.getId().equals(testSuiteId))
+                .findFirst();
+
+        if (testSuiteOptional.isPresent()) {
+            TestSuite testSuite = testSuiteOptional.get();
+            testSuite.setAssignedUserIds(userIds); // Assuming TestSuite has a field for assigned user IDs
+        } else {
+            throw new NoSuchElementException("Test suite not found with ID: " + testSuiteId);
+        }
+    }
 }

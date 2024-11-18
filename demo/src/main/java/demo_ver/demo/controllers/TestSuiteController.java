@@ -1,5 +1,6 @@
 package demo_ver.demo.controllers;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import demo_ver.demo.model.ManageUser;
 import demo_ver.demo.model.TestSuite;
+import demo_ver.demo.service.ManageUserService;
 import demo_ver.demo.service.TestSuiteService;
 
 @Controller
@@ -16,6 +19,10 @@ public class TestSuiteController {
 
     @Autowired
     private TestSuiteService testSuiteService; // Injecting the service
+
+    @Autowired
+    private ManageUserService manageUserService; // Service to fetch user data
+
 
     // View the list of test suites
     @GetMapping("/viewTestSuites")
@@ -84,6 +91,30 @@ public class TestSuiteController {
             redirectAttributes.addFlashAttribute("error", "Failed to delete test suite");
         }
         return "redirect:/viewTestSuites"; // Redirect back to the test suites list
+    }
+
+    @GetMapping("/assignUsersToTestSuite")
+    public String showAssignUsersForm(@RequestParam Long id, Model model) {
+        TestSuite testSuite = testSuiteService.viewTestSuiteById(id);
+        List<ManageUser> allUsers = manageUserService.getAllUsers();
+
+        model.addAttribute("testSuite", testSuite);
+        model.addAttribute("users", allUsers); // Pass all users to the view
+        return "assignUsersToTestSuite"; // Refers to assignUsersToTestSuite.html
+    }
+
+    // Assign users to a test suite
+    @PostMapping("/assignUsersToTestSuite")
+    public String assignUsersToTestSuite(@RequestParam Long id,
+                                         @RequestParam List<Integer> userIds,
+                                         RedirectAttributes redirectAttributes) {
+        try {
+            testSuiteService.assignUsersToTestSuite(id, userIds);
+            redirectAttributes.addFlashAttribute("success", "Users assigned successfully");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Failed to assign users");
+        }
+        return "redirect:/viewTestSuites"; // Redirect to test suites list
     }
     
 }
