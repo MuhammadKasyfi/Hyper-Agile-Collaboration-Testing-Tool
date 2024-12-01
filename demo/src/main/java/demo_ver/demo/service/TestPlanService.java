@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.ArrayList;
+import java.util.UUID;
 
 @Service
 public class TestPlanService {
@@ -14,7 +15,8 @@ public class TestPlanService {
 
     // Create a test plan
     public TestPlan createTestPlan(String name, String description, String activeStatus, String publicStatus) {
-        Long id = (long) (testPlans.size() + 1); // Simple ID generation, consider alternatives for production
+        // Use UUID for unique string ID generation
+        String id = UUID.randomUUID().toString(); 
         // Default to "false" if null or empty
         String isActive = (activeStatus != null && !activeStatus.isEmpty()) ? activeStatus : "false";
         String isPublic = (publicStatus != null && !publicStatus.isEmpty()) ? publicStatus : "false";
@@ -30,7 +32,7 @@ public class TestPlanService {
     }
 
     // Update a test plan by ID
-    public TestPlan updateTestPlan(Long id, String name, String description, String activeStatus, String publicStatus) {
+    public TestPlan updateTestPlan(String id, String name, String description, String activeStatus, String publicStatus) {
         Optional<TestPlan> testPlanOptional = testPlans.stream()
                 .filter(plan -> plan.getId().equals(id))
                 .findFirst();
@@ -54,7 +56,7 @@ public class TestPlanService {
     }
 
     // Delete a test plan by ID
-    public boolean deleteTestPlan(Long id) {
+    public boolean deleteTestPlan(String id) {
         Optional<TestPlan> testPlanOptional = testPlans.stream()
                 .filter(plan -> plan.getId().equals(id))
                 .findFirst();
@@ -68,7 +70,7 @@ public class TestPlanService {
     }
 
     // View a test plan by ID
-    public TestPlan viewTestPlanById(Long id) {
+    public TestPlan viewTestPlanById(String id) {
         Optional<TestPlan> testPlan = testPlans.stream()
                 .filter(plan -> plan.getId().equals(id))
                 .findFirst();

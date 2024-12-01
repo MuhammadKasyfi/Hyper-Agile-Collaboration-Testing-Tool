@@ -1,14 +1,14 @@
 package demo_ver.demo.model;
 
 public class TestPlan {
-    private Long id;
+    private String id;
     private String name;
     private String description;
     private String isActive;  // Changed from Boolean to String
     private String isPublic;  // Changed from Boolean to String
 
     // Constructor
-    public TestPlan(Long id, String name, String description, String isActive, String isPublic) {
+    public TestPlan(String id, String name, String description, String isActive, String isPublic) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -17,11 +17,11 @@ public class TestPlan {
     }
 
     // Getters and Setters
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

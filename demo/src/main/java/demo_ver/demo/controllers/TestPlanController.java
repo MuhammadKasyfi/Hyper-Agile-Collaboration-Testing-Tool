@@ -64,7 +64,7 @@ public class TestPlanController {
 
     // Edit a test plan
     @GetMapping("/editTestPlan")
-    public String editTestPlan(@RequestParam Long id, Model model, RedirectAttributes redirectAttributes) {
+    public String editTestPlan(@RequestParam String id, Model model, RedirectAttributes redirectAttributes) {
         try {
             TestPlan testPlan = testPlanService.viewTestPlanById(id); // Find the test plan by ID
             model.addAttribute("testPlan", testPlan); // Add it to the model
@@ -77,7 +77,7 @@ public class TestPlanController {
     }
 
     @PostMapping("/editTestPlan")
-    public String updateTestPlan(@RequestParam Long id,
+    public String updateTestPlan(@RequestParam String id,
                                  @RequestParam String name,
                                  @RequestParam String description,
                                  @RequestParam(required = false) String isActive,
@@ -94,7 +94,7 @@ public class TestPlanController {
 
     // Delete a test plan
     @PostMapping("/deleteTestPlan")
-    public String deleteTestPlan(@RequestParam Long id, RedirectAttributes redirectAttributes) {
+    public String deleteTestPlan(@RequestParam String id, RedirectAttributes redirectAttributes) {
         try {
             boolean deleted = testPlanService.deleteTestPlan(id);
             if (deleted) {
@@ -110,7 +110,7 @@ public class TestPlanController {
 
     // View Test Plan Details
     @GetMapping("/viewTestPlanDetails/{id}")
-    public String viewTestPlanDetails(@PathVariable("id") Long id, Model model, RedirectAttributes redirectAttributes) {
+    public String viewTestPlanDetails(@PathVariable("id") String id, Model model, RedirectAttributes redirectAttributes) {
         try {
             // Use 'id' to find the specific test plan
             TestPlan testPlan = testPlanService.viewTestPlanById(id);
@@ -137,5 +137,4 @@ public class TestPlanController {
             return "redirect:/viewTestPlans";
         }
     }
-
 }
