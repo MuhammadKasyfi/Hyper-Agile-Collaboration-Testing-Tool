@@ -11,10 +11,6 @@
 
 <body>
     <!-- Navbar -->
-    <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="/viewTestSuites">Test Suites</a>
-    </nav> -->
-
     <div th:replace="fragments/navbar :: navbar"></div>
 
     <div class="container mt-4">
@@ -52,30 +48,35 @@
                     <th>Name</th>
                     <th>Description</th>
                     <th>Test Case(s)</th>
-                    <th>Stasus</th>
+                    <th>Status</th>
                     <th>Importance</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:each="testSuite : ${testSuites}">
-                    <td th:text="${testSuite.name}"></td>
-                    <td>
+                    <td class="align-middle" th:text="${testSuite.name}"></td>
+                    <td class="align-middle">
                         <p th:utext="${testSuite.description}"></p>
                     </td>
-                    <td th:text="none"></td>
-                    <td th:text="none"></td>
-                    <td th:text="none"></td>
-                    <td>
+                    <td class="align-middle" th:text="none"></td>
+
+                    <!-- Display Status -->
+                    <td class="align-middle" th:text="${testSuite.status}"></td>
+
+                    <!-- Display Importance -->
+                    <td class="align-middle" th:text="${testSuite.importance}"></td>
+
+                    <td class="align-middle">
                         <!-- View Details Button as a link styled as a button -->
-    <a th:href="@{/viewTestSuite(id=${testSuite.id})}" class="btn btn-info">View Details</a>
+                        <a th:href="@{/viewTestSuite(id=${testSuite.id})}" class="btn btn-info">View Details</a>
 
                         <!-- Edit Button as a link styled as a button -->
                         <a th:href="@{/editTestSuite(id=${testSuite.id})}" class="btn btn-warning">Edit</a>
 
                         <!-- Delete Button -->
-                        <!-- Button to trigger modal -->
-                        <button type="button" class="btn btn-danger" data-toggle="modal" th:data-target="'#deleteModal-' + ${testSuite.id}">
+                        <button type="button" class="btn btn-danger" data-toggle="modal"
+                            th:data-target="'#deleteModal-' + ${testSuite.id}">
                             Delete
                         </button>
 
@@ -95,7 +96,6 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                        <!-- Form to submit the delete request -->
                                         <form th:action="@{/deleteTestSuite(id=${testSuite.id})}" method="post" style="display: inline;">
                                             <button type="submit" class="btn btn-danger">Confirm Delete</button>
                                         </form>
@@ -111,12 +111,10 @@
         <a href="/createTestSuite" class="btn btn-primary">Create New Test Suite</a>
     </div>
 
-    <!-- Optional: Include Bootstrap JS (for things like modals, dropdowns, etc.) -->
-    <!-- jQuery and Bootstrap JS (required for modal) -->
+    <!-- Optional: Include Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
 </body>
 
 </html>

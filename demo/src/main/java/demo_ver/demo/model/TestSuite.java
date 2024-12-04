@@ -199,19 +199,21 @@ public class TestSuite {
     private Long id;
     private String name;
     private String description;
-    //private List<TestCase> testCases = new ArrayList<>(); // List of test cases in the suite
-    private String overallStatus; // Overall status of the suite based on test cases
-    private List<Integer> userID = new ArrayList<>(); // List of assigned user IDs
-    private Map<Integer, String> userStatuses = new HashMap<>(); // Map of user IDs to their statuses
-    private List<Integer> assignedUserIds; // Holds the IDs of assigned users
+    private String status; // Overall status of the suite (e.g., Active, Inactive)
+    private String importance; // Importance level (e.g., High, Medium, Low)
+    private List<Integer> assignedUserIds = new ArrayList<>(); // List of assigned user IDs
+    private Map<Integer, String> userStatuses = new HashMap<>(); // Map of user IDs to their statuses (e.g., Pending, Completed)
 
-    // Constructor, getters, and setters
+    // Constructor
     public TestSuite(Long id, String name, String description) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.status = "Pending"; // Default status when created
+        this.importance = "Medium"; // Default importance level
     }
 
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -236,41 +238,20 @@ public class TestSuite {
         this.description = description;
     }
 
-    // Assign a user to the test suite
-    public void assignUser(Integer userId) {
-        if (!userID.contains(userId)) {
-            userID.add(userId);
-            userStatuses.put(userId, "Pending");
-        }
+    public String getStatus() {
+        return status;
     }
 
-    // Unassign a user from the test suite
-    public void unassignUser(Integer userId) {
-        userID.remove(userId);
-        userStatuses.remove(userId);
+    public void setStatus(String status) {
+        this.status = status;
     }
 
-    // Update the status for a specific user
-    public void updateUserStatus(Integer userId, String status) {
-        if (userStatuses.containsKey(userId)) {
-            userStatuses.put(userId, status);
-        }
+    public String getImportance() {
+        return importance;
     }
 
-    public List<Integer> getUserID() {
-        return userID;
-    }
-
-    public void setUserID(List<Integer> userID) {
-        this.userID = userID;
-    }
-
-    public Map<Integer, String> getUserStatuses() {
-        return userStatuses;
-    }
-
-    public void setUserStatuses(Map<Integer, String> userStatuses) {
-        this.userStatuses = userStatuses;
+    public void setImportance(String importance) {
+        this.importance = importance;
     }
 
     public List<Integer> getAssignedUserIds() {
@@ -281,5 +262,65 @@ public class TestSuite {
         this.assignedUserIds = assignedUserIds;
     }
 
-    
+    public Map<Integer, String> getUserStatuses() {
+        return userStatuses;
+    }
+
+    public void setUserStatuses(Map<Integer, String> userStatuses) {
+        this.userStatuses = userStatuses;
+    }
+
+    // Assign a user to the test suite
+    public void assignUser(Integer userId) {
+        if (!assignedUserIds.contains(userId)) {
+            assignedUserIds.add(userId);
+            userStatuses.put(userId, "Pending"); // Default status for a newly assigned user
+        }
+    }
+
+    // Unassign a user from the test suite
+    public void unassignUser(Integer userId) {
+        assignedUserIds.remove(userId);
+        userStatuses.remove(userId); // Remove the user's status as well
+    }
+
+    // Update the status of a specific user
+    public void updateUserStatus(Integer userId, String status) {
+        if (userStatuses.containsKey(userId)) {
+            userStatuses.put(userId, status);
+        } else {
+            throw new IllegalArgumentException("User ID not assigned to the test suite");
+        }
+    }
+
+    // Check if all users have a specific status (e.g., Completed)
+    public boolean areAllUsersStatus(String status) {
+        return userStatuses.values().stream().allMatch(s -> s.equals(status));
+    }
+
+    // Update overall status based on user statuses
+    public void updatestatus() {
+        if (areAllUsersStatus("Completed")) {
+            status = "Completed";
+        } else if (areAllUsersStatus("In Progress")) {
+            status = "In Progress";
+        } else {
+            status = "Pending";
+        }
+    }
+
+    // Debugging utility
+    @Override
+    public String toString() {
+        return "TestSuite{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", overallStatus='" + status + '\'' +
+                ", importance='" + importance + '\'' +
+                ", assignedUserIds=" + assignedUserIds +
+                ", userStatuses=" + userStatuses +
+                '}';
+    }
 }
+

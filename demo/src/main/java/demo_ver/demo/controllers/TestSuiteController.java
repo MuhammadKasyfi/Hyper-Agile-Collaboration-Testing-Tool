@@ -48,34 +48,37 @@ public class TestSuiteController {
         return "redirect:/viewTestSuites"; // Redirect to the viewTestSuites page after creation
     }
 
-    // Edit a test suite
-    @GetMapping("/editTestSuite")
-    public String editTestSuite(@RequestParam Long id, Model model, RedirectAttributes redirectAttributes) {
-        TestSuite testSuite;
-        try {
-            testSuite = testSuiteService.viewTestSuiteById(id); // Find the test suite by ID
-        } catch (NoSuchElementException e) {
-            // Handle case when test suite is not found
-            redirectAttributes.addFlashAttribute("error", "Test suite not found");
-            return "redirect:/viewTestSuites"; // Redirect back to the test suites list with an error message
-        }
-
-        model.addAttribute("testSuite", testSuite); // Add it to the model
-        return "editTestSuite"; // Return the name of the view (editTestSuite.html)
-    }
-
-    // Update a test suite
-    @PostMapping("/editTestSuite")
-    public String updateTestSuite(@RequestParam Long id, 
-                                  @RequestParam String name, 
-                                  @RequestParam String description, 
-                                  RedirectAttributes redirectAttributes) {
-        // Default to false if null for both fields
-        testSuiteService.updateTestSuite(id, name, description);
-
-        redirectAttributes.addFlashAttribute("success", "Test suite updated successfully");
-        return "redirect:/viewTestSuites"; // Redirect to the viewTestSuites page after update
-    }
+     // Edit a test suite
+     @GetMapping("/editTestSuite")
+     public String editTestSuite(@RequestParam Long id, Model model, RedirectAttributes redirectAttributes) {
+         TestSuite testSuite;
+         try {
+             testSuite = testSuiteService.viewTestSuiteById(id); 
+         } catch (NoSuchElementException e) {
+             redirectAttributes.addFlashAttribute("error", "Test suite not found");
+             return "redirect:/viewTestSuites";
+         }
+         model.addAttribute("testSuite", testSuite);
+         return "editTestSuite"; // Return the name of the view (editTestSuite.html)
+     }
+ 
+     // Update a test suite
+     @PostMapping("/editTestSuite")
+     public String updateTestSuite(@RequestParam Long id, 
+                                   @RequestParam String name, 
+                                   @RequestParam String description,
+                                   @RequestParam String status,
+                                   @RequestParam String importance,
+                                   @RequestParam(required = false) String testCases,
+                                   RedirectAttributes redirectAttributes) {
+         try {
+             testSuiteService.updateTestSuite(id, name, description, status, importance, testCases);
+             redirectAttributes.addFlashAttribute("success", "Test suite updated successfully");
+         } catch (NoSuchElementException e) {
+             redirectAttributes.addFlashAttribute("error", "Test suite not found");
+         }
+         return "redirect:/viewTestSuites";
+     }
 
     // Delete a test suite
     @PostMapping("/deleteTestSuite")
@@ -117,4 +120,16 @@ public class TestSuiteController {
         return "redirect:/viewTestSuites"; // Redirect to test suites list
     }
     
+
+    @GetMapping("/viewTestSuite")
+public String viewTestSuiteDetails(@RequestParam Long id, Model model, RedirectAttributes redirectAttributes) {
+    try {
+        TestSuite testSuite = testSuiteService.viewTestSuiteById(id);
+        model.addAttribute("testSuite", testSuite);
+        return "viewTestSuiteDetails"; // Refers to viewTestSuiteDetails.html
+    } catch (NoSuchElementException e) {
+        redirectAttributes.addFlashAttribute("error", "Test suite not found");
+        return "redirect:/viewTestSuites"; // Redirect back to the test suites list with an error message
+    }
+}
 }

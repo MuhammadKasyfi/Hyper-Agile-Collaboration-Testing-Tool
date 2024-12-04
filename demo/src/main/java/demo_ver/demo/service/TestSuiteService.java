@@ -182,21 +182,24 @@ public class TestSuiteService {
         return testSuites;
     }
 
-    // Update a test suite by ID
-    public TestSuite updateTestSuite(Long id, String name, String description) {
-        Optional<TestSuite> testSuiteOptional = testSuites.stream()
-                .filter(suite -> suite.getId().equals(id))
-                .findFirst();
+   // Update a test suite by ID
+   public TestSuite updateTestSuite(Long id, String name, String description, String status, String importance, String testCases) {
+    Optional<TestSuite> testSuiteOptional = testSuites.stream()
+            .filter(suite -> suite.getId().equals(id))
+            .findFirst();
 
-        if (testSuiteOptional.isPresent()) {
-            TestSuite testSuite = testSuiteOptional.get();
-            testSuite.setName(name);
-            testSuite.setDescription(description);
-            return testSuite;
-        } else {
-            throw new NoSuchElementException("Test suite not found with ID: " + id);
-        }
+    if (testSuiteOptional.isPresent()) {
+        TestSuite testSuite = testSuiteOptional.get();
+        testSuite.setName(name);
+        testSuite.setDescription(description);
+        testSuite.setStatus(status);
+        testSuite.setImportance(importance);
+        //testSuite.setTestCases(testCases); // Assuming testCases is stored as a String
+        return testSuite;
+    } else {
+        throw new NoSuchElementException("Test suite not found with ID: " + id);
     }
+}
 
     // Delete a test suite by ID
     public boolean deleteTestSuite(Long id) {
