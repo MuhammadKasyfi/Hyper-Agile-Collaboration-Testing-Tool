@@ -1,25 +1,24 @@
 package demo_ver.demo.controllers;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import demo_ver.demo.model.TestPlan;
+import demo_ver.demo.model.TestSuite;
 import demo_ver.demo.service.TestPlanService;
 
 @Controller
 public class TestPlanController {
 
     @Autowired
-    private TestPlanService testPlanService; // Injecting the service
+    private TestPlanService testPlanService;
 
     // Utility method to check if a user has a specific role
     private boolean hasRole(Authentication authentication, String role) {
@@ -29,111 +28,142 @@ public class TestPlanController {
 
     // View the list of test plans
     @GetMapping("/viewTestPlans")
-    public String viewTestPlans(Model model, Authentication authentication) {
-        // Check if the current user has the 'STAKEHOLDER' role
+    public String viewTestPlans(
+            @RequestParam(required = false) String search, // Search parameter (optional)
+            @RequestParam(required = false) Boolean isActive, // Filter parameter (optional)
+            Model model,
+            Authentication authentication) {
+        // Determine if the user has the "STAKEHOLDER" role
         boolean isStakeholder = hasRole(authentication, "STAKEHOLDER");
 
-        // Add the role flag and test plans to the model
-        model.addAttribute("testPlans", testPlanService.viewTestPlans());
+        // Call service to filter test plans based on search and isActive
+        List<TestPlan> testPlans = testPlanService.filterTestPlans(search, isActive);
+
+        // Add attributes to the model
+        model.addAttribute("testPlans", testPlans);
         model.addAttribute("isStakeholder", isStakeholder);
+        model.addAttribute("search", search);
+        model.addAttribute("isActive", isActive);
 
-        return "viewTestPlans"; // Refers to viewTestPlans.html
+        // Return the view
+        return "viewTestPlans";
     }
 
-    // Handle the "Create Test Plan" page
+    // Create Test Plan - GET
     @GetMapping("/createTestPlan")
-    public String createTestPlan() {
-        return "createTestPlan"; // Refers to createTestPlan.html
+    public String createTestPlanForm() {
+        return "createTestPlan";
     }
 
-    // Create a test plan
+    // Create Test Plan - POST
     @PostMapping("/createTestPlan")
     public String createTestPlan(@RequestParam String name,
-                                 @RequestParam String description,
-                                 @RequestParam(required = false) String isActive,
-                                 @RequestParam(required = false) String isPublic,
-                                 RedirectAttributes redirectAttributes) {
-        // Default to "false" if null or empty
-        String activeStatus = (isActive != null && !isActive.isEmpty()) ? isActive : "false";
-        String publicStatus = (isPublic != null && !isPublic.isEmpty()) ? isPublic : "false";
-
-        testPlanService.createTestPlan(name, description, activeStatus, publicStatus);
-        redirectAttributes.addFlashAttribute("success", "Test plan created successfully");
+            @RequestParam String description,
+            @RequestParam(required = false) String isActive,
+            @RequestParam(required = false) String isPublic,
+            RedirectAttributes redirectAttributes) {
+        testPlanService.createTestPlan(name, description,
+                isActive != null && !isActive.isEmpty() ? isActive : "false",
+                isPublic != null && !isPublic.isEmpty() ? isPublic : "false");
+        redirectAttributes.addFlashAttribute("success", "Test plan created successfully.");
         return "redirect:/viewTestPlans";
     }
 
-    // Edit a test plan
+    // Edit Test Plan - GET
     @GetMapping("/editTestPlan")
-    public String editTestPlan(@RequestParam String id, Model model, RedirectAttributes redirectAttributes) {
+    public String editTestPlanForm(@RequestParam String id, Model model, RedirectAttributes redirectAttributes) {
         try {
-            TestPlan testPlan = testPlanService.viewTestPlanById(id); // Find the test plan by ID
-            model.addAttribute("testPlan", testPlan); // Add it to the model
-            return "editTestPlan"; // Return the name of the view (editTestPlan.html)
+            TestPlan testPlan = testPlanService.viewTestPlanById(id);
+            model.addAttribute("testPlan", testPlan);
+            return "editTestPlan";
         } catch (NoSuchElementException e) {
-            // Handle case when test plan is not found
-            redirectAttributes.addFlashAttribute("error", "Test plan not found");
-            return "redirect:/viewTestPlans"; // Redirect back to the test plans list with an error message
+            redirectAttributes.addFlashAttribute("error", "Test plan not found.");
+            return "redirect:/viewTestPlans";
         }
     }
 
+    // Edit Test Plan - POST
     @PostMapping("/editTestPlan")
     public String updateTestPlan(@RequestParam String id,
-                                 @RequestParam String name,
-                                 @RequestParam String description,
-                                 @RequestParam(required = false) String isActive,
-                                 @RequestParam(required = false) String isPublic,
-                                 RedirectAttributes redirectAttributes) {
-        // Default to "false" if null or empty
-        String activeStatus = (isActive != null && !isActive.isEmpty()) ? isActive : "false";
-        String publicStatus = (isPublic != null && !isPublic.isEmpty()) ? isPublic : "false";
-
-        testPlanService.updateTestPlan(id, name, description, activeStatus, publicStatus);
-        redirectAttributes.addFlashAttribute("success", "Test plan updated successfully");
-        return "redirect:/viewTestPlans";
-    }
-
-    // Delete a test plan
-    @PostMapping("/deleteTestPlan")
-    public String deleteTestPlan(@RequestParam String id, RedirectAttributes redirectAttributes) {
+            @RequestParam String name,
+            @RequestParam String description,
+            @RequestParam(required = false) String isActive,
+            @RequestParam(required = false) String isPublic,
+            RedirectAttributes redirectAttributes) {
         try {
-            boolean deleted = testPlanService.deleteTestPlan(id);
-            if (deleted) {
-                redirectAttributes.addFlashAttribute("success", "Test plan deleted successfully");
-            } else {
-                redirectAttributes.addFlashAttribute("error", "Test plan not found");
-            }
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Failed to delete test plan");
+            testPlanService.updateTestPlan(id, name, description,
+                    isActive != null && !isActive.isEmpty() ? isActive : "false",
+                    isPublic != null && !isPublic.isEmpty() ? isPublic : "false");
+            redirectAttributes.addFlashAttribute("success", "Test plan updated successfully.");
+        } catch (NoSuchElementException e) {
+            redirectAttributes.addFlashAttribute("error", "Failed to update test plan: " + e.getMessage());
         }
         return "redirect:/viewTestPlans";
     }
 
-    // View Test Plan Details
+    // Delete Test Plan
+    @PostMapping("/deleteTestPlan")
+    public String deleteTestPlan(@RequestParam String id, RedirectAttributes redirectAttributes) {
+        if (testPlanService.deleteTestPlan(id)) {
+            redirectAttributes.addFlashAttribute("success", "Test plan deleted successfully.");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Failed to delete test plan.");
+        }
+        return "redirect:/viewTestPlans";
+    }
+
     @GetMapping("/viewTestPlanDetails/{id}")
-    public String viewTestPlanDetails(@PathVariable("id") String id, Model model, RedirectAttributes redirectAttributes) {
+    public String viewTestPlanDetails(@PathVariable String id, Model model, RedirectAttributes redirectAttributes) {
         try {
-            // Use 'id' to find the specific test plan
             TestPlan testPlan = testPlanService.viewTestPlanById(id);
-
-            // Fetch the current user's role
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            boolean isStakeholder = hasRole(authentication, "STAKEHOLDER");
-
-            // Role-based restrictions or additional checks (if needed)
-            if (isStakeholder) {
-                // Add a message or restrict access if the user is a Stakeholder
-                redirectAttributes.addFlashAttribute("error",
-                        "You do not have permission to view detailed test plan information.");
-                return "redirect:/viewTestPlans";
-            }
-
-            // If no restrictions, continue to display the details of the test plan
+            List<TestSuite> testSuites = testPlanService.getTestSuitesByTestPlan(id);
             model.addAttribute("testPlan", testPlan);
+            model.addAttribute("testSuites", testSuites);
+
+            // Return the correct Thymeleaf template
             return "viewTestPlanDetails";
 
         } catch (NoSuchElementException e) {
-            // If the test plan is not found, redirect with an error message
-            redirectAttributes.addFlashAttribute("error", "Test plan not found");
+            // Add an error message for missing Test Plan
+            redirectAttributes.addFlashAttribute("error", "Test plan not found.");
+            return "redirect:/viewTestPlans";
+        } catch (Exception e) {
+            // Handle unexpected exceptions
+            redirectAttributes.addFlashAttribute("error", "An unexpected error occurred.");
+            return "redirect:/viewTestPlans";
+        }
+    }
+
+    // View Test Suites for a Test Plan
+    @GetMapping("/viewTestPlanTestSuites/{testPlanId}")
+    public String viewTestPlanTestSuites(@PathVariable String testPlanId, Model model) {
+        List<TestSuite> testSuites = testPlanService.getTestSuitesByTestPlan(testPlanId);
+        model.addAttribute("testSuites", testSuites);
+        return "viewTestPlanTestSuites";
+    }
+
+    // Assign Test Suite to a Test Plan
+    @PostMapping("/assignTestSuite")
+    public String assignTestSuite(@RequestParam String testPlanId, @RequestParam String testSuiteId,
+            RedirectAttributes redirectAttributes) {
+        try {
+            testPlanService.assignTestSuiteToTestPlan(testPlanId, testSuiteId);
+            redirectAttributes.addFlashAttribute("success", "Test suite assigned successfully.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Failed to assign test suite: " + e.getMessage());
+        }
+        return "redirect:/viewTestPlans";
+    }
+
+    @GetMapping("/getTestSuitesByTestPlan/{testPlanId}")
+    public String getTestSuitesByTestPlan(@PathVariable String testPlanId, Model model,
+            RedirectAttributes redirectAttributes) {
+        try {
+            List<TestSuite> testSuites = testPlanService.getTestSuitesByTestPlan(testPlanId);
+            model.addAttribute("testSuites", testSuites);
+            return "testSuitesView";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Unable to retrieve test suites.");
             return "redirect:/viewTestPlans";
         }
     }

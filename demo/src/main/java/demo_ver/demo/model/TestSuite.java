@@ -187,7 +187,6 @@
 //     // Add other necessary methods as needed
 // }
 
-
 package demo_ver.demo.model;
 
 import java.util.ArrayList;
@@ -202,7 +201,9 @@ public class TestSuite {
     private String status; // Overall status of the suite (e.g., Active, Inactive)
     private String importance; // Importance level (e.g., High, Medium, Low)
     private List<Integer> assignedUserIds = new ArrayList<>(); // List of assigned user IDs
-    private Map<Integer, String> userStatuses = new HashMap<>(); // Map of user IDs to their statuses (e.g., Pending, Completed)
+    private Map<Integer, String> userStatuses = new HashMap<>(); // Map of user IDs to their statuses (e.g., Pending,
+                                                                 // Completed)
+    private TestPlan testPlan;
 
     // Constructor
     public TestSuite(Long id, String name, String description) {
@@ -322,5 +323,12 @@ public class TestSuite {
                 ", userStatuses=" + userStatuses +
                 '}';
     }
-}
 
+    public TestPlan getTestPlan() {
+        return getTestPlan();
+    }
+
+    public void setTestPlan(TestPlan testPlan) {
+        this.testPlan = testPlan;
+    }
+}

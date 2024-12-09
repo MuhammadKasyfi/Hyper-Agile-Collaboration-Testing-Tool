@@ -7,6 +7,13 @@
     <title>Test Plans List</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Custom styles to align only the search and filter box to the left */
+        .search-form {
+            text-align: left;
+            /* Align to the left */
+        }
+    </style>
 </head>
 
 <body>
@@ -24,6 +31,24 @@
             <span th:text="${error}"></span>
         </div>
 
+        <!-- Search and Filter Form -->
+        <div class="row mb-4">
+            <div class="col-md-12 search-form">
+                <form th:action="@{/viewTestPlans}" method="get" class="form-inline">
+                    <input type="text" name="search" class="form-control mr-2" placeholder="Search by name"
+                        th:value="${param.search}" />
+
+                    <select name="isActive" class="form-control mr-2">
+                        <option value="" th:selected="${param.isActive == null}">All Statuses</option>
+                        <option value="true" th:selected="${param.isActive == 'true'}">Active</option>
+                        <option value="false" th:selected="${param.isActive == 'false'}">Inactive</option>
+                    </select>
+
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+            </div>
+        </div>
+
         <!-- Table of Test Plans -->
         <table class="table table-striped">
             <thead>
@@ -32,6 +57,7 @@
                     <th>Description</th>
                     <th>Active</th>
                     <th>Public</th>
+                    <th>Assign Test Suite</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -39,26 +65,32 @@
                 <tr th:each="testPlan : ${testPlans}">
                     <td class="align-middle" th:text="${testPlan.name}"></td>
                     <td class="align-middle">
-                        <!-- Display description -->
                         <p th:utext="${testPlan.description}"></p>
                     </td>
                     <td class="align-middle" th:text="${testPlan.isActive ? 'Yes' : 'No'}"></td>
                     <td class="align-middle" th:text="${testPlan.isPublic ? 'Yes' : 'No'}"></td>
                     <td class="align-middle">
-                        <!-- View button (always visible) -->
+                        <form th:action="@{/assignTestSuite}" method="post">
+                            <input type="hidden" name="testPlanId" th:value="${testPlan.id}">
+                            <select name="testSuiteId" class="form-control">
+                                <option value="" disabled selected>Select Test Suite</option>
+                                <option th:each="testSuite : ${testSuites}" th:value="${testSuite.id}"
+                                    th:text="${testSuite.name}"></option>
+                            </select>
+                            <button type="submit" class="btn btn-primary mt-2">Assign</button>
+                        </form>
+                    </td>
+                    <td class="align-middle">
                         <a th:href="@{/viewTestPlanDetails/{id}(id=${testPlan.id})}" class="btn btn-info">View</a>
 
-                        <!-- Only show Edit and Delete options if the user is not a Stakeholder -->
                         <span th:if="${!isStakeholder}">
                             <a th:href="@{/editTestPlan(id=${testPlan.id})}" class="btn btn-warning">Edit</a>
 
-                            <!-- Trigger the delete confirmation modal -->
                             <button type="button" class="btn btn-danger" data-toggle="modal"
                                 th:data-target="'#deleteModal' + ${testPlan.id}">
                                 Delete
                             </button>
 
-                            <!-- Modal Structure for Delete Confirmation -->
                             <div class="modal fade" th:id="'deleteModal' + ${testPlan.id}" tabindex="-1" role="dialog"
                                 aria-labelledby="deleteModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
@@ -89,7 +121,7 @@
             </tbody>
         </table>
 
-        <!-- Create New Test Plan Button - Visible only if user is not a Stakeholder -->
+        <!-- Create New Test Plan Button -->
         <div th:if="${!isStakeholder}">
             <a href="/createTestPlan" class="btn btn-primary">Create New Test Plan</a>
         </div>
@@ -99,7 +131,6 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
 </body>
 
 </html>
