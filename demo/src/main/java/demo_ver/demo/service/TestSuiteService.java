@@ -241,4 +241,14 @@ public class TestSuiteService {
             throw new NoSuchElementException("Test suite not found with ID: " + testSuiteId);
         }
     }
+
+    public TestSuite findById(Long testSuiteId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findById'");
+    }
+
+    public void save(TestSuite testSuite) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'save'");
+    }
 }
