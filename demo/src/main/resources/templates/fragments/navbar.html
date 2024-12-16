@@ -49,6 +49,20 @@
             <a class="dropdown-item" th:href="@{/viewTestSuites}">Test Suites List</a>
           </div>
         </li>
+
+      </li>
+
+      <!-- Test Results Dropdown -->
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownTestResults" role="button" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
+        Test Results
+      </a>
+      <div class="dropdown-menu" aria-labelledby="navbarDropdownTestResults">
+        <a class="dropdown-item" th:href="@{/insertTestResult}">Insert Test Result</a>
+        <a class="dropdown-item" th:href="@{/viewTestResults}">View Test Results</a>
+      </div>
+    </li>
       </ul>
 
       <!-- Logout Button -->
