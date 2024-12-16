@@ -1,5 +1,6 @@
 package demo_ver.demo.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TestPlan {
@@ -69,6 +70,9 @@ public class TestPlan {
     }
 
     public void addTestSuite(TestSuite testSuite) {
-        
+        if (this.testSuites == null) {
+            this.testSuites = new ArrayList<>(); // Initialize if null
+        }
+        this.testSuites.add(testSuite);
     }
 }
