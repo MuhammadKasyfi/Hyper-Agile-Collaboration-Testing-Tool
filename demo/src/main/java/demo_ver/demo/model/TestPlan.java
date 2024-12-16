@@ -18,6 +18,7 @@ public class TestPlan {
         this.description = description;
         this.isActive = isActive;
         this.isPublic = isPublic;
+        this.testSuites = new ArrayList<>(); // Initialize the testSuites list
     }
 
     // Getters and Setters
@@ -61,14 +62,17 @@ public class TestPlan {
         this.isPublic = publicStatus;
     }
 
+    // Fix for the recursive call in the getter
     public List<TestSuite> getTestSuites() {
-        return getTestSuites();
+        return this.testSuites;
     }
 
+    // Setter for testSuites
     public void setTestSuites(List<TestSuite> testSuites) {
         this.testSuites = testSuites;
     }
 
+    // Method to add a TestSuite to the list
     public void addTestSuite(TestSuite testSuite) {
         if (this.testSuites == null) {
             this.testSuites = new ArrayList<>(); // Initialize if null

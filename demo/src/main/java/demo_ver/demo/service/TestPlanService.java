@@ -121,4 +121,15 @@ public class TestPlanService {
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("Test plan not found with ID: " + id));
     }
+
+    // Retrieve the test plans assigned to a specific test suite by the test suite's ID
+public List<TestPlan> getAssignedTestPlansByTestSuiteId(String testSuiteId) {
+    // Filter the test plans where the test suite ID is included in the test plan's assigned test suites
+    return testPlans.stream()
+            .filter(testPlan -> testPlan.getTestSuites() != null && 
+                                testPlan.getTestSuites().stream()
+                                        .anyMatch(testSuite -> testSuite.getId().equals(testSuiteId)))
+            .collect(Collectors.toList());
+}
+
 }
