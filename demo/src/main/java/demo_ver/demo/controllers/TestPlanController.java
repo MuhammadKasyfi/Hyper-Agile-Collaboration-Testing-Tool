@@ -2,6 +2,7 @@ package demo_ver.demo.controllers;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -139,21 +140,59 @@ public class TestPlanController {
         }
     }
 
-    // Assign Test Suite to Test Plan
     @PostMapping("/assignTestSuite")
-    public String assignTestSuite(
-            @RequestParam String testPlanId,
-            @RequestParam Long testSuiteId,
+    public String assignTestSuite(@RequestParam String testPlanId,
+            @RequestParam String testSuiteId,
             RedirectAttributes redirectAttributes) {
         try {
-            TestPlan testPlan = testPlanService.viewTestPlanById(testPlanId);
-            TestSuite testSuite = testSuiteService.findById(testSuiteId);
-            testSuite.setTestPlan(testPlan);
-            testSuiteService.save(testSuite);
-            redirectAttributes.addFlashAttribute("success", "Test suite assigned successfully!");
+            // Fetch the TestPlan and TestSuite from the services
+            TestPlan testPlan = testPlanService.viewTestPlanById(String.valueOf(testPlanId));
+            TestSuite testSuite = testSuiteService.findById(testSuiteId)
+                    .orElseThrow(() -> new NoSuchElementException("TestSuite not found"));
+
+            // Assuming a service method to assign the TestSuite to the TestPlan
+            testPlanService.assignTestSuiteToTestPlan(testPlan, testSuite);
+
+            redirectAttributes.addFlashAttribute("success", "Test suite assigned successfully.");
+            return "redirect:/viewTestPlans"; // Redirect to the viewTestPlans page after success
         } catch (NoSuchElementException e) {
-            redirectAttributes.addFlashAttribute("error", "Failed to assign test suite.");
+            redirectAttributes.addFlashAttribute("error", "Test suite or test plan not found.");
+            return "redirect:/viewTestPlans"; // Redirect back in case of failure
         }
-        return "redirect:/viewTestPlans";
     }
+
+    // Add Test Suite - GET
+    @GetMapping("/addTestSuite")
+    public String addTestSuiteForm(Model model) {
+        model.addAttribute("testPlans", testPlanService.viewTestPlans()); // Pass the list of test plans to the view
+        return "addTestSuite";
+    }
+
+    // Add Test Suite - POST
+    @PostMapping("/addTestSuite")
+    public String addTestSuite(@RequestParam String name,
+            @RequestParam String description,
+            @RequestParam String testPlanId,
+            RedirectAttributes redirectAttributes) {
+        try {
+            // Find the Test Plan by its ID
+            TestPlan testPlan = testPlanService.viewTestPlanById(testPlanId);
+
+            // Create a new Test Suite
+            TestSuite testSuite = testSuiteService.createTestSuite(name, description);
+
+            // Assign the new Test Suite to the Test Plan
+            testPlanService.assignTestSuiteToTestPlan(testPlan, testSuite);
+
+            redirectAttributes.addFlashAttribute("success", "Test suite created and assigned successfully.");
+            return "redirect:/viewTestPlans"; // Redirect to the viewTestPlans page after success
+        } catch (NoSuchElementException e) {
+            redirectAttributes.addFlashAttribute("error", "Test plan not found.");
+            return "redirect:/addTestSuite"; // Redirect back in case of failure
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "An unexpected error occurred: " + e.getMessage());
+            return "redirect:/addTestSuite"; // Redirect back in case of failure
+        }
+    }
+
 }

@@ -5,25 +5,28 @@
       aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
       <ul class="navbar-nav mr-auto">
+        <!-- Admin-Specific Links -->
         <li class="nav-item" th:if="${isAdmin}">
           <a class="nav-link" th:href="@{/manageuser}">Users</a>
         </li>
-
-        <li class="nav-item" th:unless="${isAdmin}">
-          <a id="test-case-link" class="nav-link" th:href="@{/view}">Test Case</a>
-        </li>
-
         <li class="nav-item" th:if="${isAdmin}">
           <a class="nav-link" th:href="@{/manageroles}">Roles</a>
         </li>
 
+        <!-- Non-Admin Link -->
+        <li class="nav-item" th:unless="${isAdmin}">
+          <a id="test-case-link" class="nav-link" th:href="@{/view}">Test Case</a>
+        </li>
+
+        <!-- Change Password -->
         <li class="nav-item">
           <a class="nav-link" th:href="@{/changepassword}">Change Password</a>
         </li>
 
-
+        <!-- Test Plan Dropdown -->
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownTestPlan" role="button" data-toggle="dropdown"
             aria-haspopup="true" aria-expanded="false">
@@ -46,23 +49,7 @@
             <a class="dropdown-item" th:href="@{/viewTestSuites}">Test Suites List</a>
           </div>
         </li>
-
-        <!-- Test Results Dropdown -->
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownTestResults" role="button" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false">
-          Test Results
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdownTestResults">
-          <a class="dropdown-item" th:href="@{/insertTestResult}">Insert Test Result</a>
-          <a class="dropdown-item" th:href="@{/viewTestResults}">View Test Results</a>
-        </div>
-      </li>
-      
       </ul>
-
-      
-    </ul>
 
       <!-- Logout Button -->
       <ul class="navbar-nav ml-auto">

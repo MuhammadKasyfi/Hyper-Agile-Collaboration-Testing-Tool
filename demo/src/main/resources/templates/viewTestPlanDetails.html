@@ -20,12 +20,30 @@
             <div class="card-body">
                 <!-- Display the details of the test plan if it exists -->
                 <div th:if="${testPlan != null}">
-                    <p><strong>ID:</strong> <span th:text="${testPlan.id}"></span></p>
-                    <p><strong>Name:</strong> <span th:text="${testPlan.name}"></span></p>
-                    <p><strong>Description:</strong></p>
-                    <p th:utext="${testPlan.description}"></p>
-                    <p><strong>Active:</strong> <span th:text="${testPlan.isActive ? 'Yes' : 'No'}"></span></p>
-                    <p><strong>Public:</strong> <span th:text="${testPlan.isPublic ? 'Yes' : 'No'}"></span></p>
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <th>ID</th>
+                                <td th:text="${testPlan.id}"></td>
+                            </tr>
+                            <tr>
+                                <th>Name</th>
+                                <td th:text="${testPlan.name}"></td>
+                            </tr>
+                            <tr>
+                                <th>Description</th>
+                                <td th:utext="${testPlan.description}"></td>
+                            </tr>
+                            <tr>
+                                <th>Active</th>
+                                <td th:text="${testPlan.isActive ? 'Yes' : 'No'}"></td>
+                            </tr>
+                            <tr>
+                                <th>Public</th>
+                                <td th:text="${testPlan.isPublic ? 'Yes' : 'No'}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
 
                 <!-- If no test plan is found, display an error message -->

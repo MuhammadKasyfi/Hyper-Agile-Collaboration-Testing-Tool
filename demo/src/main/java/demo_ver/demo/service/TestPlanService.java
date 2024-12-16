@@ -1,17 +1,22 @@
 package demo_ver.demo.service;
 
 import org.springframework.stereotype.Service;
+
 import demo_ver.demo.model.TestPlan;
 import demo_ver.demo.model.TestSuite;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 public class TestPlanService {
 
     private List<TestPlan> testPlans = new ArrayList<>();
-    private Map<String, List<TestSuite>> testPlanToSuitesMap = new HashMap<>();
+    private List<TestSuite> testSuites = new ArrayList<>();
 
     // Create a test plan
     public TestPlan createTestPlan(String name, String description, String activeStatus, String publicStatus) {
@@ -20,8 +25,7 @@ public class TestPlanService {
         String isPublic = (publicStatus != null && !publicStatus.isEmpty()) ? publicStatus : "false";
 
         TestPlan testPlan = new TestPlan(id, name, description, isActive, isPublic);
-        testPlans.add(testPlan);
-        testPlanToSuitesMap.put(id, new ArrayList<>()); // Initialize suite mapping for the test plan
+        testPlans.add(testPlan); // Add to the list of test plans
         return testPlan;
     }
 
@@ -61,7 +65,6 @@ public class TestPlanService {
 
         if (testPlanOptional.isPresent()) {
             testPlans.remove(testPlanOptional.get());
-            testPlanToSuitesMap.remove(id); // Remove the mapping as well
             return true;
         } else {
             return false;
@@ -78,21 +81,16 @@ public class TestPlanService {
 
     // Retrieve test suites assigned to a specific test plan
     public List<TestSuite> getTestSuitesByTestPlan(String testPlanId) {
-        if (testPlanToSuitesMap.containsKey(testPlanId)) {
-            return testPlanToSuitesMap.get(testPlanId);
-        } else {
-            throw new NoSuchElementException("Test plan not found with ID: " + testPlanId);
-        }
+        return testPlans.stream()
+                .filter(plan -> plan.getId().equals(testPlanId))
+                .findFirst()
+                .map(TestPlan::getTestSuites)
+                .orElseThrow(() -> new NoSuchElementException("Test plan not found with ID: " + testPlanId));
     }
 
-    // Assign a test suite to a test plan
-    public void assignTestSuiteToTestPlan(String testPlanId, String testSuiteId) {
-        if (testPlanToSuitesMap.containsKey(testPlanId)) {
-            TestSuite testSuite = new TestSuite(null, testSuiteId, "Sample Test Suite"); // Replace with actual lookup
-            testPlanToSuitesMap.get(testPlanId).add(testSuite);
-        } else {
-            throw new NoSuchElementException("Test plan not found with ID: " + testPlanId);
-        }
+    public void assignTestSuiteToTestPlan(TestPlan testPlan2, TestSuite testSuite) {
+        TestPlan testPlan = viewTestPlanById(testPlan2.getId());
+        testPlan.addTestSuite(testSuite); // Calls the implemented method
     }
 
     // Filter test plans by search and active status
@@ -102,5 +100,25 @@ public class TestPlanService {
                         &&
                         (isActive == null || testPlan.getIsActive().equals(isActive.toString())))
                 .collect(Collectors.toList());
+    }
+
+    // Sample in-memory collection of TestSuite objects
+    public void TestSuiteService() {
+        testSuites.add(new TestSuite("1", "Test Suite 1", "Description of Test Suite 1"));
+        testSuites.add(new TestSuite("2", "Test Suite 2", "Description of Test Suite 2"));
+    }
+
+    // Implementing the findById method without using a repository
+    public Optional<TestSuite> findById(String id) {
+        return testSuites.stream()
+                .filter(testSuite -> testSuite.getId().equals(id))
+                .findFirst();
+    }
+
+    public TestPlan viewTestPlanById(UUID id) {
+        return testPlans.stream()
+                .filter(plan -> plan.getId().equals(id.toString())) // Compare as String
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("Test plan not found with ID: " + id));
     }
 }
