@@ -14,6 +14,7 @@ import demo_ver.demo.model.TestSuite;
 public class TestSuiteService {
 
     private List<TestSuite> testSuites = new ArrayList<>();
+    private List<TestPlan> testPlans = new ArrayList<>(); // Simulated TestPlan storage
 
     // Create a test suite
     public TestSuite createTestSuite(String name, String description) {
@@ -29,8 +30,7 @@ public class TestSuiteService {
     }
 
     // Update a test suite by ID
-    public TestSuite updateTestSuite(String id, String name, String description, String status, String importance,
-            String testCases) {
+    public TestSuite updateTestSuite(String id, String name, String description, String status, String importance) {
         Optional<TestSuite> testSuiteOptional = testSuites.stream()
                 .filter(suite -> suite.getId().equals(id))
                 .findFirst();
@@ -41,7 +41,6 @@ public class TestSuiteService {
             testSuite.setDescription(description);
             testSuite.setStatus(status);
             testSuite.setImportance(importance);
-            // testSuite.setTestCases(testCases); // Assuming testCases is stored as a String
             return testSuite;
         } else {
             throw new NoSuchElementException("Test suite not found with ID: " + id);
@@ -98,9 +97,9 @@ public class TestSuiteService {
         if (testSuiteOptional.isPresent()) {
             TestSuite testSuite = testSuiteOptional.get();
             List<TestPlan> assignedTestPlans = new ArrayList<>();
-            // You need to fetch the test plans by IDs from wherever they are stored (e.g., from a database)
+            // Simulating fetching test plans from in-memory storage
             for (String testPlanId : testPlanIds) {
-                TestPlan testPlan = findTestPlanById(testPlanId); // Assume this method is implemented
+                TestPlan testPlan = findTestPlanById(testPlanId); // Fetch test plan from the in-memory list
                 assignedTestPlans.add(testPlan);
             }
             testSuite.setAssignedTestPlans(assignedTestPlans);
@@ -109,22 +108,20 @@ public class TestSuiteService {
         }
     }
 
-    // Find Test Suite by ID
-    public Optional<TestSuite> findById(String testSuiteId) {
-        return testSuites.stream()
-                .filter(suite -> suite.getId().equals(testSuiteId))
-                .findFirst();
-    }
-
-    // Find a Test Plan by ID (helper method)
+    // Simulated method to find Test Plan by ID (from in-memory list)
     private TestPlan findTestPlanById(String testPlanId) {
-        // Assuming you have a collection or service for TestPlans
-        // You would typically fetch the test plan from a repository or service, not from a list.
-        // For simplicity, here it’s assumed that you have a `TestPlanService` that can provide this functionality.
-        return new TestPlan(testPlanId, "Test Plan Name", testPlanId, testPlanId, testPlanId); // Dummy implementation for demonstration
+        Optional<TestPlan> testPlan = testPlans.stream()
+                .filter(plan -> plan.getId().equals(testPlanId))
+                .findFirst();
+
+        if (testPlan.isPresent()) {
+            return testPlan.get();
+        } else {
+            throw new NoSuchElementException("Test plan not found with ID: " + testPlanId);
+        }
     }
 
-    // Save a test suite (simulating persistence in-memory)
+    // Save or update a test suite (simulating persistence in-memory)
     public void save(TestSuite testSuite) {
         Optional<TestSuite> existingTestSuite = findById(testSuite.getId());
         if (existingTestSuite.isPresent()) {
@@ -134,7 +131,6 @@ public class TestSuiteService {
             existing.setDescription(testSuite.getDescription());
             existing.setStatus(testSuite.getStatus());
             existing.setImportance(testSuite.getImportance());
-            // existing.setAssignedUserIds(testSuite.getAssignedUserIds()); // If applicable
         } else {
             // Otherwise, add the new test suite
             testSuites.add(testSuite);
@@ -144,5 +140,23 @@ public class TestSuiteService {
     // Get all test suites
     public List<TestSuite> getAllTestSuites() {
         return testSuites;
+    }
+
+    // Find Test Suite by ID
+    public Optional<TestSuite> findById(String testSuiteId) {
+        return testSuites.stream()
+                .filter(suite -> suite.getId().equals(testSuiteId))
+                .findFirst();
+    }
+
+    // Simulate creating and adding test plans for demonstration
+    public void createTestPlan(String id, String name, String description) {
+        TestPlan testPlan = new TestPlan(id, name, description, description, description);
+        testPlans.add(testPlan);
+    }
+
+    // Get all test plans (simulated)
+    public List<TestPlan> getAllTestPlans() {
+        return testPlans;
     }
 }

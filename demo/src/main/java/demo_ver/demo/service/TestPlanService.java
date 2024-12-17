@@ -124,4 +124,13 @@ public class TestPlanService {
                 .filter(testSuite -> testSuite.getId().equals(id))
                 .findFirst();
     }
+
+    public TestPlan getTestPlanById(String testPlanId) {
+        // Assuming testPlans is a list of all available TestPlans
+        return testPlans.stream()
+                .filter(testPlan -> testPlan.getId().equals(testPlanId))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("TestPlan not found with ID: " + testPlanId));
+    }
+
 }

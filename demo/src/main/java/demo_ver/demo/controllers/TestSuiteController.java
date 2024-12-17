@@ -1,5 +1,6 @@
 package demo_ver.demo.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -15,6 +16,8 @@ import demo_ver.demo.model.TestSuite;
 import demo_ver.demo.service.ManageUserService;
 import demo_ver.demo.service.TestSuiteService;
 import demo_ver.demo.service.TestPlanService;
+
+import javax.servlet.http.HttpSession;
 
 @Controller
 public class TestSuiteController {
@@ -36,36 +39,27 @@ public class TestSuiteController {
     }
 
     // View Test Suite Details with assigned test plans
-    // View Test Suite Details with assigned test plans
     @GetMapping("/viewTestSuiteDetails/{id}")
     public String viewTestSuiteDetails(@PathVariable String id, Model model, RedirectAttributes redirectAttributes) {
         try {
             // Fetch the TestSuite by ID
             TestSuite testSuite = testSuiteService.viewTestSuiteById(id);
 
-            // Fetch the assigned test plans for the test suite
-            List<TestPlan> assignedTestPlans = testPlanService.getAssignedTestPlansByTestSuiteId(id);
+            // Fetch the assigned TestPlans for the TestSuite
+            List<TestPlan> assignedTestPlans = testSuite.getAssignedTestPlans(); // Retrieve assigned test plans
 
-            // Add the test suite and assigned test plans to the model
+            // Add the TestSuite and assigned TestPlans to the model
             model.addAttribute("testSuite", testSuite);
             model.addAttribute("assignedTestPlans", assignedTestPlans);
 
-            // If no assigned test plans, display a message in the view (handled by the
-            // Thymeleaf template)
-            if (assignedTestPlans.isEmpty()) {
-                model.addAttribute("noAssignedPlansMessage", "No test plans assigned to this test suite.");
-            }
-
-            return "viewTestSuiteDetails"; // Return the view template
+            return "viewTestSuiteDetails"; // Return the view template for displaying the test suite details
 
         } catch (NoSuchElementException e) {
-            // If test suite not found, redirect with an error message
             redirectAttributes.addFlashAttribute("error", "Test suite not found.");
-            return "redirect:/viewTestSuites"; // Redirect to the list of test suites
+            return "redirect:/viewTestSuites";
         } catch (Exception e) {
-            // Catch any other unexpected errors and redirect with an error message
             redirectAttributes.addFlashAttribute("error", "An unexpected error occurred.");
-            return "redirect:/viewTestSuites"; // Redirect to the list of test suites
+            return "redirect:/viewTestSuites";
         }
     }
 
@@ -84,9 +78,25 @@ public class TestSuiteController {
 
     // Create a test suite
     @PostMapping("/createTestSuite")
-    public String createTestSuite(@RequestParam String name, @RequestParam String description,
+    public String createTestSuite(@RequestParam String name,
+            @RequestParam String description,
+            @RequestParam List<String> testPlanIds,
             RedirectAttributes redirectAttributes) {
-        testSuiteService.createTestSuite(name, description);
+
+        // Create the TestSuite
+        TestSuite testSuite = testSuiteService.createTestSuite(name, description);
+
+        // Fetch the TestPlans by their IDs and assign them to the TestSuite
+        List<TestPlan> assignedTestPlans = new ArrayList<>();
+        for (String testPlanId : testPlanIds) {
+            TestPlan testPlan = testPlanService.getTestPlanById(testPlanId); // Fetching TestPlan from the service
+            assignedTestPlans.add(testPlan);
+        }
+
+        // Assign the selected TestPlans to the TestSuite
+        testSuite.setAssignedTestPlans(assignedTestPlans);
+
+        // Add success message and redirect to the view page
         redirectAttributes.addFlashAttribute("success", "Test suite created successfully");
         return "redirect:/viewTestSuites";
     }
@@ -109,7 +119,7 @@ public class TestSuiteController {
     public String updateTestSuite(@RequestParam String id, @RequestParam String name, @RequestParam String description,
             @RequestParam String status, @RequestParam String importance, RedirectAttributes redirectAttributes) {
         try {
-            testSuiteService.updateTestSuite(id, name, description, status, importance, importance);
+            testSuiteService.updateTestSuite(id, name, description, status, importance);
             redirectAttributes.addFlashAttribute("success", "Test suite updated successfully");
         } catch (NoSuchElementException e) {
             redirectAttributes.addFlashAttribute("error", "Test suite with ID " + id + " not found");
@@ -153,7 +163,7 @@ public class TestSuiteController {
         } catch (NoSuchElementException e) {
             redirectAttributes.addFlashAttribute("error", "Failed to assign users to the test suite");
         }
-        return "redirect:/viewTestSuite?id=" + testSuiteId;
+        return "redirect:/viewTestSuiteDetails/" + testSuiteId;
     }
 
     // Assign test plans to a test suite (POST request)

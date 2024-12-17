@@ -14,6 +14,7 @@ public class TestSuite {
     private List<Integer> assignedUserIds = new ArrayList<>(); // List of assigned user IDs
     private Map<Integer, String> userStatuses = new HashMap<>(); // Map of user IDs to their statuses
     private TestPlan testPlan;
+    private List<TestPlan> testPlans = new ArrayList<>();
 
     // Constructor
     public TestSuite(String id, String name, String description) {
@@ -60,6 +61,7 @@ public class TestSuite {
     public String getImportance() {
         return importance;
     }
+
     public void setImportance(String importance) {
         this.importance = importance;
     }
@@ -68,9 +70,11 @@ public class TestSuite {
         return assignedUserIds;
     }
 
-    /*public void setAssignedUserIds(List<String> userIds) {
-        this.assignedUserIds = userIds;
-    }*/
+    /*
+     * public void setAssignedUserIds(List<String> userIds) {
+     * this.assignedUserIds = userIds;
+     * }
+     */
 
     public Map<Integer, String> getUserStatuses() {
         return userStatuses;
@@ -126,27 +130,32 @@ public class TestSuite {
             status = "Pending";
         }
     }
- // Debugging utility
- @Override
- public String toString() {
-     return "TestSuite{" +
-             "id='" + id + '\'' +
-             ", name='" + name + '\'' +
-             ", description='" + description + '\'' +
-             ", status='" + status + '\'' +
-             ", importance='" + importance + '\'' +
-             ", assignedUserIds=" + assignedUserIds +
-             ", userStatuses=" + userStatuses +
-             '}';
- }
 
-public void setAssignedUserIds(List<String> userIds) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'setAssignedUserIds'");
-}
+    // Debugging utility
+    @Override
+    public String toString() {
+        return "TestSuite{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", status='" + status + '\'' +
+                ", importance='" + importance + '\'' +
+                ", assignedUserIds=" + assignedUserIds +
+                ", userStatuses=" + userStatuses +
+                '}';
+    }
 
-public void setAssignedTestPlans(List<TestPlan> assignedTestPlans) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'setAssignedTestPlans'");
-}
+    public void setAssignedUserIds(List<String> userIds) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setAssignedUserIds'");
+    }
+
+    public List<TestPlan> getAssignedTestPlans() {
+        return testPlans; // Getter for assignedTestPlans
+    }
+
+    public void setAssignedTestPlans(List<TestPlan> assignedTestPlans) {
+        this.testPlans = assignedTestPlans; // Assuming you store the assigned test plans in a list called 'testPlans'
+    }
+
 }
