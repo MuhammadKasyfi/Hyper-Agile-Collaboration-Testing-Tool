@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import demo_ver.demo.model.TestPlan;
 import demo_ver.demo.model.TestSuite;
 
 @Service
@@ -29,7 +30,7 @@ public class TestSuiteService {
 
     // Update a test suite by ID
     public TestSuite updateTestSuite(String id, String name, String description, String status, String importance,
-                                     String testCases) {
+            String testCases) {
         Optional<TestSuite> testSuiteOptional = testSuites.stream()
                 .filter(suite -> suite.getId().equals(id))
                 .findFirst();
@@ -75,7 +76,7 @@ public class TestSuiteService {
     }
 
     // Assign users to a test suite
-    public void assignUsersToTestSuite(String testSuiteId, List<Integer> userIds) {
+    public void assignUsersToTestSuite(String testSuiteId, List<String> userIds) {
         Optional<TestSuite> testSuiteOptional = testSuites.stream()
                 .filter(suite -> suite.getId().equals(testSuiteId))
                 .findFirst();
@@ -88,11 +89,39 @@ public class TestSuiteService {
         }
     }
 
+    // Assign test plans to a test suite
+    public void assignTestPlansToTestSuite(String testSuiteId, List<String> testPlanIds) {
+        Optional<TestSuite> testSuiteOptional = testSuites.stream()
+                .filter(suite -> suite.getId().equals(testSuiteId))
+                .findFirst();
+
+        if (testSuiteOptional.isPresent()) {
+            TestSuite testSuite = testSuiteOptional.get();
+            List<TestPlan> assignedTestPlans = new ArrayList<>();
+            // You need to fetch the test plans by IDs from wherever they are stored (e.g., from a database)
+            for (String testPlanId : testPlanIds) {
+                TestPlan testPlan = findTestPlanById(testPlanId); // Assume this method is implemented
+                assignedTestPlans.add(testPlan);
+            }
+            testSuite.setAssignedTestPlans(assignedTestPlans);
+        } else {
+            throw new NoSuchElementException("Test suite not found with ID: " + testSuiteId);
+        }
+    }
+
     // Find Test Suite by ID
     public Optional<TestSuite> findById(String testSuiteId) {
         return testSuites.stream()
                 .filter(suite -> suite.getId().equals(testSuiteId))
                 .findFirst();
+    }
+
+    // Find a Test Plan by ID (helper method)
+    private TestPlan findTestPlanById(String testPlanId) {
+        // Assuming you have a collection or service for TestPlans
+        // You would typically fetch the test plan from a repository or service, not from a list.
+        // For simplicity, here it’s assumed that you have a `TestPlanService` that can provide this functionality.
+        return new TestPlan(testPlanId, "Test Plan Name", testPlanId, testPlanId, testPlanId); // Dummy implementation for demonstration
     }
 
     // Save a test suite (simulating persistence in-memory)
@@ -105,12 +134,15 @@ public class TestSuiteService {
             existing.setDescription(testSuite.getDescription());
             existing.setStatus(testSuite.getStatus());
             existing.setImportance(testSuite.getImportance());
-            existing.setAssignedUserIds(testSuite.getAssignedUserIds()); // If applicable
+            // existing.setAssignedUserIds(testSuite.getAssignedUserIds()); // If applicable
         } else {
             // Otherwise, add the new test suite
             testSuites.add(testSuite);
         }
     }
 
-    
+    // Get all test suites
+    public List<TestSuite> getAllTestSuites() {
+        return testSuites;
+    }
 }

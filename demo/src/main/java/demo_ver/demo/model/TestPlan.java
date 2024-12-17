@@ -20,6 +20,7 @@ public class TestPlan {
         this.isPublic = isPublic;
         this.testSuites = new ArrayList<>(); // Initialize the testSuites list
     }
+    
 
     // Getters and Setters
     public String getId() {

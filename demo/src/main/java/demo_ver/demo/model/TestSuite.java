@@ -68,9 +68,9 @@ public class TestSuite {
         return assignedUserIds;
     }
 
-    public void setAssignedUserIds(List<Integer> assignedUserIds) {
-        this.assignedUserIds = assignedUserIds;
-    }
+    /*public void setAssignedUserIds(List<String> userIds) {
+        this.assignedUserIds = userIds;
+    }*/
 
     public Map<Integer, String> getUserStatuses() {
         return userStatuses;
@@ -139,4 +139,14 @@ public class TestSuite {
              ", userStatuses=" + userStatuses +
              '}';
  }
+
+public void setAssignedUserIds(List<String> userIds) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'setAssignedUserIds'");
+}
+
+public void setAssignedTestPlans(List<TestPlan> assignedTestPlans) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'setAssignedTestPlans'");
+}
 }

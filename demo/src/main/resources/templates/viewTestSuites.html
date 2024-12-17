@@ -59,7 +59,7 @@
                     <td class="align-middle">
                         <p th:utext="${testSuite.description}"></p>
                     </td>
-                    <td class="align-middle" th:text="none"></td>
+                    <td class="align-middle" th:text="'none'"></td> <!-- Placeholder for test cases -->
 
                     <!-- Display Status -->
                     <td class="align-middle" th:text="${testSuite.status}"></td>
@@ -69,10 +69,10 @@
 
                     <td class="align-middle">
                         <!-- View Details Button as a link styled as a button -->
-                        <a th:href="@{/viewTestSuite(id=${testSuite.id})}" class="btn btn-info">View Details</a>
+                        <a th:href="@{/viewTestSuiteDetails/{id}(id=${testSuite.id})}" class="btn btn-info">View Details</a>
 
                         <!-- Edit Button as a link styled as a button -->
-                        <a th:href="@{/editTestSuite(id=${testSuite.id})}" class="btn btn-warning">Edit</a>
+                        <a th:href="@{/editTestSuite/{id}(id=${testSuite.id})}" class="btn btn-warning">Edit</a>
 
                         <!-- Delete Button -->
                         <button type="button" class="btn btn-danger" data-toggle="modal"
@@ -96,7 +96,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                        <form th:action="@{/deleteTestSuite(id=${testSuite.id})}" method="post" style="display: inline;">
+                                        <form th:action="@{/deleteTestSuite/{id}(id=${testSuite.id})}" method="post" style="display: inline;">
                                             <button type="submit" class="btn btn-danger">Confirm Delete</button>
                                         </form>
                                     </div>

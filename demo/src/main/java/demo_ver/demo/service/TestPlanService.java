@@ -1,7 +1,6 @@
 package demo_ver.demo.service;
 
 import org.springframework.stereotype.Service;
-
 import demo_ver.demo.model.TestPlan;
 import demo_ver.demo.model.TestSuite;
 
@@ -18,6 +17,13 @@ public class TestPlanService {
     private List<TestPlan> testPlans = new ArrayList<>();
     private List<TestSuite> testSuites = new ArrayList<>();
 
+    // Constructor to initialize some sample Test Suites (if needed)
+    public TestPlanService() {
+        // Sample Test Suites
+        testSuites.add(new TestSuite("1", "Test Suite 1", "Description of Test Suite 1"));
+        testSuites.add(new TestSuite("2", "Test Suite 2", "Description of Test Suite 2"));
+    }
+
     // Create a test plan
     public TestPlan createTestPlan(String name, String description, String activeStatus, String publicStatus) {
         String id = UUID.randomUUID().toString(); // Generate unique ID
@@ -32,6 +38,14 @@ public class TestPlanService {
     // View all test plans
     public List<TestPlan> viewTestPlans() {
         return testPlans;
+    }
+
+    // View a test plan by ID
+    public TestPlan viewTestPlanById(String id) {
+        return testPlans.stream()
+                .filter(plan -> plan.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("Test plan not found with ID: " + id));
     }
 
     // Update a test plan by ID
@@ -71,12 +85,9 @@ public class TestPlanService {
         }
     }
 
-    // View a test plan by ID
-    public TestPlan viewTestPlanById(String id) {
-        return testPlans.stream()
-                .filter(plan -> plan.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("Test plan not found with ID: " + id));
+    // Assign a Test Suite to a Test Plan
+    public void assignTestSuiteToTestPlan(TestPlan testPlan, TestSuite testSuite) {
+        testPlan.addTestSuite(testSuite); // Calls the implemented method
     }
 
     // Retrieve test suites assigned to a specific test plan
@@ -88,11 +99,6 @@ public class TestPlanService {
                 .orElseThrow(() -> new NoSuchElementException("Test plan not found with ID: " + testPlanId));
     }
 
-    public void assignTestSuiteToTestPlan(TestPlan testPlan2, TestSuite testSuite) {
-        TestPlan testPlan = viewTestPlanById(testPlan2.getId());
-        testPlan.addTestSuite(testSuite); // Calls the implemented method
-    }
-
     // Filter test plans by search and active status
     public List<TestPlan> filterTestPlans(String search, Boolean isActive) {
         return testPlans.stream()
@@ -102,34 +108,20 @@ public class TestPlanService {
                 .collect(Collectors.toList());
     }
 
-    // Sample in-memory collection of TestSuite objects
-    public void TestSuiteService() {
-        testSuites.add(new TestSuite("1", "Test Suite 1", "Description of Test Suite 1"));
-        testSuites.add(new TestSuite("2", "Test Suite 2", "Description of Test Suite 2"));
+    // Retrieve the test plans assigned to a specific test suite by the test suite's
+    // ID
+    public List<TestPlan> getAssignedTestPlansByTestSuiteId(String testSuiteId) {
+        return testPlans.stream()
+                .filter(testPlan -> testPlan.getTestSuites() != null &&
+                        testPlan.getTestSuites().stream()
+                                .anyMatch(testSuite -> testSuite.getId().equals(testSuiteId)))
+                .collect(Collectors.toList());
     }
 
-    // Implementing the findById method without using a repository
-    public Optional<TestSuite> findById(String id) {
+    // Find a Test Suite by its ID
+    public Optional<TestSuite> findTestSuiteById(String id) {
         return testSuites.stream()
                 .filter(testSuite -> testSuite.getId().equals(id))
                 .findFirst();
     }
-
-    public TestPlan viewTestPlanById(UUID id) {
-        return testPlans.stream()
-                .filter(plan -> plan.getId().equals(id.toString())) // Compare as String
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("Test plan not found with ID: " + id));
-    }
-
-    // Retrieve the test plans assigned to a specific test suite by the test suite's ID
-public List<TestPlan> getAssignedTestPlansByTestSuiteId(String testSuiteId) {
-    // Filter the test plans where the test suite ID is included in the test plan's assigned test suites
-    return testPlans.stream()
-            .filter(testPlan -> testPlan.getTestSuites() != null && 
-                                testPlan.getTestSuites().stream()
-                                        .anyMatch(testSuite -> testSuite.getId().equals(testSuiteId)))
-            .collect(Collectors.toList());
-}
-
 }
