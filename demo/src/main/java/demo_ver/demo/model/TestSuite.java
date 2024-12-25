@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import demo_ver.demo.service.ManageUserService;
+
 public class TestSuite {
     private String id;
     private String name;
@@ -14,15 +16,18 @@ public class TestSuite {
     private List<Integer> assignedUserIds = new ArrayList<>(); // List of assigned user IDs
     private Map<Integer, String> userStatuses = new HashMap<>(); // Map of user IDs to their statuses
     private TestPlan testPlan;
+    private List<Integer> userID;
+    
     private List<TestPlan> testPlans = new ArrayList<>();
 
     // Constructor
-    public TestSuite(String id, String name, String description) {
+    public TestSuite(String id, String name, String description, List<Integer> userID) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.status = "Pending"; // Default status when created
         this.importance = "Medium"; // Default importance level
+        this.userID = userID;
     }
 
     // Getters and Setters
