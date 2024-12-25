@@ -173,7 +173,7 @@
             <div class="form-group">
                 <label>Assign Users:</label>
                 <div th:each="user : ${users}">
-                    <div th:unless="${user.userID == 2000}" class="form-check">
+                    <div  th:unless="${user.userID == 2000}" class="form-check">
                         <input type="checkbox" class="form-check-input" th:id="${'userCheckbox' + user.userID}"
                             th:field="*{userID}" th:value="${user.userID}">
                         <label class="form-check-label" th:for="${'userCheckbox' + user.userID}"
@@ -182,6 +182,9 @@
                     </div>
                 </div>
             </div>
+            
+
+            
 
             <!-- Buttons for Create and Cancel -->
             <div class="text-center">

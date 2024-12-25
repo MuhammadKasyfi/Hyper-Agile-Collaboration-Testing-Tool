@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.security.core.userdetails.User;
+
 import demo_ver.demo.service.ManageUserService;
 
 public class TestSuite {
@@ -17,6 +19,7 @@ public class TestSuite {
     private Map<Integer, String> userStatuses = new HashMap<>(); // Map of user IDs to their statuses
     private TestPlan testPlan;
     //private List<Integer> userID;
+    private ManageUser user;
     
     private List<TestPlan> testPlans = new ArrayList<>();
 
@@ -95,6 +98,14 @@ public class TestSuite {
 
     public void setTestPlan(TestPlan testPlan) {
         this.testPlan = testPlan;
+    }
+
+    public ManageUser getUser() {
+        return user;
+    }
+
+    public void setUser(ManageUser user){
+        this.user = user;
     }
 
     // Assign a user to the test suite

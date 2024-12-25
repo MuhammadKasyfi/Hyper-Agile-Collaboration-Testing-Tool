@@ -81,6 +81,7 @@ public class TestSuiteController {
     public String createTestSuite(@RequestParam String name,
             @RequestParam String description,
             @RequestParam List<String> testPlanIds,
+            @RequestParam (required = false) List<String> userID,
             RedirectAttributes redirectAttributes) {
 
         // Create the TestSuite
@@ -95,6 +96,8 @@ public class TestSuiteController {
 
         // Assign the selected TestPlans to the TestSuite
         testSuite.setAssignedTestPlans(assignedTestPlans);
+
+        
 
         // Add success message and redirect to the view page
         redirectAttributes.addFlashAttribute("success", "Test suite created successfully");
@@ -149,29 +152,6 @@ public String deleteTestSuite(@PathVariable String id, RedirectAttributes redire
 }
 
 
-    // Show form to assign users to a test suite
-    @GetMapping("/assignUsersToTestSuite")
-    public String showAssignUsersForm(@RequestParam String id, Model model) {
-        TestSuite testSuite = testSuiteService.viewTestSuiteById(id);
-        List<ManageUser> allUsers = manageUserService.getAllUsers();
-        model.addAttribute("testSuite", testSuite);
-        model.addAttribute("users", allUsers);
-        return "assignUsersToTestSuite";
-    }
-
-    // Handle user assignment to test suite
-    @PostMapping("/assignUsersToTestSuite")
-    public String assignUsersToTestSuite(@RequestParam String testSuiteId, @RequestParam List<String> userIds,
-            RedirectAttributes redirectAttributes) {
-        try {
-            testSuiteService.assignUsersToTestSuite(testSuiteId, userIds);
-            redirectAttributes.addFlashAttribute("success", "Users successfully assigned to the test suite");
-        } catch (NoSuchElementException e) {
-            redirectAttributes.addFlashAttribute("error", "Failed to assign users to the test suite");
-        }
-        return "redirect:/viewTestSuiteDetails/" + testSuiteId;
-    }
-
     // Assign test plans to a test suite (POST request)
     @PostMapping("/assignTestPlansToTestSuite")
     public String assignTestPlansToTestSuite(@RequestParam String testSuiteId, @RequestParam List<String> testPlanIds,
@@ -184,4 +164,46 @@ public String deleteTestSuite(@PathVariable String id, RedirectAttributes redire
         }
         return "redirect:/viewTestSuiteDetails/" + testSuiteId;
     }
+
+
+    // Show form to assign users to a test suite
+    @GetMapping("/assignUsersToTestSuite")
+    public String showAssignUsersForm(@RequestParam String id, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            // Fetch the TestSuite by ID
+            TestSuite testSuite = testSuiteService.viewTestSuiteById(id);
+
+            // Fetch all users
+            List<ManageUser> allUsers = ManageUserService.getAllUsers();
+
+            // Add TestSuite and users to the model
+            model.addAttribute("testSuite", testSuite);
+            model.addAttribute("users", allUsers);
+
+            return "viewTestSuites"; // Thymeleaf template for user assignment
+
+        } catch (NoSuchElementException e) {
+            redirectAttributes.addFlashAttribute("error", "Test suite not found.");
+            return "redirect:/viewTestSuites";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "An unexpected error occurred.");
+            return "redirect:/viewTestSuites";
+        }
+    }
+
+    // Handle user assignment to test suite
+    @PostMapping("/assignUsersToTestSuite")
+    public String assignUsersToTestSuite(@RequestParam String testSuiteId, @RequestParam List<String> userIds,
+                                         RedirectAttributes redirectAttributes) {
+        try {
+            // Assign users to the TestSuite
+            testSuiteService.assignUsersToTestSuite(testSuiteId, userIds);
+            redirectAttributes.addFlashAttribute("success", "Users successfully assigned to the test suite.");
+        } catch (NoSuchElementException e) {
+            redirectAttributes.addFlashAttribute("error", "Failed to assign users to the test suite.");
+        }
+        return "redirect:/viewTestSuiteDetails/" + testSuiteId;
+    }
+
+    
 }

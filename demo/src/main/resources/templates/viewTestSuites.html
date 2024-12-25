@@ -69,11 +69,10 @@
                     <td class="align-middle" th:text="${testSuite.importance}"></td>
 
                     <td class="align-middle">
-                        <!-- View Details Button as a link styled as a button -->
-                        <a th:href="@{/viewTestSuiteDetails/{id}(id=${testSuite.id})}" class="btn btn-info">View
-                            Details</a>
+                        <!-- View Details Button -->
+                        <a th:href="@{/viewTestSuiteDetails/{id}(id=${testSuite.id})}" class="btn btn-info">View Details</a>
 
-                        <!-- Edit Button as a link styled as a button -->
+                        <!-- Edit Button -->
                         <a th:href="@{/editTestSuite/{id}(id=${testSuite.id})}" class="btn btn-warning">Edit</a>
 
                         <!-- Delete Button -->
@@ -82,7 +81,13 @@
                             Delete
                         </button>
 
-                        <!-- Modal Structure -->
+                        <!-- Assign User Button -->
+                        <button type="button" class="btn btn-primary" data-toggle="modal"
+                            th:data-target="'#assignUserModal-' + ${testSuite.id}">
+                            Assign User
+                        </button>
+
+                        <!-- Delete Modal -->
                         <div class="modal fade" th:id="'deleteModal-' + ${testSuite.id}" tabindex="-1" role="dialog"
                             aria-labelledby="deleteModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
@@ -99,10 +104,36 @@
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary"
                                             data-dismiss="modal">Cancel</button>
-                                        <!-- Form for POST request to delete the test suite -->
                                         <form th:action="@{/deleteTestSuite/{id}(id=${testSuite.id})}" method="post"
                                             style="display: inline;">
                                             <button type="submit" class="btn btn-danger">Confirm Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Assign User Modal -->
+                        <div class="modal fade" th:id="'assignUserModal-' + ${testSuite.id}" tabindex="-1" role="dialog"
+                            aria-labelledby="assignUserModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="assignUserModalLabel">Assign User to Test Suite</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form th:action="@{/assignUsersToTestSuite/{id}(id=${testSuite.id})}" method="post">
+                                            <div class="form-group">
+                                                <label for="userSelect">Select User</label>
+                                                <select id="userSelect" name="userID" class="form-control">
+                                                    <option th:each="user : ${users}" th:value="${user.userID}" th:text="${user.username}">
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Assign</button>
                                         </form>
                                     </div>
                                 </div>
