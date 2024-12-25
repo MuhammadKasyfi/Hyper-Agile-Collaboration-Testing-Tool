@@ -29,7 +29,8 @@
                 <li>Test Case 4: Logout</li>
             </ul>
             <p>
-                Test suites can have various statuses like "In-progress," "Active," or "Completed." They serve as validation suites with information on different test cases, objectives, and system configurations.
+                Test suites can have various statuses like "In-progress," "Active," or "Completed." They serve as
+                validation suites with information on different test cases, objectives, and system configurations.
             </p>
         </div>
 
@@ -69,7 +70,8 @@
 
                     <td class="align-middle">
                         <!-- View Details Button as a link styled as a button -->
-                        <a th:href="@{/viewTestSuiteDetails/{id}(id=${testSuite.id})}" class="btn btn-info">View Details</a>
+                        <a th:href="@{/viewTestSuiteDetails/{id}(id=${testSuite.id})}" class="btn btn-info">View
+                            Details</a>
 
                         <!-- Edit Button as a link styled as a button -->
                         <a th:href="@{/editTestSuite/{id}(id=${testSuite.id})}" class="btn btn-warning">Edit</a>
@@ -95,8 +97,11 @@
                                         Are you sure you want to delete this test suite?
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                        <form th:action="@{/deleteTestSuite/{id}(id=${testSuite.id})}" method="post" style="display: inline;">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-dismiss="modal">Cancel</button>
+                                        <!-- Form for POST request to delete the test suite -->
+                                        <form th:action="@{/deleteTestSuite/{id}(id=${testSuite.id})}" method="post"
+                                            style="display: inline;">
                                             <button type="submit" class="btn btn-danger">Confirm Delete</button>
                                         </form>
                                     </div>

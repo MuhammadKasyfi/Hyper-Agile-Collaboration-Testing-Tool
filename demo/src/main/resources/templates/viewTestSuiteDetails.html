@@ -16,9 +16,28 @@
 
         <!-- Test Suite Details -->
         <div class="alert alert-info" th:if="${testSuite != null}">
-            <h3 th:text="${testSuite.name}"></h3>
-            <p th:text="${testSuite.description}"></p>
-            <p>Status: <span th:text="${testSuite.status}"></span></p>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Test Suite Name</td>
+                        <td th:text="${testSuite.name}"></td>
+                    </tr>
+                    <tr>
+                        <td>Description</td>
+                        <td th:utext="${testSuite.description}"></td> <!-- Use th:utext for rendering HTML content -->
+                    </tr>
+                    <tr>
+                        <td>Status</td>
+                        <td th:text="${testSuite.status}"></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
         <div class="alert alert-warning" th:if="${testSuite == null}">
@@ -27,16 +46,25 @@
 
         <!-- Assigned Test Plans -->
         <h4>Assigned Test Plans</h4>
-        <ul th:if="${assignedTestPlans != null && !assignedTestPlans.isEmpty()}">
-            <li th:each="plan : ${assignedTestPlans}" th:text="${plan.name}"></li>
-        </ul>
+        <table class="table table-striped" th:if="${assignedTestPlans != null && !assignedTestPlans.isEmpty()}">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Test Plan Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="plan, stat : ${assignedTestPlans}">
+                    <td th:text="${stat.index + 1}"></td>
+                    <td th:text="${plan.name}"></td>
+                </tr>
+            </tbody>
+        </table>
 
         <!-- Message if no test plans are assigned -->
         <div th:if="${assignedTestPlans == null || assignedTestPlans.isEmpty()}">
             <p>No test plans assigned to this test suite.</p>
         </div>
-
-
     </div>
 
     <!-- Optional Bootstrap JS -->
