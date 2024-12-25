@@ -33,11 +33,26 @@ public class TestResultController {
     }
 
     // Show Insert Test Result Form
+    // @GetMapping("/insertTestResult")
+    // public String insertTestResultForm(@RequestParam(required = false) Long testCaseId, Model model) {
+    //     model.addAttribute("testCaseId", testCaseId); // Include testCaseId if provided
+    //     return "insertTestResult";
+    // }
+
+    // Show Insert Test Result Form
     @GetMapping("/insertTestResult")
     public String insertTestResultForm(@RequestParam(required = false) Long testCaseId, Model model) {
-        model.addAttribute("testCaseId", testCaseId); // Include testCaseId if provided
-        return "insertTestResult";
-    }
+    List<String> sampleTestCases = List.of(
+        "Login Functionality",
+        "Registration Page",
+        "Password Reset",
+        "Checkout Process"
+    );
+    model.addAttribute("sampleTestCases", sampleTestCases);
+    model.addAttribute("testCaseId", testCaseId); // Include testCaseId if provided
+    return "insertTestResult";
+}
+
 
     // Handle Insert Test Result Form Submission
     @PostMapping("/insertTestResult")

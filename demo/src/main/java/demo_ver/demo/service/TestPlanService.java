@@ -20,8 +20,8 @@ public class TestPlanService {
     // Constructor to initialize some sample Test Suites (if needed)
     public TestPlanService() {
         // Sample Test Suites
-        testSuites.add(new TestSuite("1", "Test Suite 1", "Description of Test Suite 1"));
-        testSuites.add(new TestSuite("2", "Test Suite 2", "Description of Test Suite 2"));
+        //testSuites.add(new TestSuite("1", "Test Suite 1", "Description of Test Suite 1"));
+        //testSuites.add(new TestSuite("2", "Test Suite 2", "Description of Test Suite 2"));
     }
 
     // Create a test plan

@@ -65,11 +65,18 @@
     <h2>Insert Test Result</h2>
 
     <form action="/insertTestResult" method="POST">
-        <!-- Test Result Details -->
+        
         <div class="form-group">
             <label for="testName" class="form-label">Test Name:</label>
-            <input type="text" class="form-control" id="testName" name="testName" required>
+            <select class="form-control" id="testName" name="testName" required>
+                <option value="">Select Test Case</option>
+                <th:block th:each="testCase : ${sampleTestCases}">
+                    <option th:value="${testCase}" th:text="${testCase}"></option>
+                </th:block>
+            </select>
         </div>
+        
+        
 
         <div class="form-group">
             <label for="status" class="form-label">Test Status:</label>
