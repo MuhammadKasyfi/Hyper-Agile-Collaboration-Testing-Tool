@@ -42,7 +42,7 @@ public class BuildService {
                 description,
                 releaseDate,
                 isActive,
-                isOpen, isOpen, isOpen
+                isOpen, isOpen
         );
         builds.add(newBuild);
     }
@@ -67,16 +67,13 @@ public class BuildService {
     }
 
     // Filter builds based on a search string
-    public List<Build> filterBuilds(String search) {
-        if (search == null || search.isBlank()) {
-            return getAllBuilds(); // Return all builds if search is empty
-        }
-
+    public List<Build> filterBuilds(String search, String isActive) {
         return builds.stream()
-                .filter(build -> build.getBuildTitle().toLowerCase().contains(search.toLowerCase()) ||
-                        build.getBuildDescription().toLowerCase().contains(search.toLowerCase()))
+                .filter(build -> (search == null || build.getBuildTitle().toLowerCase().contains(search.toLowerCase()) ||
+                                  build.getBuildDescription().toLowerCase().contains(search.toLowerCase())) &&
+                                 (isActive == null || isActive.isBlank() || build.getIsBuildActive().equalsIgnoreCase(isActive)))
                 .collect(Collectors.toList());
-    }
+    }    
 
     // Utility method to generate a unique ID
     private String generateUniqueId() {

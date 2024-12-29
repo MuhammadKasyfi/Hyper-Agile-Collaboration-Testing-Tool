@@ -1,43 +1,66 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Build Details</title>
-    <link rel="stylesheet" href="styles.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 
 <body>
-    <div class="container">
-        <h1>Build Details</h1>
+    <!-- Include the Navbar fragment -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-        <!-- Displaying Success or Error messages -->
-        <div th:if="${success}" class="alert alert-success">
-            <p th:text="${success}"></p>
-        </div>
-        <div th:if="${error}" class="alert alert-danger">
-            <p th:text="${error}"></p>
+    <div class="container mt-4">
+        <h1 class="mb-4">Build Details</h1>
+
+        <div class="card">
+            <div class="card-body">
+                <!-- Display the details of the build if it exists -->
+                <div th:if="${build != null}">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <th>ID</th>
+                                <td th:text="${build.id}"></td>
+                            </tr>
+                            <tr>
+                                <th>Title</th>
+                                <td th:text="${build.title}"></td>
+                            </tr>
+                            <tr>
+                                <th>Description</th>
+                                <td th:utext="${build.description}"></td>
+                            </tr>
+                            <tr>
+                                <th>Version</th>
+                                <td th:text="${build.version}"></td>
+                            </tr>
+                            <tr>
+                                <th>Status</th>
+                                <td th:text="${build.status}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- If no build is found, display an error message -->
+                <div th:if="${build == null}" class="alert alert-warning">
+                    No build details found.
+                </div>
+            </div>
         </div>
 
-        <!-- Build Details -->
-        <div class="build-details">
-            <p><strong>Title:</strong> <span th:text="${build.title}"></span></p>
-            <p><strong>Description:</strong> <span th:text="${build.description}"></span></p>
-            <p><strong>Release Date:</strong> <span th:text="${build.releaseDate}"></span></p>
-            <p><strong>Status:</strong> <span th:text="${build.isActive ? 'Active' : 'Inactive'}"></span></p>
-        </div>
-
-        <!-- Edit and Delete Actions -->
-        <div class="actions">
-            <a th:href="@{/editBuild?id={id}(id=${build.id})}" class="btn btn-warning">Edit</a>
-            <form action="/deleteBuild" method="post" style="display:inline;">
-                <input type="hidden" name="id" th:value="${build.id}">
-                <button type="submit" class="btn btn-danger">Delete</button>
-            </form>
-            <a href="/viewBuilds" class="btn btn-secondary">Back to Builds</a>
-        </div>
+        <!-- Button to go back to the list of builds -->
+        <a href="/viewBuilds" class="btn btn-primary mt-3">Back to Builds</a>
     </div>
+
+    <!-- Bootstrap JS (for interactivity) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>

@@ -2,44 +2,31 @@ package demo_ver.demo.model;
 
 public class Build {
     private String bId; // Unique Build ID
-    private String testPlanId; // Reference to Test Plan ID
     private String buildTitle; // Title of the Build
     private String buildDescription; // Description of the Build
     private String isBuildActive; // Status: Active or Inactive
     private String isBuildOpen; // Status: Open or Closed
     private String buildReleaseDate; // Release Date
-    private String copyTesterAssignmentsFlag; // Flag to copy tester assignments
-    private String version; // Add this to the Build model
+    private String version; // Version of the Build
 
-    public Build(String bId, String testPlanId, String buildTitle, String buildDescription,
-            String isBuildActive, String isBuildOpen, String buildReleaseDate,
-            String copyTesterAssignmentsFlag) {
+    public Build(String bId, String buildTitle, String buildDescription,
+            String isBuildActive, String isBuildOpen, String buildReleaseDate, String version) {
         this.bId = bId;
-        this.testPlanId = testPlanId;
         this.buildTitle = buildTitle;
         this.buildDescription = buildDescription;
         this.isBuildActive = isBuildActive;
         this.isBuildOpen = isBuildOpen;
         this.buildReleaseDate = buildReleaseDate;
-        this.copyTesterAssignmentsFlag = copyTesterAssignmentsFlag;
+        this.version = version;
     }
 
     // Getters and Setters
-    // In Build class, the field is named bId
     public String getBId() {
         return bId;
     }
 
     public void setBId(String bId) {
         this.bId = bId;
-    }
-
-    public String getTestPlanId() {
-        return testPlanId;
-    }
-
-    public void setTestPlanId(String testPlanId) {
-        this.testPlanId = testPlanId;
     }
 
     public String getBuildTitle() {
@@ -80,14 +67,6 @@ public class Build {
 
     public void setBuildReleaseDate(String buildReleaseDate) {
         this.buildReleaseDate = buildReleaseDate;
-    }
-
-    public String getCopyTesterAssignmentsFlag() {
-        return copyTesterAssignmentsFlag;
-    }
-
-    public void setCopyTesterAssignmentsFlag(String copyTesterAssignmentsFlag) {
-        this.copyTesterAssignmentsFlag = copyTesterAssignmentsFlag;
     }
 
     public String getVersion() {

@@ -30,13 +30,22 @@ public class BuildController {
 
     // View the list of builds
     @GetMapping("/viewBuilds")
-    public String viewBuilds(@RequestParam(required = false) String search, Model model) {
-        // Call service to filter builds based on search
-        List<Build> builds = buildService.filterBuilds(search != null ? search.trim() : "");
-        model.addAttribute("builds", builds);
-        
-        model.addAttribute("search", search);
+    public String viewBuilds(
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String isActive,
+            Model model,
+            Authentication authentication) {
+        // Determine if the user has a specific role
+        boolean isStakeholder = hasRole(authentication, "STAKEHOLDER");
 
+        // Call service to filter builds based on search and isActive
+        List<Build> builds = buildService.filterBuilds(search != null ? search.trim() : "", isActive);
+
+        // Add attributes to the model
+        model.addAttribute("builds", builds);
+        model.addAttribute("isStakeholder", isStakeholder);
+        model.addAttribute("search", search);
+        model.addAttribute("isActive", isActive);
 
         return "viewBuilds";
     }
@@ -106,17 +115,28 @@ public class BuildController {
     @GetMapping("/viewBuildDetails/{id}")
     public String viewBuildDetails(@PathVariable String id, Model model, RedirectAttributes redirectAttributes) {
         try {
+            // Validate the ID
+            if (id == null || id.isBlank()) {
+                redirectAttributes.addFlashAttribute("error", "Invalid build ID.");
+                return "redirect:/viewBuilds";
+            }
+
+            // Fetch the build details
             Build build = buildService.viewBuildById(id);
             model.addAttribute("build", build);
 
-            return "viewBuildDetails";
+            return "viewBuildDetails"; // Render the view
         } catch (NoSuchElementException e) {
+            // Log and handle specific case
+            System.err.println("Build not found: " + id);
             redirectAttributes.addFlashAttribute("error", "Build not found.");
             return "redirect:/viewBuilds";
         } catch (Exception e) {
+            // Log the error
+            System.err.println("Unexpected error while viewing build details: " + e.getMessage());
             redirectAttributes.addFlashAttribute("error", "An unexpected error occurred.");
             return "redirect:/viewBuilds";
         }
     }
-    
+
 }

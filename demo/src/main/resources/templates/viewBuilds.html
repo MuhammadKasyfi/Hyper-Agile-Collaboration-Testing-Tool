@@ -50,20 +50,20 @@
             </thead>
             <tbody>
                 <tr th:each="build : ${builds}">
-                    <td th:text="${build.title}"></td>
-                    <td th:text="${build.description}"></td>
-                    <td th:text="${build.releaseDate}"></td>
+                    <td th:text="${build.buildTitle}"></td>
+                    <td th:text="${build.buildDescription}"></td>
+                    <td th:text="${build.buildReleaseDate}"></td>
                     <td>
-                        <span th:text="${build.isActive ? 'Active' : 'Inactive'}"></span>
+                        <span th:text="${build.isBuildActive == 'Active'}">Active</span>
                     </td>
                     <td>
                         <!-- View Details -->
-                        <a th:href="@{/viewBuildDetails/{id}(id=${build.id})}" class="btn btn-info">View</a>
+                        <a th:href="@{/viewBuildDetails/{id}(id=${build.bId})}" class="btn btn-info">View</a>
                         <!-- Edit -->
-                        <a th:href="@{/editBuild?id={id}(id=${build.id})}" class="btn btn-warning">Edit</a>
+                        <a th:href="@{/editBuild?id={id}(id=${build.bId})}" class="btn btn-warning">Edit</a>
                         <!-- Delete -->
                         <form action="/deleteBuild" method="post" style="display:inline;">
-                            <input type="hidden" name="id" th:value="${build.id}">
+                            <input type="hidden" name="id" th:value="${build.bId}">
                             <button type="submit" class="btn btn-danger">Delete</button>
                         </form>
                     </td>
