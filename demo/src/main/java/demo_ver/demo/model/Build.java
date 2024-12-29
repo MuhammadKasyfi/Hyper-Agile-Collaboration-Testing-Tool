@@ -9,6 +9,7 @@ public class Build {
     private String isBuildOpen; // Status: Open or Closed
     private String buildReleaseDate; // Release Date
     private String copyTesterAssignmentsFlag; // Flag to copy tester assignments
+    private String version; // Add this to the Build model
 
     public Build(String bId, String testPlanId, String buildTitle, String buildDescription,
             String isBuildActive, String isBuildOpen, String buildReleaseDate,
@@ -24,6 +25,7 @@ public class Build {
     }
 
     // Getters and Setters
+    // In Build class, the field is named bId
     public String getBId() {
         return bId;
     }
@@ -86,5 +88,13 @@ public class Build {
 
     public void setCopyTesterAssignmentsFlag(String copyTesterAssignmentsFlag) {
         this.copyTesterAssignmentsFlag = copyTesterAssignmentsFlag;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 }

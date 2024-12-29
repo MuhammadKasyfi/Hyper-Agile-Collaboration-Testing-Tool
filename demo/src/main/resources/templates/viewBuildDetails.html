@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Build Details</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Build Details</h1>
+
+        <!-- Displaying Success or Error messages -->
+        <div th:if="${success}" class="alert alert-success">
+            <p th:text="${success}"></p>
+        </div>
+        <div th:if="${error}" class="alert alert-danger">
+            <p th:text="${error}"></p>
+        </div>
+
+        <!-- Build Details -->
+        <div class="build-details">
+            <p><strong>Title:</strong> <span th:text="${build.title}"></span></p>
+            <p><strong>Description:</strong> <span th:text="${build.description}"></span></p>
+            <p><strong>Release Date:</strong> <span th:text="${build.releaseDate}"></span></p>
+            <p><strong>Status:</strong> <span th:text="${build.isActive ? 'Active' : 'Inactive'}"></span></p>
+        </div>
+
+        <!-- Edit and Delete Actions -->
+        <div class="actions">
+            <a th:href="@{/editBuild?id={id}(id=${build.id})}" class="btn btn-warning">Edit</a>
+            <form action="/deleteBuild" method="post" style="display:inline;">
+                <input type="hidden" name="id" th:value="${build.id}">
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+            <a href="/viewBuilds" class="btn btn-secondary">Back to Builds</a>
+        </div>
+    </div>
+</body>
+
+</html>

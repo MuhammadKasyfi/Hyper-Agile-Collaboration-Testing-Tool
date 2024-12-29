@@ -4,119 +4,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Builds List</title>
+    <title>View Builds</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        /* Custom styles to align the search and filter box to the left */
+        /* Custom styles to align only the search and filter box to the left */
         .search-form {
             text-align: left;
+            /* Align to the left */
         }
     </style>
 </head>
 
+
 <body>
-    <!-- Include the Navbar fragment -->
+
     <div th:replace="~{fragments/navbar :: navbar}"></div>
-
     <div class="container mt-4">
-        <h1 class="mb-4">Builds List</h1>
+        <h1 class="mb-4">Builds</h1>
 
-        <!-- Display Success or Error Message -->
-        <div th:if="${success != null}" class="alert alert-success">
-            <span th:text="${success}"></span>
+        <!-- Displaying Success or Error messages -->
+        <div th:if="${success}" class="alert alert-success">
+            <p th:text="${success}"></p>
         </div>
-        <div th:if="${error != null}" class="alert alert-danger">
-            <span th:text="${error}"></span>
-        </div>
-
-        <!-- Search and Filter Form -->
-        <div class="row mb-4">
-            <div class="col-md-12 search-form">
-                <form th:action="@{/viewBuilds}" method="get" class="form-inline">
-                    <input type="text" name="search" class="form-control mr-2" placeholder="Search by title"
-                        th:value="${param.search}" />
-
-                    <select name="isActive" class="form-control mr-2">
-                        <option value="" th:selected="${param.isActive == null}">All Statuses</option>
-                        <option value="true" th:selected="${param.isActive == 'true'}">Active</option>
-                        <option value="false" th:selected="${param.isActive == 'false'}">Inactive</option>
-                    </select>
-
-                    <button type="submit" class="btn btn-primary">Search</button>
-                </form>
-            </div>
+        <div th:if="${error}" class="alert alert-danger">
+            <p th:text="${error}"></p>
         </div>
 
-        <!-- Table of Builds -->
+        <!-- Search Form -->
+        <form th:action="@{/viewBuilds}" method="get" class="form-inline">
+            <input type="text" name="search" class="form-control mr-2" value="search" placeholder="Search builds">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+
+        <!-- Build List -->
         <table class="table table-striped">
             <thead>
                 <tr>
                     <th>Title</th>
                     <th>Description</th>
-                    <th>Version</th>
-                    <th>Active</th>
+                    <th>Release Date</th>
+                    <th>Status</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:each="build : ${builds}">
-                    <td class="align-middle" th:text="${build.title}"></td>
-                    <td class="align-middle" th:text="${build.description}"></td>
-                    <td class="align-middle" th:text="${build.version}"></td>
-                    <td class="align-middle" th:text="${build.active ? 'Yes' : 'No'}"></td>
-                    <td class="align-middle">
-                        <!-- View Build Details -->
+                    <td th:text="${build.title}"></td>
+                    <td th:text="${build.description}"></td>
+                    <td th:text="${build.releaseDate}"></td>
+                    <td>
+                        <span th:text="${build.isActive ? 'Active' : 'Inactive'}"></span>
+                    </td>
+                    <td>
+                        <!-- View Details -->
                         <a th:href="@{/viewBuildDetails/{id}(id=${build.id})}" class="btn btn-info">View</a>
-
-                        <!-- Edit and Delete Buttons for Non-Stakeholders -->
-                        <span th:if="${!isStakeholder}">
-                            <a th:href="@{/editBuild(id=${build.id})}" class="btn btn-warning">Edit</a>
-
-                            <!-- Delete Modal Trigger -->
-                            <button type="button" class="btn btn-danger" data-toggle="modal"
-                                th:data-target="'#deleteModal' + ${build.id}">
-                                Delete
-                            </button>
-
-                            <!-- Delete Confirmation Modal -->
-                            <div class="modal fade" th:id="'deleteModal' + ${build.id}" tabindex="-1" role="dialog"
-                                aria-labelledby="deleteModalLabel" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            Are you sure you want to delete this build?
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-dismiss="modal">Cancel</button>
-                                            <form th:action="@{/deleteBuild(id=${build.id})}" method="post"
-                                                style="display: inline;">
-                                                <button type="submit" class="btn btn-danger">Confirm Delete</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </span>
+                        <!-- Edit -->
+                        <a th:href="@{/editBuild?id={id}(id=${build.id})}" class="btn btn-warning">Edit</a>
+                        <!-- Delete -->
+                        <form action="/deleteBuild" method="post" style="display:inline;">
+                            <input type="hidden" name="id" th:value="${build.id}">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
                     </td>
                 </tr>
             </tbody>
         </table>
-
-        <!-- Create New Build Button -->
-        <div th:if="${!isStakeholder}">
-            <a href="/createBuild" class="btn btn-primary">Create New Build</a>
-        </div>
     </div>
 
-    <!-- Bootstrap JS (for modals) -->
+    <!-- Bootstrap JS (for modal functionality and responsive elements) -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

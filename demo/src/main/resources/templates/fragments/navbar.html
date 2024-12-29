@@ -50,20 +50,34 @@
           </div>
         </li>
 
-      </li>
+        </li>
 
-      <!-- Test Results Dropdown -->
-    <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownTestResults" role="button" data-toggle="dropdown"
-        aria-haspopup="true" aria-expanded="false">
-        Test Results
-      </a>
-      <div class="dropdown-menu" aria-labelledby="navbarDropdownTestResults">
-        <a class="dropdown-item" th:href="@{/insertTestResult}">Insert Test Result</a>
-        <a class="dropdown-item" th:href="@{/viewTestResults}">View Test Results</a>
-      </div>
-    </li>
+        <!-- Test Results Dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownTestResults" role="button"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Test Results
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdownTestResults">
+            <a class="dropdown-item" th:href="@{/insertTestResult}">Insert Test Result</a>
+            <a class="dropdown-item" th:href="@{/viewTestResults}">View Test Results</a>
+          </div>
+        </li>
+
+        <!-- Builds Dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownTestResults" role="button"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Builds
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdownBuild">
+            <a class="dropdown-item" th:href="@{/createBuild}">Create Builds</a>
+            <a class="dropdown-item" th:href="@{/viewBuilds}">View Builds</a>
+          </div>
+        </li>
+
       </ul>
+
 
       <!-- Logout Button -->
       <ul class="navbar-nav ml-auto">
