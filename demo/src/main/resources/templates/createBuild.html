@@ -95,6 +95,13 @@
                 <label for="isOpen" class="form-check-label">Is Open</label>
             </div>
 
+            <!-- Title Field -->
+            <div class="form-group">
+                <label for="title" class="form-label">Version:</label>
+                <input type="text" id="version" name="buildVersion" class="form-control" th:value="${build.buildVersion}"
+                    required>
+            </div>
+
             <!-- Submit Button -->
             <button type="submit" class="btn btn-submit w-100">Create Build</button>
 

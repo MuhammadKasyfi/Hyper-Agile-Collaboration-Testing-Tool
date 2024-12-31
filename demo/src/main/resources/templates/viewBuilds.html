@@ -16,7 +16,6 @@
     </style>
 </head>
 
-
 <body>
 
     <div th:replace="~{fragments/navbar :: navbar}"></div>
@@ -53,8 +52,9 @@
                     <td th:text="${build.buildTitle}"></td>
                     <td th:text="${build.buildDescription}"></td>
                     <td th:text="${build.buildReleaseDate}"></td>
+                    <td th:text="${build.buildVersion}"></td>
                     <td>
-                        <span th:text="${build.isBuildActive == 'Active'}">Active</span>
+                        <span th:text=" ${build.isBuildActive}"></span>
                     </td>
                     <td>
                         <!-- View Details -->
@@ -71,7 +71,7 @@
             </tbody>
         </table>
 
-        <!-- Create New Test Plan Button -->
+        <!-- Create New Build Button -->
         <div th:if="${!isStakeholder}">
             <a href="/createBuild" class="btn btn-primary">Create New Build</a>
         </div>

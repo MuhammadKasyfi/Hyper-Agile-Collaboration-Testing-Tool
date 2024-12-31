@@ -65,7 +65,7 @@ public class BuildController {
 
         // Call the service method to create the build
         buildService.createBuild(build.getBuildTitle(), build.getBuildDescription(), build.getBuildReleaseDate(),
-                build.getIsBuildActive(), build.getIsBuildOpen());
+        build.getIsBuildActive(), build.getIsBuildOpen(), build.getBuildVersion());
         redirectAttributes.addFlashAttribute("success", "Build created successfully.");
         return "redirect:/viewBuilds"; // Redirect to the list of builds
     }
@@ -89,20 +89,24 @@ public class BuildController {
             @RequestParam String buildTitle,
             @RequestParam String buildDescription,
             @RequestParam String buildReleaseDate,
+            @RequestParam String buildVersion,
             @RequestParam(required = false) String isBuildActive,
             @RequestParam(required = false) String isBuildOpen,
-            @RequestParam(required = false) String version,
+            // @RequestParam(required = false) String version,
             RedirectAttributes redirectAttributes) {
 
         try {
-            // Default to "Inactive"/"Closed" if null or empty
-            isBuildActive = (isBuildActive != null && !isBuildActive.isEmpty()) ? isBuildActive : "Inactive";
-            isBuildOpen = (isBuildOpen != null && !isBuildOpen.isEmpty()) ? isBuildOpen : "Closed";
-            version = (version != null && !version.isEmpty()) ? version : "1.0"; // Ensure version is set
+            // // Default to "Inactive"/"Closed" if null or empty
+            // isBuildActive = (isBuildActive != null && !isBuildActive.isEmpty()) ?
+            // isBuildActive : "Inactive";
+            // isBuildOpen = (isBuildOpen != null && !isBuildOpen.isEmpty()) ? isBuildOpen :
+            // "Closed";
+            // version = (version != null && !version.isEmpty()) ? version : "1.0"; //
+            // Ensure version is set
 
             // Call the service to update the build
             buildService.updateBuild(bId, buildTitle, buildDescription, buildReleaseDate,
-                    isBuildActive, isBuildOpen, version);
+                    isBuildActive, isBuildOpen, buildVersion);
             redirectAttributes.addFlashAttribute("success", "Build updated successfully.");
         } catch (NoSuchElementException e) {
             redirectAttributes.addFlashAttribute("error", "Failed to update build: " + e.getMessage());

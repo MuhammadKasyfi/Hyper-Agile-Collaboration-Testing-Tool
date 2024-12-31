@@ -57,7 +57,6 @@
                     <th>Description</th>
                     <th>Active</th>
                     <th>Public</th>
-                    <th>Assign Test Suite</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -70,16 +69,6 @@
                     <td class="align-middle" th:text="${testPlan.isActive ? 'Yes' : 'No'}"></td>
                     <td class="align-middle" th:text="${testPlan.isPublic ? 'Yes' : 'No'}"></td>
                     <td class="align-middle">
-                        <form th:action="@{/assignTestSuite}" method="post">
-                            <input type="hidden" name="testPlanId" th:value="${testPlan.id}">
-                            <select name="testSuiteId" class="form-control">
-                                <option value="" disabled selected>Select Test Suite</option>
-                                <option th:each="testSuite : ${testSuites}" th:value="${testSuite.id}"
-                                    th:text="${testSuite.name}"></option>
-                            </select>
-                            <button type="submit" class="btn btn-primary mt-2">Assign</button>
-                        </form>
-
                     </td>
                     <td class="align-middle">
                         <a th:href="@{/viewTestPlanDetails/{id}(id=${testPlan.id})}" class="btn btn-info">View</a>

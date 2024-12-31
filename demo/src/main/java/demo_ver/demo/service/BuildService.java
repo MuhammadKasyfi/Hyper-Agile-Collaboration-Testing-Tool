@@ -28,11 +28,12 @@ public class BuildService {
 
     // Create a new build with specific parameters
     public void createBuild(String buildTitle, String buildDescription, String buildReleaseDate, String isBuildActive,
-            String isBuildOpen) {
+            String isBuildOpen, String buildVersion) {
         if (buildTitle == null || buildTitle.isBlank() ||
                 buildDescription == null || buildDescription.isBlank() ||
-                buildReleaseDate == null || buildReleaseDate.isBlank()) {
-            throw new IllegalArgumentException("Title, description, and release date are required.");
+                buildReleaseDate == null || buildReleaseDate.isBlank()||
+                buildVersion == null || buildVersion.isBlank()) {
+            throw new IllegalArgumentException("Title, description, version and release date are required.");
         }
 
         isBuildActive = (isBuildActive != null && !isBuildActive.isEmpty()) ? isBuildActive : "false";
@@ -44,7 +45,8 @@ public class BuildService {
                 buildDescription,
                 buildReleaseDate,
                 isBuildActive, // Store isActive as a String
-                isBuildOpen // Store isOpen as a String
+                isBuildOpen, // Store isOpen as a String
+                buildVersion
         );
         builds.add(newBuild);
     }
@@ -84,7 +86,7 @@ public class BuildService {
 
     // Update an existing build by ID
     public Build updateBuild(String bId, String buildTitle, String buildDescription, String buildReleaseDate,
-            String isBuildActive, String isBuildOpen, String version) {
+            String isBuildActive, String isBuildOpen, String buildVersion) {
         Optional<Build> buildOptional = builds.stream()
                 .filter(build -> build.getBId().equals(bId))
                 .findFirst();
@@ -94,18 +96,19 @@ public class BuildService {
             build.setBuildTitle(buildTitle);
             build.setBuildDescription(buildDescription);
             build.setBuildReleaseDate(buildReleaseDate);
-            build.setVersion((version != null && !version.isEmpty()) ? version : build.getVersion());
+            build.setBuildVersion(buildVersion);
             build.setIsBuildActive(isBuildActive != null ? isBuildActive : build.getIsBuildActive());
             build.setIsBuildOpen(isBuildOpen != null ? isBuildOpen : build.getIsBuildOpen());
             return build;
         } else {
             throw new NoSuchElementException("Build not found with ID: " + bId);
         }
-    }
+            }
+        }
 
-    // Overloaded method to update using a Build object
-    public void updateBuild(Build build) {
-        updateBuild(build.getBId(), build.getBuildTitle(), build.getBuildDescription(), build.getBuildReleaseDate(),
-                build.getIsBuildActive(), build.getIsBuildOpen(), null);
-    }
-}
+//     // Overloaded method to update using a Build object
+//     public void updateBuild(Build build) {
+//         updateBuild(build.getBId(), build.getBuildTitle(), build.getBuildDescription(), build.getBuildReleaseDate(),
+//                 build.getIsBuildActive(), build.getIsBuildOpen(), null);
+//     }
+// }

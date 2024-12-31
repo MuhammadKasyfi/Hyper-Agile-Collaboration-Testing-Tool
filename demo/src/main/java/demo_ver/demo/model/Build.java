@@ -7,18 +7,19 @@ public class Build {
     private String isBuildActive; // Status: Active or Inactive
     private String isBuildOpen; // Status: Open or Closed
     private String buildReleaseDate; // Release Date
-    private String version; // Version of the Build
+    private String buildVersion; // Version of the Build
 
     // Full constructor with all properties
     // Constructor
     public Build(String bId, String buildTitle, String buildDescription, String buildReleaseDate,
-            String isBuildActive, String isBuildOpen) {
+            String isBuildActive, String isBuildOpen, String buildVersion) {
         this.bId = bId;
         this.buildTitle = buildTitle;
         this.buildDescription = buildDescription;
         this.buildReleaseDate = buildReleaseDate;
         this.isBuildActive = isBuildActive;
         this.isBuildOpen = isBuildOpen;
+        this.buildVersion = buildVersion;
     }
 
     public Build() {
@@ -28,7 +29,8 @@ public class Build {
         this.buildReleaseDate = "";
         this.isBuildActive = "Inactive"; // Default value
         this.isBuildOpen = "Closed"; // Default value
-        this.version = "1.0"; // Default version
+        this.buildVersion = "";
+        // this.version = "1.0"; // Default version
     }
     // Getters and Setters
     public String getBId() {
@@ -79,12 +81,12 @@ public class Build {
         this.buildReleaseDate = buildReleaseDate;
     }
 
-    public String getVersion() {
-        return version;
+    public String getBuildVersion() {
+        return buildVersion;
     }
 
-    public void setVersion(String version) {
-        this.version = version;
+    public void setBuildVersion(String buildVersion) {
+        this.buildVersion = buildVersion;
     }
 
     public Object getFeatures() {

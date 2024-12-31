@@ -90,10 +90,18 @@
                 <label class="form-check-label" for="isBuildActive">Is Active</label>
             </div>
 
+
             <div class="form-group form-check">
                 <input type="checkbox" class="form-check-input" id="isBuildOpen" name="isBuildOpen"
                     th:checked="${build.isBuildOpen}">
                 <label class="form-check-label" for="isBuildOpen">Is Open</label>
+            </div>
+
+            <!-- Title Field -->
+            <div class="form-group">
+                <label for="title" class="form-label">Version:</label>
+                <input type="text" id="version" name="buildVersion" class="form-control"
+                    th:value="${build.buildVersion}" required>
             </div>
 
             <button type="submit" class="btn btn-submit">Save Changes</button>

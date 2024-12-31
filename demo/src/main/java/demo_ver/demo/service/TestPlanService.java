@@ -15,14 +15,6 @@ import java.util.stream.Collectors;
 public class TestPlanService {
 
     private List<TestPlan> testPlans = new ArrayList<>();
-    private List<TestSuite> testSuites = new ArrayList<>();
-
-    // Constructor to initialize some sample Test Suites (if needed)
-    public TestPlanService() {
-        // Sample Test Suites
-        //testSuites.add(new TestSuite("1", "Test Suite 1", "Description of Test Suite 1"));
-        //testSuites.add(new TestSuite("2", "Test Suite 2", "Description of Test Suite 2"));
-    }
 
     // Create a test plan
     public TestPlan createTestPlan(String name, String description, String activeStatus, String publicStatus) {
@@ -85,20 +77,6 @@ public class TestPlanService {
         }
     }
 
-    // Assign a Test Suite to a Test Plan
-    public void assignTestSuiteToTestPlan(TestPlan testPlan, TestSuite testSuite) {
-        testPlan.addTestSuite(testSuite); // Calls the implemented method
-    }
-
-    // Retrieve test suites assigned to a specific test plan
-    public List<TestSuite> getTestSuitesByTestPlan(String testPlanId) {
-        return testPlans.stream()
-                .filter(plan -> plan.getId().equals(testPlanId))
-                .findFirst()
-                .map(TestPlan::getTestSuites)
-                .orElseThrow(() -> new NoSuchElementException("Test plan not found with ID: " + testPlanId));
-    }
-
     // Filter test plans by search and active status
     public List<TestPlan> filterTestPlans(String search, Boolean isActive) {
         return testPlans.stream()
@@ -106,23 +84,6 @@ public class TestPlanService {
                         &&
                         (isActive == null || testPlan.getIsActive().equals(isActive.toString())))
                 .collect(Collectors.toList());
-    }
-
-    // Retrieve the test plans assigned to a specific test suite by the test suite's
-    // ID
-    public List<TestPlan> getAssignedTestPlansByTestSuiteId(String testSuiteId) {
-        return testPlans.stream()
-                .filter(testPlan -> testPlan.getTestSuites() != null &&
-                        testPlan.getTestSuites().stream()
-                                .anyMatch(testSuite -> testSuite.getId().equals(testSuiteId)))
-                .collect(Collectors.toList());
-    }
-
-    // Find a Test Suite by its ID
-    public Optional<TestSuite> findTestSuiteById(String id) {
-        return testSuites.stream()
-                .filter(testSuite -> testSuite.getId().equals(id))
-                .findFirst();
     }
 
     public TestPlan getTestPlanById(String testPlanId) {

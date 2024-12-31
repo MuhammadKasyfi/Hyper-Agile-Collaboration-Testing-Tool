@@ -18,10 +18,12 @@ public class TestSuite {
     private List<Integer> assignedUserIds = new ArrayList<>(); // List of assigned user IDs
     private Map<Integer, String> userStatuses = new HashMap<>(); // Map of user IDs to their statuses
     private TestPlan testPlan;
+    private Build build;
     //private List<Integer> userID;
     private ManageUser user;
     
     private List<TestPlan> testPlans = new ArrayList<>();
+    private List<Build> builds = new ArrayList<>();
 
     // Constructor
     public TestSuite(String id, String name, String description /*,List<Integer> userID*/) {
@@ -100,6 +102,14 @@ public class TestSuite {
         this.testPlan = testPlan;
     }
 
+    public Build getBuilds() {
+        return build;
+    }
+
+    public void setBuilds(Build build) {
+        this.build = build;
+    }
+
     public ManageUser getUser() {
         return user;
     }
@@ -172,6 +182,14 @@ public class TestSuite {
 
     public void setAssignedTestPlans(List<TestPlan> assignedTestPlans) {
         this.testPlans = assignedTestPlans; // Assuming you store the assigned test plans in a list called 'testPlans'
+    }
+
+    public List<Build> getAssignedBuilds() {
+        return builds; // Getter for assignedTestPlans
+    }
+
+    public void setAssignedBuilds(List<Build> assignedBuilds) {
+        this.builds = assignedBuilds; // Assuming you store the assigned test plans in a list called 'testPlans'
     }
 
 }

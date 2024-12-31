@@ -12,10 +12,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import demo_ver.demo.model.ManageUser;
 import demo_ver.demo.model.TestPlan;
+import demo_ver.demo.model.Build;
 import demo_ver.demo.model.TestSuite;
 import demo_ver.demo.service.ManageUserService;
 import demo_ver.demo.service.TestSuiteService;
 import demo_ver.demo.service.TestPlanService;
+import demo_ver.demo.service.BuildService;
 
 import javax.servlet.http.HttpSession;
 
@@ -30,6 +32,9 @@ public class TestSuiteController {
 
     @Autowired
     private TestPlanService testPlanService;
+
+    @Autowired
+    private BuildService buildService;
 
     // View the list of test suites
     @GetMapping("/viewTestSuites")
@@ -47,10 +52,13 @@ public class TestSuiteController {
 
             // Fetch the assigned TestPlans for the TestSuite
             List<TestPlan> assignedTestPlans = testSuite.getAssignedTestPlans(); // Retrieve assigned test plans
+            // List<Build> assignedBuilds = build.getAssignedBuilds(); // Retrieve assigned
+            // test plans
 
             // Add the TestSuite and assigned TestPlans to the model
             model.addAttribute("testSuite", testSuite);
             model.addAttribute("assignedTestPlans", assignedTestPlans);
+            // model.addAttribute("assignedBuilds", assignedBuilds);
 
             return "viewTestSuiteDetails"; // Return the view template for displaying the test suite details
 
@@ -81,7 +89,7 @@ public class TestSuiteController {
     public String createTestSuite(@RequestParam String name,
             @RequestParam String description,
             @RequestParam List<String> testPlanIds,
-            @RequestParam (required = false) List<String> userID,
+            @RequestParam(required = false) List<String> userID,
             RedirectAttributes redirectAttributes) {
 
         // Create the TestSuite
@@ -94,10 +102,16 @@ public class TestSuiteController {
             assignedTestPlans.add(testPlan);
         }
 
+        // // Fetch the TestPlans by their IDs and assign them to the TestSuite
+        // List<Build> assignedBuilds = new ArrayList<>();
+        // for (String bId : bIds) {
+        // Build builds = buildService.getBuildById(bId); // Fetching TestPlan from the
+        // service
+        // assignedBuilds.add(builds);
+        // }
+
         // Assign the selected TestPlans to the TestSuite
         testSuite.setAssignedTestPlans(assignedTestPlans);
-
-        
 
         // Add success message and redirect to the view page
         redirectAttributes.addFlashAttribute("success", "Test suite created successfully");
@@ -136,21 +150,20 @@ public class TestSuiteController {
     }
 
     // Delete a test suite by ID
-@PostMapping("/deleteTestSuite/{id}")
-public String deleteTestSuite(@PathVariable String id, RedirectAttributes redirectAttributes) {
-    try {
-        boolean deleted = testSuiteService.deleteTestSuite(id);
-        if (deleted) {
-            redirectAttributes.addFlashAttribute("success", "Test suite deleted successfully");
-        } else {
-            redirectAttributes.addFlashAttribute("error", "Test suite with ID " + id + " not found");
+    @PostMapping("/deleteTestSuite/{id}")
+    public String deleteTestSuite(@PathVariable String id, RedirectAttributes redirectAttributes) {
+        try {
+            boolean deleted = testSuiteService.deleteTestSuite(id);
+            if (deleted) {
+                redirectAttributes.addFlashAttribute("success", "Test suite deleted successfully");
+            } else {
+                redirectAttributes.addFlashAttribute("error", "Test suite with ID " + id + " not found");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Failed to delete test suite with ID " + id);
         }
-    } catch (Exception e) {
-        redirectAttributes.addFlashAttribute("error", "Failed to delete test suite with ID " + id);
+        return "redirect:/viewTestSuites";
     }
-    return "redirect:/viewTestSuites";
-}
-
 
     // Assign test plans to a test suite (POST request)
     @PostMapping("/assignTestPlansToTestSuite")
@@ -164,7 +177,6 @@ public String deleteTestSuite(@PathVariable String id, RedirectAttributes redire
         }
         return "redirect:/viewTestSuiteDetails/" + testSuiteId;
     }
-
 
     // Show form to assign users to a test suite
     @GetMapping("/assignUsersToTestSuite")
@@ -194,7 +206,7 @@ public String deleteTestSuite(@PathVariable String id, RedirectAttributes redire
     // Handle user assignment to test suite
     @PostMapping("/assignUsersToTestSuite")
     public String assignUsersToTestSuite(@RequestParam String testSuiteId, @RequestParam List<String> userIds,
-                                         RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes) {
         try {
             // Assign users to the TestSuite
             testSuiteService.assignUsersToTestSuite(testSuiteId, userIds);
@@ -205,5 +217,17 @@ public String deleteTestSuite(@PathVariable String id, RedirectAttributes redire
         return "redirect:/viewTestSuiteDetails/" + testSuiteId;
     }
 
-    
+    // Assign test plans to a test suite (POST request)
+    @PostMapping("/assignBuildToTestSuite")
+    public String assignBuildToTestSuite(@RequestParam String testSuiteId, @RequestParam List<String> bIds,
+            RedirectAttributes redirectAttributes) {
+        try {
+            testSuiteService.assignTestPlansToTestSuite(testSuiteId, bIds);
+            redirectAttributes.addFlashAttribute("success", "Test plans successfully assigned to the test suite");
+        } catch (NoSuchElementException e) {
+            redirectAttributes.addFlashAttribute("error", "Failed to assign test plans to the test suite");
+        }
+        return "redirect:/viewTestSuiteDetails/" + testSuiteId;
+    }
+
 }

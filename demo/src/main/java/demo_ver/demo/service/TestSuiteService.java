@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import demo_ver.demo.model.TestPlan;
+import demo_ver.demo.model.Build;
 import demo_ver.demo.model.TestSuite;
 
 @Service
@@ -15,6 +16,7 @@ public class TestSuiteService {
 
     private List<TestSuite> testSuites = new ArrayList<>();
     private List<TestPlan> testPlans = new ArrayList<>(); // Simulated TestPlan storage
+    private List<Build> builds = new ArrayList<>();
 
     // Create a test suite
     public TestSuite createTestSuite(String name, String description) {
