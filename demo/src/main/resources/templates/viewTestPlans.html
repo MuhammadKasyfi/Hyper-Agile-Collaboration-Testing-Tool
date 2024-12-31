@@ -76,6 +76,7 @@
                         <span th:if="${!isStakeholder}">
                             <a th:href="@{/editTestPlan(id=${testPlan.id})}" class="btn btn-warning">Edit</a>
 
+                            <!-- Delete Button and Modal -->
                             <button type="button" class="btn btn-danger" data-toggle="modal"
                                 th:data-target="'#deleteModal' + ${testPlan.id}">
                                 Delete

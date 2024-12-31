@@ -1,11 +1,10 @@
 package demo_ver.demo.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.autoconfigure.info.ProjectInfoProperties.Build;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,10 +13,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import demo_ver.demo.model.TestPlan;
 import demo_ver.demo.model.TestSuite;
-import demo_ver.demo.model.Build;
 import demo_ver.demo.service.TestPlanService;
 import demo_ver.demo.service.TestSuiteService;
-import demo_ver.demo.service.BuildService;
 
 @Controller
 public class TestPlanController {
@@ -53,9 +50,13 @@ public class TestPlanController {
         return "viewTestPlans";
     }
 
-    // Create Test Plan - GET
     @GetMapping("/createTestPlan")
-    public String createTestPlanForm() {
+    public String createTestPlan(Model model) {
+        List<TestSuite> testSuites = testSuiteService.viewTestSuites();
+        if (testSuites.isEmpty()) {
+            model.addAttribute("error", "No test suites available.");
+        }
+        model.addAttribute("testSuites", testSuites);
         return "createTestPlan";
     }
 
@@ -65,13 +66,45 @@ public class TestPlanController {
             @RequestParam String description,
             @RequestParam(required = false) String isActive,
             @RequestParam(required = false) String isPublic,
+            @RequestParam(required = false) List<String> testSuiteIds, // Optional
             RedirectAttributes redirectAttributes) {
         isActive = isActive != null && !isActive.isEmpty() ? isActive : "false";
         isPublic = isPublic != null && !isPublic.isEmpty() ? isPublic : "false";
 
-        testPlanService.createTestPlan(name, description, isActive, isPublic);
+        // Handle the case where no test suites are selected
+        if (testSuiteIds == null) {
+            testSuiteIds = new ArrayList<>(); // Provide a default empty list if no test suites are selected
+        }
+
+        // Call service to create the test plan with assigned test suites
+        testPlanService.createTestPlan(name, description, isActive, isPublic, testSuiteIds);
         redirectAttributes.addFlashAttribute("success", "Test plan created successfully.");
         return "redirect:/viewTestPlans";
+    }
+
+    // View Test Plan Details
+    @GetMapping("/viewTestPlanDetails/{id}")
+    public String viewTestPlanDetails(@PathVariable String id, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            // Fetch the test plan by ID
+            TestPlan testPlan = testPlanService.viewTestPlanById(id);
+
+            // Fetch the assigned test suites for this test plan
+            List<TestSuite> assignedTestSuites = testPlanService.getAssignedTestSuitesByTestPlanId(id);
+
+            // Add both the test plan and the assigned test suites to the model
+            model.addAttribute("testPlan", testPlan);
+            model.addAttribute("assignedTestSuites", assignedTestSuites);
+
+            return "viewTestPlanDetails"; // Return the Thymeleaf template for viewing test plan details
+
+        } catch (NoSuchElementException e) {
+            redirectAttributes.addFlashAttribute("error", "Test plan not found.");
+            return "redirect:/viewTestPlans";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "An unexpected error occurred.");
+            return "redirect:/viewTestPlans";
+        }
     }
 
     // Edit Test Plan - GET
@@ -79,7 +112,16 @@ public class TestPlanController {
     public String editTestPlanForm(@RequestParam String id, Model model, RedirectAttributes redirectAttributes) {
         try {
             TestPlan testPlan = testPlanService.viewTestPlanById(id);
+            List<TestSuite> availableTestSuites = testSuiteService.viewTestSuites(); // Get available test suites
+
+            // Fetch the assigned test suites for the test plan
+            List<TestSuite> assignedTestSuites = testSuiteService.getAssignedTestSuitesByTestPlanId(id);
+
+            // Add to model
             model.addAttribute("testPlan", testPlan);
+            model.addAttribute("availableTestSuites", availableTestSuites);
+            model.addAttribute("assignedTestSuites", assignedTestSuites);
+
             return "editTestPlan";
         } catch (NoSuchElementException e) {
             redirectAttributes.addFlashAttribute("error", "Test plan not found.");
@@ -94,12 +136,14 @@ public class TestPlanController {
             @RequestParam String description,
             @RequestParam(required = false) String isActive,
             @RequestParam(required = false) String isPublic,
+            @RequestParam(required = false) List<String> assignedTestSuites, // Get assigned test suites from the form
             RedirectAttributes redirectAttributes) {
         try {
             isActive = isActive != null && !isActive.isEmpty() ? isActive : "false";
             isPublic = isPublic != null && !isPublic.isEmpty() ? isPublic : "false";
 
-            testPlanService.updateTestPlan(id, name, description, isActive, isPublic);
+            // Update the test plan
+            testPlanService.updateTestPlan(id, name, description, isActive, isPublic, assignedTestSuites);
             redirectAttributes.addFlashAttribute("success", "Test plan updated successfully.");
         } catch (NoSuchElementException e) {
             redirectAttributes.addFlashAttribute("error", "Failed to update test plan: " + e.getMessage());
@@ -120,15 +164,22 @@ public class TestPlanController {
         return "redirect:/viewTestPlans";
     }
 
-    // View Test Plan Details
-    @GetMapping("/viewTestPlanDetails/{id}")
-    public String viewTestPlanDetails(@PathVariable String id, Model model, RedirectAttributes redirectAttributes) {
+    // Show form to assign test suites to a test plan
+    @GetMapping("/assignTestSuitesToTestPlan")
+    public String showAssignTestSuitesForm(@RequestParam String testPlanId, Model model,
+            RedirectAttributes redirectAttributes) {
         try {
-            TestPlan testPlan = testPlanService.viewTestPlanById(id);
+            // Fetch the test plan by ID
+            TestPlan testPlan = testPlanService.viewTestPlanById(testPlanId);
+
+            // Fetch the list of all available test suites
+            List<TestSuite> allTestSuites = testSuiteService.viewTestSuites();
+
+            // Add test plan and test suites to the model
             model.addAttribute("testPlan", testPlan);
+            model.addAttribute("testSuites", allTestSuites);
 
-            return "viewTestPlanDetails";
-
+            return "assignTestSuitesToTestPlan"; // Return the Thymeleaf template for assigning test suites
         } catch (NoSuchElementException e) {
             redirectAttributes.addFlashAttribute("error", "Test plan not found.");
             return "redirect:/viewTestPlans";
@@ -138,5 +189,21 @@ public class TestPlanController {
         }
     }
 
+    // Handle assignment of test suites to a test plan
+    @PostMapping("/assignTestSuitesToTestPlan")
+    public String assignTestSuitesToTestPlan(@RequestParam String testPlanId,
+            @RequestParam List<String> testSuiteIds,
+            RedirectAttributes redirectAttributes) {
+        try {
+            // Assign the selected test suites to the test plan
+            testPlanService.assignTestSuitesToTestPlan(testPlanId, testSuiteIds, null);
 
+            redirectAttributes.addFlashAttribute("success", "Test suites successfully assigned to the test plan.");
+        } catch (NoSuchElementException e) {
+            redirectAttributes.addFlashAttribute("error", "Test plan not found.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Failed to assign test suites to the test plan.");
+        }
+        return "redirect:/viewTestPlanDetails/" + testPlanId;
+    }
 }

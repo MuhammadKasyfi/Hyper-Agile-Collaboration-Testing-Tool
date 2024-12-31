@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.security.core.userdetails.User;
-
 import demo_ver.demo.service.ManageUserService;
 
 public class TestSuite {
@@ -17,22 +15,18 @@ public class TestSuite {
     private String importance; // Importance level (e.g., High, Medium, Low)
     private List<Integer> assignedUserIds = new ArrayList<>(); // List of assigned user IDs
     private Map<Integer, String> userStatuses = new HashMap<>(); // Map of user IDs to their statuses
-    private TestPlan testPlan;
     private Build build;
-    //private List<Integer> userID;
     private ManageUser user;
-    
-    private List<TestPlan> testPlans = new ArrayList<>();
+
     private List<Build> builds = new ArrayList<>();
 
     // Constructor
-    public TestSuite(String id, String name, String description /*,List<Integer> userID*/) {
+    public TestSuite(String id, String name, String description) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.status = "Pending"; // Default status when created
         this.importance = "Medium"; // Default importance level
-        //this.userID = userID;
     }
 
     // Getters and Setters
@@ -80,12 +74,6 @@ public class TestSuite {
         return assignedUserIds;
     }
 
-    /*
-     * public void setAssignedUserIds(List<String> userIds) {
-     * this.assignedUserIds = userIds;
-     * }
-     */
-
     public Map<Integer, String> getUserStatuses() {
         return userStatuses;
     }
@@ -94,19 +82,11 @@ public class TestSuite {
         this.userStatuses = userStatuses;
     }
 
-    public TestPlan getTestPlan() {
-        return testPlan;
-    }
-
-    public void setTestPlan(TestPlan testPlan) {
-        this.testPlan = testPlan;
-    }
-
-    public Build getBuilds() {
+    public Build getBuild() {
         return build;
     }
 
-    public void setBuilds(Build build) {
+    public void setBuild(Build build) {
         this.build = build;
     }
 
@@ -171,25 +151,11 @@ public class TestSuite {
                 '}';
     }
 
-    public void setAssignedUserIds(List<String> userIds) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setAssignedUserIds'");
-    }
-
-    public List<TestPlan> getAssignedTestPlans() {
-        return testPlans; // Getter for assignedTestPlans
-    }
-
-    public void setAssignedTestPlans(List<TestPlan> assignedTestPlans) {
-        this.testPlans = assignedTestPlans; // Assuming you store the assigned test plans in a list called 'testPlans'
-    }
-
     public List<Build> getAssignedBuilds() {
-        return builds; // Getter for assignedTestPlans
+        return builds; // Getter for assignedBuilds
     }
 
     public void setAssignedBuilds(List<Build> assignedBuilds) {
-        this.builds = assignedBuilds; // Assuming you store the assigned test plans in a list called 'testPlans'
+        this.builds = assignedBuilds; // Assuming you store the assigned builds in a list called 'builds'
     }
-
 }

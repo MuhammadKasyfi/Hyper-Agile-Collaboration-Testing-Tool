@@ -154,26 +154,12 @@
                 </div>
             </div>
 
-            <!-- Replace Dropdown with Checkboxes for Selecting Test Plan -->
-            <div class="form-group">
-                <label for="testPlans" class="form-label">Select Test Plans:</label>
-                <div>
-                    <!-- Dynamically generate checkboxes for test plans -->
-                    <div th:each="testPlan : ${testPlans}" class="form-check">
-                        <input type="checkbox" class="form-check-input" th:id="${'testPlanCheckbox' + testPlan.id}"
-                            th:name="testPlanIds" th:value="${testPlan.id}">
-                        <label class="form-check-label" th:for="${'testPlanCheckbox' + testPlan.id}"
-                            th:text="${testPlan.name}">
-                        </label>
-                    </div>
-                </div>
-            </div>
 
             <!-- Assign Users Section -->
             <div class="form-group">
                 <label>Assign Users:</label>
                 <div th:each="user : ${users}">
-                    <div  th:unless="${user.userID == 2000}" class="form-check">
+                    <div th:unless="${user.userID == 2000}" class="form-check">
                         <input type="checkbox" class="form-check-input" th:id="${'userCheckbox' + user.userID}"
                             th:field="*{userID}" th:value="${user.userID}">
                         <label class="form-check-label" th:for="${'userCheckbox' + user.userID}"
@@ -182,9 +168,7 @@
                     </div>
                 </div>
             </div>
-            
 
-            
 
             <!-- Buttons for Create and Cancel -->
             <div class="text-center">

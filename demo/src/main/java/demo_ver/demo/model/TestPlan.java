@@ -2,6 +2,7 @@ package demo_ver.demo.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class TestPlan {
     private String id;
@@ -16,11 +17,10 @@ public class TestPlan {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.isActive = isActive;
-        this.isPublic = isPublic;
+        this.isActive = isActive != null ? isActive : "false";
+        this.isPublic = isPublic != null ? isPublic : "false";
         this.testSuites = new ArrayList<>(); // Initialize the testSuites list
     }
-    
 
     // Getters and Setters
     public String getId() {
@@ -47,37 +47,71 @@ public class TestPlan {
         this.description = description;
     }
 
-    public String getIsActive() { // Changed return type to String
+    public String getIsActive() {
         return isActive;
     }
 
-    public void setIsActive(String isActive) { // Changed parameter type to String
-        this.isActive = isActive;
+    public void setIsActive(String isActive) {
+        this.isActive = isActive != null ? isActive : "false";
     }
 
-    public String getIsPublic() { // Changed return type to String
+    public String getIsPublic() {
         return isPublic;
     }
 
-    public void setIsPublic(String publicStatus) { // Changed parameter type to String
-        this.isPublic = publicStatus;
+    public void setIsPublic(String isPublic) {
+        this.isPublic = isPublic != null ? isPublic : "false";
     }
 
-    // Fix for the recursive call in the getter
     public List<TestSuite> getTestSuites() {
-        return this.testSuites;
+        return testSuites;
     }
 
-    // Setter for testSuites
     public void setTestSuites(List<TestSuite> testSuites) {
-        this.testSuites = testSuites;
+        this.testSuites = testSuites != null ? testSuites : new ArrayList<>();
     }
 
-    // Method to add a TestSuite to the list
+    // Method to add a single TestSuite to the list
     public void addTestSuite(TestSuite testSuite) {
         if (this.testSuites == null) {
             this.testSuites = new ArrayList<>(); // Initialize if null
         }
-        this.testSuites.add(testSuite);
+        if (!this.testSuites.contains(testSuite)) { // Avoid duplicates
+            this.testSuites.add(testSuite);
+        }
+    }
+
+    // Method to remove a TestSuite from the list
+    public void removeTestSuite(TestSuite testSuite) {
+        if (this.testSuites != null) {
+            this.testSuites.remove(testSuite);
+        }
+    }
+
+    // Overriding equals() and hashCode() for proper comparison and avoiding duplicates
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        TestPlan testPlan = (TestPlan) obj;
+        return Objects.equals(id, testPlan.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    // Overriding toString() for better debugging and logging
+    @Override
+    public String toString() {
+        return "TestPlan{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", isActive='" + isActive + '\'' +
+                ", isPublic='" + isPublic + '\'' +
+                ", testSuites=" + testSuites +
+                '}';
     }
 }

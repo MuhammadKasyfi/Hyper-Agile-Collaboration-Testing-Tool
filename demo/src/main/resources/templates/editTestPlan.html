@@ -51,6 +51,14 @@
         .back-link:hover {
             text-decoration: underline;
         }
+
+        .alert {
+            margin-bottom: 20px;
+        }
+
+        .test-suite-list {
+            margin-top: 20px;
+        }
     </style>
 </head>
 
@@ -59,23 +67,36 @@
     <!-- Include the Navbar fragment -->
     <div th:replace="~{fragments/navbar :: navbar}"></div>
 
+    <!-- Display Success or Error Message -->
+    <div th:if="${success != null}" class="alert alert-success">
+        <span th:text="${success}"></span>
+    </div>
+    <div th:if="${error != null}" class="alert alert-danger">
+        <span th:text="${error}"></span>
+    </div>
+
     <!-- Form for editing a test plan -->
     <div class="container">
         <h2>Edit Test Plan</h2>
-        <form action="/editTestPlan" method="POST">
+        <form action="/editTestPlan" method="POST"
+            onsubmit="return confirm('Are you sure you want to update this test plan?');">
+            <!-- CSRF Token -->
+            <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+
             <!-- Hidden field for the test plan ID -->
             <input type="hidden" name="id" th:value="${testPlan.id}">
 
             <div class="form-group">
                 <label for="name" class="form-label">Test Plan Name:</label>
-                <input type="text" class="form-control" id="name" name="name" th:value="${testPlan.name}" required>
+                <input type="text" class="form-control" id="name" name="name" th:value="${testPlan.name}"
+                    placeholder="Enter test plan name" required>
             </div>
 
             <div class="form-group">
                 <label for="description" class="form-label">Description:</label>
                 <!-- Larger text area for CKEditor -->
                 <textarea id="description" name="description" class="form-control" rows="10"
-                    th:text="${testPlan.description}"></textarea>
+                    placeholder="Enter description" th:text="${testPlan.description}"></textarea>
             </div>
 
             <div class="form-group form-check">
@@ -88,6 +109,24 @@
                 <input type="checkbox" class="form-check-input" id="isPublic" name="isPublic"
                     th:checked="${testPlan.isPublic}">
                 <label class="form-check-label" for="isPublic">Is Public</label>
+            </div>
+
+            <!-- Assign Test Suites Section -->
+            <div class="test-suite-list">
+                <h4>Assign Test Suites</h4>
+                <div th:if="${availableTestSuites != null}">
+                    <div th:each="suite : ${availableTestSuites}">
+                        <div class="form-check">
+                            <!-- Checkbox to assign test suite -->
+                            <input type="checkbox" class="form-check-input" name="assignedTestSuites"
+                                th:value="${suite.id}" th:checked="${testPlan.assignedTestSuites.contains(suite)}">
+                            <label class="form-check-label" th:text="${suite.name}"></label>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${availableTestSuites == null || availableTestSuites.isEmpty()}">
+                    <p>No available test suites to assign.</p>
+                </div>
             </div>
 
             <button type="submit" class="btn btn-submit">Update Test Plan</button>

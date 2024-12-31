@@ -17,13 +17,21 @@ public class TestPlanService {
     private List<TestPlan> testPlans = new ArrayList<>();
 
     // Create a test plan
-    public TestPlan createTestPlan(String name, String description, String activeStatus, String publicStatus) {
+    public TestPlan createTestPlan(String name, String description, String activeStatus, String publicStatus,
+            List<String> testSuiteIds) {
         String id = UUID.randomUUID().toString(); // Generate unique ID
         String isActive = (activeStatus != null && !activeStatus.isEmpty()) ? activeStatus : "false";
         String isPublic = (publicStatus != null && !publicStatus.isEmpty()) ? publicStatus : "false";
 
         TestPlan testPlan = new TestPlan(id, name, description, isActive, isPublic);
         testPlans.add(testPlan); // Add to the list of test plans
+
+        // Assign test suites if provided
+        if (testSuiteIds != null && !testSuiteIds.isEmpty()) {
+            List<TestSuite> selectedTestSuites = getTestSuitesByIds(testSuiteIds);
+            testPlan.setTestSuites(selectedTestSuites);
+        }
+
         return testPlan;
     }
 
@@ -42,7 +50,7 @@ public class TestPlanService {
 
     // Update a test plan by ID
     public TestPlan updateTestPlan(String id, String name, String description, String activeStatus,
-            String publicStatus) {
+            String publicStatus, List<String> assignedTestSuites) {
         Optional<TestPlan> testPlanOptional = testPlans.stream()
                 .filter(plan -> plan.getId().equals(id))
                 .findFirst();
@@ -86,12 +94,45 @@ public class TestPlanService {
                 .collect(Collectors.toList());
     }
 
+    // Get test plan by ID
     public TestPlan getTestPlanById(String testPlanId) {
-        // Assuming testPlans is a list of all available TestPlans
         return testPlans.stream()
                 .filter(testPlan -> testPlan.getId().equals(testPlanId))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("TestPlan not found with ID: " + testPlanId));
     }
 
+    // Get test suites by their IDs
+    private List<TestSuite> getTestSuitesByIds(List<String> testSuiteIds) {
+        // In a real-world scenario, this method would query a database or service to
+        // fetch TestSuite objects
+        // For simplicity, we'll mock this by returning new TestSuite objects with the
+        // given IDs
+
+        List<TestSuite> allTestSuites = new ArrayList<>();
+        for (String id : testSuiteIds) {
+            TestSuite testSuite = new TestSuite(id, "Test Suite " + id, id);
+            allTestSuites.add(testSuite);
+        }
+        return allTestSuites;
+    }
+
+    // Get assigned test suites for a specific test plan
+    public List<TestSuite> getAssignedTestSuitesByTestPlanId(String testPlanId) {
+        TestPlan testPlan = getTestPlanById(testPlanId);
+        if (testPlan.getTestSuites() == null || testPlan.getTestSuites().isEmpty()) {
+            throw new NoSuchElementException("No test suites assigned to this test plan.");
+        }
+        return testPlan.getTestSuites();
+    }
+
+    // Assign test suites to a test plan
+    public void assignTestSuitesToTestPlan(String testPlanId, List<String> testSuiteIds,
+            List<TestSuite> allTestSuites) {
+        TestPlan testPlan = getTestPlanById(testPlanId);
+        List<TestSuite> selectedTestSuites = allTestSuites.stream()
+                .filter(testSuite -> testSuiteIds.contains(testSuite.getId()))
+                .collect(Collectors.toList());
+        testPlan.setTestSuites(selectedTestSuites);
+    }
 }

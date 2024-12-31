@@ -16,10 +16,11 @@
     <div class="container mt-4">
         <h1 class="mb-4">Test Plan Details</h1>
 
-        <div class="card">
-            <div class="card-body">
-                <!-- Display the details of the test plan if it exists -->
-                <div th:if="${testPlan != null}">
+        <!-- Display the test plan details or error message -->
+        <div th:if="${testPlan != null}">
+            <div class="card">
+                <div class="card-body">
+                    <!-- Display test plan information -->
                     <table class="table table-bordered">
                         <tbody>
                             <tr>
@@ -32,25 +33,48 @@
                             </tr>
                             <tr>
                                 <th>Description</th>
-                                <td th:utext="${testPlan.description}"></td>
+                                <td th:text="${testPlan.description}"></td> <!-- Use th:text to avoid XSS -->
                             </tr>
                             <tr>
                                 <th>Active</th>
-                                <td th:text="${testPlan.isActive ? 'Yes' : 'No'}"></td>
+                                <td th:text="${testPlan.isActive == 'true' ? 'Yes' : 'No'}"></td>
                             </tr>
                             <tr>
                                 <th>Public</th>
-                                <td th:text="${testPlan.isPublic ? 'Yes' : 'No'}"></td>
+                                <td th:text="${testPlan.isPublic == 'true' ? 'Yes' : 'No'}"></td>
                             </tr>
                         </tbody>
                     </table>
-                </div>
 
-                <!-- If no test plan is found, display an error message -->
-                <div th:if="${testPlan == null}" class="alert alert-warning">
-                    No test plan found.
+                    <!-- Assigned Test Suites Section -->
+                    <h4>Assigned Test Suites</h4>
+                    <table class="table table-striped"
+                        th:if="${assignedTestSuites != null and !assignedTestSuites.isEmpty()}">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Test Suite Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="suite, stat : ${assignedTestSuites}">
+                                <td th:text="${stat.index + 1}"></td>
+                                <td th:text="${suite.name}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- If no test suites are assigned, show this message -->
+                    <div th:if="${assignedTestSuites == null or assignedTestSuites.isEmpty()}">
+                        <p>No test suites assigned to this test plan.</p>
+                    </div>
                 </div>
             </div>
+        </div>
+
+        <!-- If no test plan is found, display an error message -->
+        <div th:if="${testPlan == null}" class="alert alert-warning">
+            No test plan found. It might have been deleted or doesn't exist.
         </div>
 
         <!-- Button to go back to the list of test plans -->

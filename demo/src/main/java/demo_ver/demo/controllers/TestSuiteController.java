@@ -19,8 +19,6 @@ import demo_ver.demo.service.TestSuiteService;
 import demo_ver.demo.service.TestPlanService;
 import demo_ver.demo.service.BuildService;
 
-import javax.servlet.http.HttpSession;
-
 @Controller
 public class TestSuiteController {
 
@@ -51,14 +49,12 @@ public class TestSuiteController {
             TestSuite testSuite = testSuiteService.viewTestSuiteById(id);
 
             // Fetch the assigned TestPlans for the TestSuite
-            List<TestPlan> assignedTestPlans = testSuite.getAssignedTestPlans(); // Retrieve assigned test plans
-            // List<Build> assignedBuilds = build.getAssignedBuilds(); // Retrieve assigned
-            // test plans
+            // List<TestPlan> assignedTestPlans = testSuite.getAssignedTestPlans(); //
+            // Retrieve assigned test plans
 
             // Add the TestSuite and assigned TestPlans to the model
             model.addAttribute("testSuite", testSuite);
-            model.addAttribute("assignedTestPlans", assignedTestPlans);
-            // model.addAttribute("assignedBuilds", assignedBuilds);
+            // model.addAttribute("assignedTestPlans", assignedTestPlans);
 
             return "viewTestSuiteDetails"; // Return the view template for displaying the test suite details
 
@@ -88,30 +84,11 @@ public class TestSuiteController {
     @PostMapping("/createTestSuite")
     public String createTestSuite(@RequestParam String name,
             @RequestParam String description,
-            @RequestParam List<String> testPlanIds,
             @RequestParam(required = false) List<String> userID,
             RedirectAttributes redirectAttributes) {
 
         // Create the TestSuite
         TestSuite testSuite = testSuiteService.createTestSuite(name, description);
-
-        // Fetch the TestPlans by their IDs and assign them to the TestSuite
-        List<TestPlan> assignedTestPlans = new ArrayList<>();
-        for (String testPlanId : testPlanIds) {
-            TestPlan testPlan = testPlanService.getTestPlanById(testPlanId); // Fetching TestPlan from the service
-            assignedTestPlans.add(testPlan);
-        }
-
-        // // Fetch the TestPlans by their IDs and assign them to the TestSuite
-        // List<Build> assignedBuilds = new ArrayList<>();
-        // for (String bId : bIds) {
-        // Build builds = buildService.getBuildById(bId); // Fetching TestPlan from the
-        // service
-        // assignedBuilds.add(builds);
-        // }
-
-        // Assign the selected TestPlans to the TestSuite
-        testSuite.setAssignedTestPlans(assignedTestPlans);
 
         // Add success message and redirect to the view page
         redirectAttributes.addFlashAttribute("success", "Test suite created successfully");
@@ -165,19 +142,6 @@ public class TestSuiteController {
         return "redirect:/viewTestSuites";
     }
 
-    // Assign test plans to a test suite (POST request)
-    @PostMapping("/assignTestPlansToTestSuite")
-    public String assignTestPlansToTestSuite(@RequestParam String testSuiteId, @RequestParam List<String> testPlanIds,
-            RedirectAttributes redirectAttributes) {
-        try {
-            testSuiteService.assignTestPlansToTestSuite(testSuiteId, testPlanIds);
-            redirectAttributes.addFlashAttribute("success", "Test plans successfully assigned to the test suite");
-        } catch (NoSuchElementException e) {
-            redirectAttributes.addFlashAttribute("error", "Failed to assign test plans to the test suite");
-        }
-        return "redirect:/viewTestSuiteDetails/" + testSuiteId;
-    }
-
     // Show form to assign users to a test suite
     @GetMapping("/assignUsersToTestSuite")
     public String showAssignUsersForm(@RequestParam String id, Model model, RedirectAttributes redirectAttributes) {
@@ -186,7 +150,7 @@ public class TestSuiteController {
             TestSuite testSuite = testSuiteService.viewTestSuiteById(id);
 
             // Fetch all users
-            List<ManageUser> allUsers = ManageUserService.getAllUsers();
+            List<ManageUser> allUsers = manageUserService.getAllUsers();
 
             // Add TestSuite and users to the model
             model.addAttribute("testSuite", testSuite);
@@ -216,18 +180,4 @@ public class TestSuiteController {
         }
         return "redirect:/viewTestSuiteDetails/" + testSuiteId;
     }
-
-    // Assign test plans to a test suite (POST request)
-    @PostMapping("/assignBuildToTestSuite")
-    public String assignBuildToTestSuite(@RequestParam String testSuiteId, @RequestParam List<String> bIds,
-            RedirectAttributes redirectAttributes) {
-        try {
-            testSuiteService.assignTestPlansToTestSuite(testSuiteId, bIds);
-            redirectAttributes.addFlashAttribute("success", "Test plans successfully assigned to the test suite");
-        } catch (NoSuchElementException e) {
-            redirectAttributes.addFlashAttribute("error", "Failed to assign test plans to the test suite");
-        }
-        return "redirect:/viewTestSuiteDetails/" + testSuiteId;
-    }
-
 }

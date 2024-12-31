@@ -7,7 +7,6 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import demo_ver.demo.model.TestPlan;
 import demo_ver.demo.model.Build;
 import demo_ver.demo.model.TestSuite;
 
@@ -15,8 +14,7 @@ import demo_ver.demo.model.TestSuite;
 public class TestSuiteService {
 
     private List<TestSuite> testSuites = new ArrayList<>();
-    private List<TestPlan> testPlans = new ArrayList<>(); // Simulated TestPlan storage
-    private List<Build> builds = new ArrayList<>();
+    private List<Build> builds = new ArrayList<>(); // Simulated Build storage
 
     // Create a test suite
     public TestSuite createTestSuite(String name, String description) {
@@ -84,44 +82,44 @@ public class TestSuiteService {
 
         if (testSuiteOptional.isPresent()) {
             TestSuite testSuite = testSuiteOptional.get();
-            testSuite.setAssignedUserIds(userIds); // Assuming TestSuite has a field for assigned user IDs
+            // Add the logic to assign users if required
         } else {
             throw new NoSuchElementException("Test suite not found with ID: " + testSuiteId);
         }
     }
 
-    // Assign test plans to a test suite
-    public void assignTestPlansToTestSuite(String testSuiteId, List<String> testPlanIds) {
-        Optional<TestSuite> testSuiteOptional = testSuites.stream()
-                .filter(suite -> suite.getId().equals(testSuiteId))
-                .findFirst();
+    // // Assign builds to a test suite
+    // public void assignBuildsToTestSuite(String testSuiteId, List<String> buildIds) {
+    //     Optional<TestSuite> testSuiteOptional = testSuites.stream()
+    //             .filter(suite -> suite.getId().equals(testSuiteId))
+    //             .findFirst();
 
-        if (testSuiteOptional.isPresent()) {
-            TestSuite testSuite = testSuiteOptional.get();
-            List<TestPlan> assignedTestPlans = new ArrayList<>();
-            // Simulating fetching test plans from in-memory storage
-            for (String testPlanId : testPlanIds) {
-                TestPlan testPlan = findTestPlanById(testPlanId); // Fetch test plan from the in-memory list
-                assignedTestPlans.add(testPlan);
-            }
-            testSuite.setAssignedTestPlans(assignedTestPlans);
-        } else {
-            throw new NoSuchElementException("Test suite not found with ID: " + testSuiteId);
-        }
-    }
+    //     if (testSuiteOptional.isPresent()) {
+    //         TestSuite testSuite = testSuiteOptional.get();
+    //         List<Build> assignedBuilds = new ArrayList<>();
+    //         // Simulating fetching builds from in-memory storage
+    //         for (String buildId : buildIds) {
+    //             Build build = findBuildById(buildId); // Fetch build from the in-memory list
+    //             assignedBuilds.add(build);
+    //         }
+    //         testSuite.setAssignedBuilds(assignedBuilds);
+    //     } else {
+    //         throw new NoSuchElementException("Test suite not found with ID: " + testSuiteId);
+    //     }
+    // }
 
-    // Simulated method to find Test Plan by ID (from in-memory list)
-    private TestPlan findTestPlanById(String testPlanId) {
-        Optional<TestPlan> testPlan = testPlans.stream()
-                .filter(plan -> plan.getId().equals(testPlanId))
-                .findFirst();
+    // // Simulated method to find Build by ID (from in-memory list)
+    // private Build findBuildById(String buildId) {
+    //     Optional<Build> build = builds.stream()
+    //             .filter(b -> b.getId().equals(buildId))
+    //             .findFirst();
 
-        if (testPlan.isPresent()) {
-            return testPlan.get();
-        } else {
-            throw new NoSuchElementException("Test plan not found with ID: " + testPlanId);
-        }
-    }
+    //     if (build.isPresent()) {
+    //         return build.get();
+    //     } else {
+    //         throw new NoSuchElementException("Build not found with ID: " + buildId);
+    //     }
+    // }
 
     // Save or update a test suite (simulating persistence in-memory)
     public void save(TestSuite testSuite) {
@@ -151,14 +149,19 @@ public class TestSuiteService {
                 .findFirst();
     }
 
-    // Simulate creating and adding test plans for demonstration
-    public void createTestPlan(String id, String name, String description) {
-        TestPlan testPlan = new TestPlan(id, name, description, description, description);
-        testPlans.add(testPlan);
+    public List<TestSuite> getAssignedTestSuitesByTestPlanId(String id) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAssignedTestSuitesByTestPlanId'");
     }
 
-    // Get all test plans (simulated)
-    public List<TestPlan> getAllTestPlans() {
-        return testPlans;
-    }
+    // // Simulate creating and adding builds for demonstration
+    // public void createBuild(String id, String name, String description) {
+    //     Build build = new Build(id, name, description);
+    //     builds.add(build);
+    // }
+
+    // // Get all builds (simulated)
+    // public List<Build> getAllBuilds() {
+    //     return builds;
+    // }
 }
