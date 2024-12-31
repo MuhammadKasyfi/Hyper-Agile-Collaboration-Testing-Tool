@@ -35,13 +35,11 @@ public class BuildController {
             @RequestParam(required = false) String isActive,
             Model model,
             Authentication authentication) {
-        // Determine if the user has a specific role
         boolean isStakeholder = hasRole(authentication, "STAKEHOLDER");
 
         // Call service to filter builds based on search and isActive
         List<Build> builds = buildService.filterBuilds(search != null ? search.trim() : "", isActive);
 
-        // Add attributes to the model
         model.addAttribute("builds", builds);
         model.addAttribute("isStakeholder", isStakeholder);
         model.addAttribute("search", search);
@@ -52,52 +50,66 @@ public class BuildController {
 
     // Create Build - GET
     @GetMapping("/createBuild")
-    public String createBuildForm(Model model, Authentication authentication, RedirectAttributes redirectAttributes) {
-        if (!hasRole(authentication, "ADMIN")) {
-            redirectAttributes.addFlashAttribute("error", "You do not have permission to create builds.");
-            return "redirect:/viewBuilds";
-        }
+    public String createBuildForm(Model model) {
+        model.addAttribute("build", new Build()); // Create and add a new Build object
         return "createBuild";
     }
 
     // Create Build - POST
     @PostMapping("/createBuild")
-    public String createBuild(@RequestParam String title,
-            @RequestParam String description,
-            @RequestParam String releaseDate,
-            @RequestParam(required = false) String isActive,
-            @RequestParam(required = false) String isOpen,
+    public String createBuild(@Valid @ModelAttribute Build build, BindingResult bindingResult,
             RedirectAttributes redirectAttributes) {
-        try {
-            if (title.isEmpty() || description.isEmpty() || releaseDate.isEmpty()) {
-                redirectAttributes.addFlashAttribute("error", "All fields except Active and Open are required.");
-                return "redirect:/createBuild";
-            }
-
-            // Store the values as strings
-            isActive = (isActive != null && !isActive.isEmpty()) ? isActive : "false";
-            isOpen = (isOpen != null && !isOpen.isEmpty()) ? isOpen : "false";
-
-            buildService.createBuild(title, description, releaseDate, isActive, isOpen);
-            redirectAttributes.addFlashAttribute("success", "Build created successfully.");
-            return "redirect:/viewBuilds";
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "An unexpected error occurred while creating the build.");
-            return "redirect:/createBuild";
+        if (bindingResult.hasErrors()) {
+            return "createBuild"; // Return to the form in case of validation errors
         }
+
+        // Call the service method to create the build
+        buildService.createBuild(build.getBuildTitle(), build.getBuildDescription(), build.getBuildReleaseDate(),
+                build.getIsBuildActive(), build.getIsBuildOpen());
+        redirectAttributes.addFlashAttribute("success", "Build created successfully.");
+        return "redirect:/viewBuilds"; // Redirect to the list of builds
     }
 
     // Edit Build - GET
-    @GetMapping("/editBuild")
-    public String editBuildForm(@RequestParam String id, Model model, RedirectAttributes redirectAttributes) {
+    @GetMapping("/editBuild/{id}")
+    public String editBuildForm(@PathVariable String id, Model model, RedirectAttributes redirectAttributes) {
         try {
-            Build build = buildService.viewBuildById(id);
+            Build build = buildService.viewBuildById(id); // Ensure the ID exists
             model.addAttribute("build", build);
-            return "editBuild";
+            return "editBuild"; // Pass the build to the view for editing
         } catch (NoSuchElementException e) {
             redirectAttributes.addFlashAttribute("error", "Build not found.");
-            return "redirect:/viewBuilds";
+            return "redirect:/viewBuilds"; // Redirect if build not found
         }
+    }
+
+    // Edit Build - POST
+    @PostMapping("/editBuild/{bId}")
+    public String updateBuild(@PathVariable String bId,
+            @RequestParam String buildTitle,
+            @RequestParam String buildDescription,
+            @RequestParam String buildReleaseDate,
+            @RequestParam(required = false) String isBuildActive,
+            @RequestParam(required = false) String isBuildOpen,
+            @RequestParam(required = false) String version,
+            RedirectAttributes redirectAttributes) {
+
+        try {
+            // Default to "Inactive"/"Closed" if null or empty
+            isBuildActive = (isBuildActive != null && !isBuildActive.isEmpty()) ? isBuildActive : "Inactive";
+            isBuildOpen = (isBuildOpen != null && !isBuildOpen.isEmpty()) ? isBuildOpen : "Closed";
+            version = (version != null && !version.isEmpty()) ? version : "1.0"; // Ensure version is set
+
+            // Call the service to update the build
+            buildService.updateBuild(bId, buildTitle, buildDescription, buildReleaseDate,
+                    isBuildActive, isBuildOpen, version);
+            redirectAttributes.addFlashAttribute("success", "Build updated successfully.");
+        } catch (NoSuchElementException e) {
+            redirectAttributes.addFlashAttribute("error", "Failed to update build: " + e.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "An unexpected error occurred: " + e.getMessage());
+        }
+        return "redirect:/viewBuilds"; // Redirect to the list of builds
     }
 
     // Delete Build
@@ -115,28 +127,15 @@ public class BuildController {
     @GetMapping("/viewBuildDetails/{id}")
     public String viewBuildDetails(@PathVariable String id, Model model, RedirectAttributes redirectAttributes) {
         try {
-            // Validate the ID
-            if (id == null || id.isBlank()) {
-                redirectAttributes.addFlashAttribute("error", "Invalid build ID.");
-                return "redirect:/viewBuilds";
-            }
-
-            // Fetch the build details
             Build build = buildService.viewBuildById(id);
             model.addAttribute("build", build);
-
-            return "viewBuildDetails"; // Render the view
+            return "viewBuildDetails";
         } catch (NoSuchElementException e) {
-            // Log and handle specific case
-            System.err.println("Build not found: " + id);
             redirectAttributes.addFlashAttribute("error", "Build not found.");
             return "redirect:/viewBuilds";
         } catch (Exception e) {
-            // Log the error
-            System.err.println("Unexpected error while viewing build details: " + e.getMessage());
             redirectAttributes.addFlashAttribute("error", "An unexpected error occurred.");
             return "redirect:/viewBuilds";
         }
     }
-
 }

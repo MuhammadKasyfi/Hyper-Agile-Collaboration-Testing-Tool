@@ -9,17 +9,27 @@ public class Build {
     private String buildReleaseDate; // Release Date
     private String version; // Version of the Build
 
-    public Build(String bId, String buildTitle, String buildDescription,
-            String isBuildActive, String isBuildOpen, String buildReleaseDate, String version) {
+    // Full constructor with all properties
+    // Constructor
+    public Build(String bId, String buildTitle, String buildDescription, String buildReleaseDate,
+            String isBuildActive, String isBuildOpen) {
         this.bId = bId;
         this.buildTitle = buildTitle;
         this.buildDescription = buildDescription;
+        this.buildReleaseDate = buildReleaseDate;
         this.isBuildActive = isBuildActive;
         this.isBuildOpen = isBuildOpen;
-        this.buildReleaseDate = buildReleaseDate;
-        this.version = version;
     }
 
+    public Build() {
+        // You can set default values here if necessary
+        this.buildTitle = "";
+        this.buildDescription = "";
+        this.buildReleaseDate = "";
+        this.isBuildActive = "Inactive"; // Default value
+        this.isBuildOpen = "Closed"; // Default value
+        this.version = "1.0"; // Default version
+    }
     // Getters and Setters
     public String getBId() {
         return bId;
@@ -75,5 +85,10 @@ public class Build {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public Object getFeatures() {
+        // Placeholder method for features
+        throw new UnsupportedOperationException("Unimplemented method 'getFeatures'");
     }
 }

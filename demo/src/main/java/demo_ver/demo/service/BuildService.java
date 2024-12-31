@@ -5,7 +5,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 public class BuildService {
@@ -25,24 +27,24 @@ public class BuildService {
     }
 
     // Create a new build with specific parameters
-    public void createBuild(String title, String description, String releaseDate, String isActive, String isOpen) {
-        if (title == null || title.isBlank() || 
-            description == null || description.isBlank() || 
-            releaseDate == null || releaseDate.isBlank()) {
+    public void createBuild(String buildTitle, String buildDescription, String buildReleaseDate, String isBuildActive,
+            String isBuildOpen) {
+        if (buildTitle == null || buildTitle.isBlank() ||
+                buildDescription == null || buildDescription.isBlank() ||
+                buildReleaseDate == null || buildReleaseDate.isBlank()) {
             throw new IllegalArgumentException("Title, description, and release date are required.");
         }
 
-        // Ensure isActive and isOpen are not null; default to "false"
-        isActive = (isActive == null || isActive.isBlank()) ? "false" : isActive;
-        isOpen = (isOpen == null || isOpen.isBlank()) ? "false" : isOpen;
+        isBuildActive = (isBuildActive != null && !isBuildActive.isEmpty()) ? isBuildActive : "false";
+        isBuildOpen = (isBuildOpen != null && !isBuildOpen.isEmpty()) ? isBuildOpen : "false";
 
         Build newBuild = new Build(
                 generateUniqueId(),
-                title,
-                description,
-                releaseDate,
-                isActive,
-                isOpen, isOpen
+                buildTitle,
+                buildDescription,
+                buildReleaseDate,
+                isBuildActive, // Store isActive as a String
+                isBuildOpen // Store isOpen as a String
         );
         builds.add(newBuild);
     }
@@ -66,17 +68,44 @@ public class BuildService {
         return builds.removeIf(build -> build.getBId().equals(id));
     }
 
-    // Filter builds based on a search string
+    // Filter builds based on a search string and isActive status
     public List<Build> filterBuilds(String search, String isActive) {
         return builds.stream()
                 .filter(build -> (search == null || build.getBuildTitle().toLowerCase().contains(search.toLowerCase()) ||
-                                  build.getBuildDescription().toLowerCase().contains(search.toLowerCase())) &&
-                                 (isActive == null || isActive.isBlank() || build.getIsBuildActive().equalsIgnoreCase(isActive)))
+                        build.getBuildDescription().toLowerCase().contains(search.toLowerCase())) &&
+                        (isActive == null || isActive.isBlank() || build.getIsBuildActive().equalsIgnoreCase(isActive)))
                 .collect(Collectors.toList());
-    }    
+    }
 
-    // Utility method to generate a unique ID
+    // Utility method to generate a unique ID for each build
     private String generateUniqueId() {
         return "BUILD-" + (builds.size() + 1);
+    }
+
+    // Update an existing build by ID
+    public Build updateBuild(String bId, String buildTitle, String buildDescription, String buildReleaseDate,
+            String isBuildActive, String isBuildOpen, String version) {
+        Optional<Build> buildOptional = builds.stream()
+                .filter(build -> build.getBId().equals(bId))
+                .findFirst();
+
+        if (buildOptional.isPresent()) {
+            Build build = buildOptional.get();
+            build.setBuildTitle(buildTitle);
+            build.setBuildDescription(buildDescription);
+            build.setBuildReleaseDate(buildReleaseDate);
+            build.setVersion((version != null && !version.isEmpty()) ? version : build.getVersion());
+            build.setIsBuildActive(isBuildActive != null ? isBuildActive : build.getIsBuildActive());
+            build.setIsBuildOpen(isBuildOpen != null ? isBuildOpen : build.getIsBuildOpen());
+            return build;
+        } else {
+            throw new NoSuchElementException("Build not found with ID: " + bId);
+        }
+    }
+
+    // Overloaded method to update using a Build object
+    public void updateBuild(Build build) {
+        updateBuild(build.getBId(), build.getBuildTitle(), build.getBuildDescription(), build.getBuildReleaseDate(),
+                build.getIsBuildActive(), build.getIsBuildOpen(), null);
     }
 }

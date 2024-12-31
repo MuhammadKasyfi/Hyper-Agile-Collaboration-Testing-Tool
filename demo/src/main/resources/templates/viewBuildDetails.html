@@ -16,6 +16,15 @@
     <div class="container mt-4">
         <h1 class="mb-4">Build Details</h1>
 
+        <!-- Error and success messages -->
+        <div th:if="${error}" class="alert alert-danger">
+            <p th:text="${error}"></p>
+        </div>
+
+        <div th:if="${success}" class="alert alert-success">
+            <p th:text="${success}"></p>
+        </div>
+
         <div class="card">
             <div class="card-body">
                 <!-- Display the details of the build if it exists -->
@@ -23,25 +32,26 @@
                     <table class="table table-bordered">
                         <tbody>
                             <tr>
-                                <th>ID</th>
-                                <td th:text="${build.id}"></td>
-                            </tr>
-                            <tr>
                                 <th>Title</th>
-                                <td th:text="${build.title}"></td>
+                                <td th:text="${build.buildTitle}"></td>
                             </tr>
                             <tr>
                                 <th>Description</th>
-                                <td th:utext="${build.description}"></td>
+                                <td th:utext="${build.buildDescription}"></td>
                             </tr>
                             <tr>
-                                <th>Version</th>
-                                <td th:text="${build.version}"></td>
+                                <th>Release Date</th>
+                                <td th:text="${build.buildReleaseDate}"></td>
                             </tr>
                             <tr>
-                                <th>Status</th>
-                                <td th:text="${build.status}"></td>
+                                <th>Active</th>
+                                <td th:text="${build.isBuildActive == 'Yes' ? 'Yes' : 'No'}"></td>
                             </tr>
+                            <tr>
+                                <th>Open</th>
+                                <td th:text="${build.isBuildOpen == 'Yes' ? 'Yes' : 'No'}"></td>
+                            </tr>
+
                         </tbody>
                     </table>
                 </div>

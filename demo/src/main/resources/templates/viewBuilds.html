@@ -60,7 +60,7 @@
                         <!-- View Details -->
                         <a th:href="@{/viewBuildDetails/{id}(id=${build.bId})}" class="btn btn-info">View</a>
                         <!-- Edit -->
-                        <a th:href="@{/editBuild?id={id}(id=${build.bId})}" class="btn btn-warning">Edit</a>
+                        <a th:href="@{/editBuild/{id}(id=${build.bId})}" class="btn btn-warning">Edit</a>
                         <!-- Delete -->
                         <form action="/deleteBuild" method="post" style="display:inline;">
                             <input type="hidden" name="id" th:value="${build.bId}">
@@ -70,6 +70,12 @@
                 </tr>
             </tbody>
         </table>
+
+        <!-- Create New Test Plan Button -->
+        <div th:if="${!isStakeholder}">
+            <a href="/createBuild" class="btn btn-primary">Create New Build</a>
+        </div>
+
     </div>
 
     <!-- Bootstrap JS (for modal functionality and responsive elements) -->

@@ -7,6 +7,7 @@
     <title>Create a New Build</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -48,7 +49,7 @@
     <div class="container mt-4">
         <h2 class="mb-4">Create a New Build</h2>
 
-        <!-- Success or Error Message -->
+        <!--Success or Error Message -->
         <div th:if="${successMessage}" class="alert alert-success">
             <span th:text="${successMessage}"></span>
         </div>
@@ -57,49 +58,53 @@
         </div>
 
         <!-- Build Form -->
-        <form th:action="@{/createBuild}" method="post">
-            <div class="card">
-                <div class="card-body">
-                    <!-- Title -->
-                    <div class="form-group mb-3">
-                        <label for="title" class="form-label">Title</label>
-                        <input type="text" id="title" name="title" class="form-control" required>
-                    </div>
+        <form th:action="@{/createBuild}" method="POST">
 
-                    <!-- Description -->
-                    <div class="form-group mb-3">
-                        <label for="description" class="form-label">Description</label>
-                        <textarea id="description" name="description" class="form-control" rows="5" required></textarea>
-                    </div>
-
-                    <!-- Active Checkbox -->
-                    <div class="form-check mb-3">
-                        <input type="checkbox" id="isActive" name="isActive" class="form-check-input">
-                        <label for="isActive" class="form-check-label">Active</label>
-                    </div>
-
-                    <!-- Open Checkbox -->
-                    <div class="form-check mb-3">
-                        <input type="checkbox" id="isOpen" name="isOpen" class="form-check-input">
-                        <label for="isOpen" class="form-check-label">Open</label>
-                    </div>
-
-                    <!-- Release Date -->
-                    <div class="form-group mb-3">
-                        <label for="releaseDate" class="form-label">Release Date</label>
-                        <input type="date" id="releaseDate" name="releaseDate" class="form-control" required>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <button type="submit" class="btn btn-submit w-100">Create Build</button>
-                </div>
+            <!-- Title Field -->
+            <div class="form-group">
+                <label for="title" class="form-label">Title:</label>
+                <input type="text" id="title" name="buildTitle" class="form-control" th:value="${build.buildTitle}"
+                    required>
             </div>
+
+            <!-- Description -->
+            <div class="form-group">
+                <label for="description" class="form-label">Description:</label>
+                <textarea id="description" name="buildDescription" class="form-control" rows="10"
+                    th:text="${build.buildDescription}" required></textarea>
+            </div>
+
+            <!-- Release Date -->
+            <div class="form-group">
+                <label for="releaseDate" class="form-label">Release Date:</label>
+                <input type="date" id="releaseDate" name="buildReleaseDate" class="form-control"
+                    th:value="${build.buildReleaseDate}" required>
+            </div>
+
+            <!-- Is Active Checkbox -->
+            <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="isActive" name="isBuildActive"
+                    th:checked="${build.isBuildActive}">
+                <label for="isActive" class="form-check-label">Is Active</label>
+            </div>
+
+            <!-- Is Open Checkbox -->
+            <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="isOpen" name="isBuildOpen"
+                    th:checked="${build.isBuildOpen}">
+                <label for="isOpen" class="form-check-label">Is Open</label>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-submit w-100">Create Build</button>
+
         </form>
 
         <!-- Back Link -->
         <div class="mt-3">
-            <a href="/viewBuilds" class="back-link">&larr; Back to Builds List</a>
+            <a th:href="@{/viewBuilds}" class="back-link">&larr; Back to Builds List</a>
         </div>
+
     </div>
 
     <!-- Bootstrap JS (for interactivity) -->
